@@ -9,7 +9,7 @@ import { ChatWidget } from './components/ChatWidget';
 import { Footer } from './components/Footer';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('hero'); 
+  const [activeTab, setActiveTab] = useState('hero') ; 
 
   const scrollToSection = (sectionId: string) => {
     setActiveTab(sectionId);
