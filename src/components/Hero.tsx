@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Navigation, Phone, ShieldCheck, Glasses, Sparkles, CheckCircle2, HeartHandshake, MapPin } from 'lucide-react';
+import { Calendar, Navigation, Phone, ShieldCheck, Glasses, CheckCircle2, HeartHandshake, MapPin } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/opticsData';
 import logoImg from '../assets/images/optics_logo_1786106308756.jpg';
 
@@ -15,15 +15,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onNavigateToCatalog }
         <div className="grid lg:grid-cols-12 gap-10 items-center">
           {/* Main Hero Text (Left side in RTL) */}
           <div className="lg:col-span-7 space-y-6 text-right">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#E8F0FE] text-[#0047AB] text-xs sm:text-sm font-bold">
-              <Sparkles className="w-4 h-4 text-[#0047AB]" />
-              <span>חדש באמירים • מיזם אופטיקה חברתי</span>
-            </div>
-
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#1A1A1A] font-['Rubik'] leading-none">
               רואים צלול,
               <span className="block text-[#0047AB] mt-2">
-                משלמים הוגן.
+                משלמים הגון.
               </span>
             </h1>
 
