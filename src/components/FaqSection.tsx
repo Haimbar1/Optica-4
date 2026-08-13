@@ -5,23 +5,15 @@ import { BUSINESS_INFO } from '../data/opticsData';
 
 export const FaqSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const [selectedCategory, setSelectedCategory] = useState<string>('הכל');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const categories = ['הכל', 'בדיקות', 'מחירים', 'מולטיפוקל', 'משלוחים ואיסוף', 'כללי'];
-
   const filteredFaqs = useMemo(() => {
-    return FAQ_ITEMS.filter((item) => {
-      if (selectedCategory !== 'הכל' && item.category !== selectedCategory) {
-        return false;
-      }
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        return item.question.toLowerCase().includes(q) || item.answer.toLowerCase().includes(q);
-      }
-      return true;
-    });
-  }, [selectedCategory, searchQuery]);
+    if (!searchQuery.trim()) return FAQ_ITEMS;
+    const q = searchQuery.toLowerCase();
+    return FAQ_ITEMS.filter(
+      (item) => item.question.toLowerCase().includes(q) || item.answer.toLowerCase().includes(q)
+    );
+  }, [searchQuery]);
 
   return (
     <section id="faq" className="py-16 bg-white border-t border-gray-100">
@@ -40,9 +32,8 @@ export const FaqSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Filter Controls */}
-        <div className="space-y-4 mb-8">
-          {/* Search bar */}
+        {/* Search bar */}
+        <div className="mb-8">
           <div className="relative max-w-md mx-auto">
             <input
               type="text"
@@ -52,23 +43,6 @@ export const FaqSection: React.FC = () => {
               className="w-full pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0047AB] text-sm text-gray-800 bg-[#FBFBFB]"
             />
             <Search className="w-5 h-5 text-gray-400 absolute right-3 top-3" />
-          </div>
-
-          {/* Category Tabs */}
-          <div className="flex flex-wrap justify-center gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                  selectedCategory === cat
-                    ? 'bg-[#0047AB] text-white shadow-xs'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
           </div>
         </div>
 

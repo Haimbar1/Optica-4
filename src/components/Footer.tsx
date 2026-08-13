@@ -26,18 +26,21 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Business Address */}
-          <div className="space-y-2">
-            <h4 className="font-bold text-white text-sm">📍 כתובת העסק</h4>
-            <p className="text-slate-300 font-semibold">{BUSINESS_INFO.address}</p>
-            <p className="text-slate-400">מושב אמירים, גליל עליון</p>
+          <div className="space-y-2 bg-slate-800/60 border border-slate-700/80 p-3.5 rounded-2xl">
+            <h4 className="font-bold text-white text-sm flex items-center gap-1.5">
+              <MapPin className="w-4 h-4 text-amber-400" />
+              <span>כתובת העסק</span>
+            </h4>
+            <p className="text-white font-extrabold text-sm">{BUSINESS_INFO.address}</p>
+            <p className="text-slate-400 text-xs">מושב אמירים, גליל עליון (חניה במקום)</p>
             <a
               href={BUSINESS_INFO.wazeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[#60A5FA] hover:underline font-bold pt-1"
+              className="inline-flex items-center gap-1 text-amber-300 hover:text-amber-200 hover:underline font-extrabold pt-1 text-xs"
             >
               <Navigation className="w-3.5 h-3.5" />
-              <span>פתח ניווט בוויז (Waze)</span>
+              <span>פתח ניווט ב-Waze (וויז) ←</span>
             </a>
           </div>
 

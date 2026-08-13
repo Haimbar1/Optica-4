@@ -37,7 +37,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
             <span className="inline-flex items-center gap-1 bg-[#E8F0FE] text-[#0047AB] text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">
               מיזם אופטיקה חברתי באמירים
             </span>
-            <span className="hidden md:inline font-semibold">מסגרת + עדשות וציפויים מ-150 ₪ עד 250 ₪ בלבד!</span>
+            <span className="inline-flex items-center gap-1 bg-white/10 px-2.5 py-0.5 rounded-full font-bold text-amber-200 text-xs">
+              <MapPin className="w-3.5 h-3.5 text-amber-300" />
+              <span>כתובת: מצפה מנחם 86, מושב אמירים</span>
+            </span>
           </div>
 
           <div className="flex items-center gap-4 text-xs">
@@ -45,10 +48,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
               href={BUSINESS_INFO.wazeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 hover:text-blue-100 transition-colors font-bold"
+              className="flex items-center gap-1 hover:text-blue-100 transition-colors font-bold bg-white/10 px-2.5 py-0.5 rounded-lg"
             >
               <Navigation className="w-3.5 h-3.5 text-amber-300" />
-              <span>ניווט בוויז</span>
+              <span>ניווט ב-Waze</span>
             </a>
             <span className="text-white/30">|</span>
             <a

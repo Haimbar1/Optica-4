@@ -23,14 +23,13 @@ export const AppointmentSection: React.FC = () => {
                 בלחיצה על הקישור הבא, תועבר למערכת האוטומטית שלנו לקביעת תורים ביומן:
               </p>
 
-              {/* Working Hours Display */}
-              <div className="pt-2 flex flex-wrap gap-3 text-xs">
-                <span className="font-extrabold text-white">שעות הפעילות שלנו:</span>
-                <span className="bg-white/10 px-2.5 py-1 rounded-lg text-blue-100 font-semibold">
-                  ימים ד', ה': 12:00-18:00
+              {/* Working Hours & Address Display */}
+              <div className="pt-2 flex flex-wrap items-center gap-2.5 text-xs">
+                <span className="bg-amber-400 text-gray-950 font-black px-2.5 py-1 rounded-lg flex items-center gap-1">
+                  <span>📍 כתובת להגעה: {BUSINESS_INFO.address}</span>
                 </span>
                 <span className="bg-white/10 px-2.5 py-1 rounded-lg text-blue-100 font-semibold">
-                  יום ו': 10:00-14:00
+                  שעות: ד', ה' 12:00-18:00 | ו' 10:00-14:00
                 </span>
               </div>
             </div>

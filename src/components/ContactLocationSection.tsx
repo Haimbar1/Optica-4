@@ -42,16 +42,22 @@ export const ContactLocationSection: React.FC = () => {
                 </div>
               </div>
 
-              {/* Exact Location */}
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">
-                  📍 כתובת העסק:
-                </span>
-                <p className="text-xl font-bold text-[#0047AB] font-['Rubik'] flex items-center gap-2">
-                  <span>{BUSINESS_INFO.address}</span>
+              {/* Exact Location - Extra Prominent */}
+              <div className="bg-gradient-to-br from-[#E8F0FE] to-blue-50/80 border-2 border-[#0047AB]/40 rounded-2xl p-5 shadow-xs space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-black text-[#0047AB] uppercase tracking-wider bg-white px-2.5 py-1 rounded-full border border-[#0047AB]/20">
+                    <MapPin className="w-4 h-4 text-[#0047AB]" />
+                    כתובת העסק והקליניקה
+                  </span>
+                  <span className="text-[11px] font-bold text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-md">
+                    חניה חופשית במקום
+                  </span>
+                </div>
+                <p className="text-2xl sm:text-3xl font-black text-[#0047AB] font-['Rubik'] leading-tight pt-1">
+                  {BUSINESS_INFO.address}
                 </p>
-                <p className="text-xs text-gray-600">
-                  מושב אמירים, גליל עליון (חניה נוחה לרכבים במקום)
+                <p className="text-xs sm:text-sm text-gray-700 font-medium">
+                  מושב אמירים, מועצה אזורית מרום הגליל (גליל עליון)
                 </p>
               </div>
 
