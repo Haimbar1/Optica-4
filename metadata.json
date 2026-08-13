@@ -1,0 +1,6 @@
+{
+  "name": "האופטיקה הטובה - אמירים",
+  "description": "מיזם אופטיקה חברתית באמירים - בדיקות ראייה, משקפי ראייה ושמש, עדשות מולטיפוקל במחירים הוגנים",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

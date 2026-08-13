@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>צ'אט בוט אופטיקה הטובה - פתוח מראש</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      margin: 0;
+      padding: 20px;
+      direction: rtl;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .card {
+      max-width: 600px;
+      width: 100%;
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      border: 1px solid #e2e8f0;
+      margin-top: 20px;
+    }
+    h1 {
+      color: #0047AB;
+      font-size: 22px;
+      margin-top: 0;
+    }
+    .badge {
+      background: #dcfce7;
+      color: #15803d;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">בוט פתוח אוטומטית</span>
+    <h1>צ'אט מול בוט אופטיקה הטובה אמירים</h1>
+    <p>עמוד זה מיועד לבדיקות או להטמעה ישירה. חלון הבוט נפתח באופן אוטומטי בעת טעינת העמוד.</p>
+  </div>
+
+  <!-- הטמעת קובץ הבוט מ-smartesek -->
+  <script 
+    src="/optics-bot-widget.js" 
+    data-bot-id="bot_generic_252"
+    data-title="האופטיקה הטובה אמירים"
+    data-welcome-message="הגעת לאופטיקה החברתית במושב אמירים.\nאנחנו מאמינים שראייה טובה מתחילה מיחס טוב.\n\nלא צריך להתרוצץ - אצלנו תמצא את כל מה שצריך במקום אחד:\n✅ בדיקת ראייה מתקדמת ומדויקת בחינם.\n✅ מבחר עצום של מסגרות בכל סגנון ותקציב.\n✅ שירות אישי וחם, עם התאמה מושלמת לצרכים שלך.\nאפשרויות:\nתיאום תור \nאיך מגיעים אליכם\nעדשות מולטיפוקל \nמהי אופטיקה חברתית\nסוגי מסגרות ומחירים\nמהם מרשמים רגילים\n\nמתי המשקפיים מוכנים"
+    data-whatsapp="972547866119"
+    data-theme-color="#0047AB"
+    data-webhook-url="https://n8n.srv1239769.hstgr.cloud/webhook/65325d34-0c9e-4cc3-8b7c-c03c47105b3a">
+  </script>
+
+  <!-- סקריפט לפתיחה אוטומטית של חלון הצ'אט בעליית הדף -->
+  <script>
+    (function autoOpenBot() {
+      var attempts = 0;
+      var interval = setInterval(function() {
+        attempts++;
+        var fab = document.getElementById('obw-fab');
+        var win = document.getElementById('obw-window');
+        
+        if (fab && win) {
+          // אם החלון עדיין סגור, נלחץ על כפתור ה-FAB לפתיחה
+          if (win.classList.contains('obw-hidden')) {
+            fab.click();
+          }
+          clearInterval(interval);
+        } else if (attempts > 50) { // ניסיון של 5 שניות
+          clearInterval(interval);
+        }
+      }, 100);
+    })();
+  </script>
+</body>
+</html>
