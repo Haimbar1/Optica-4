@@ -60,58 +60,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
               </div>
             </div>
 
-            {/* Address & Quick Info Banner - Prominently Highlighted */}
-            <div className="bg-gradient-to-r from-blue-50/90 via-white to-amber-50/70 border-2 border-[#0047AB]/30 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#0047AB] text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <MapPin className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-extrabold text-gray-500 uppercase tracking-wider block">
-                      📍 כתובת העסק והקליניקה:
-                    </span>
-                    <span className="text-xl sm:text-2xl font-black text-[#0047AB] font-['Rubik'] leading-tight">
-                      {BUSINESS_INFO.address}
-                    </span>
-                    <span className="text-xs text-gray-600 font-semibold block">
-                      (גליל עליון • חניה צמודה ונוחה במקום)
-                    </span>
-                  </div>
-                </div>
-
-                <div className="self-start lg:self-center">
-                  <div className="inline-flex items-start sm:items-center gap-2.5 text-xs sm:text-sm bg-[#0047AB] text-white px-4 py-2.5 rounded-xl font-black shadow-sm">
-                    <Clock className="w-5 h-5 text-amber-300 shrink-0 mt-0.5 sm:mt-0" />
-                    <div className="flex flex-col gap-1 text-right">
-                      <span className="text-[11px] text-amber-200 font-bold block leading-none">שעות פעילות:</span>
-                      <div className="grid grid-cols-[max-content_auto] items-center gap-x-2.5 gap-y-1 leading-none pt-0.5">
-                        <span className="font-extrabold text-white">ד', ה':</span>
-                        <span dir="ltr" className="font-black text-amber-300 text-left">12:00-18:00</span>
-                        <span className="font-extrabold text-white">ו':</span>
-                        <span dir="ltr" className="font-black text-amber-300 text-left">10:00-14:00</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-gray-200/80 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-700">
-                <p className="font-medium">
-                  תורים לבדיקות ראייה (אביגיל): <a href={`tel:${BUSINESS_INFO.phoneAvigail}`} className="text-[#0047AB] font-extrabold hover:underline">{BUSINESS_INFO.phoneAvigail}</a> | צביקה: <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#0047AB] font-extrabold hover:underline">{BUSINESS_INFO.phoneZvika}</a>
-                </p>
-                <a
-                  href={BUSINESS_INFO.wazeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[#0047AB] font-black hover:underline"
-                >
-                  <Navigation className="w-3.5 h-3.5" />
-                  <span>נווט כעת בוויז ←</span>
-                </a>
-              </div>
-            </div>
-
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <button
@@ -161,47 +109,103 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
             </div>
           </div>
 
-          {/* Right Side Visual Image Container */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative rounded-2xl overflow-hidden border-2 border-white shadow-xl bg-white">
-              <img
-                src="https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=1000&q=80"
-                alt="האופטיקה הטובה אמירים"
-                className="w-full h-80 sm:h-96 object-cover"
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent p-6 flex flex-col justify-end">
-                <div className="flex items-center gap-2 mb-2">
-                  <img
-                    src={logoImg}
-                    alt="האופטיקה הטובה"
-                    className="w-9 h-9 rounded-lg object-cover border border-white/40 shadow-sm"
-                  />
-                  <div className="bg-[#0047AB] text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full w-max">
-                    מיזם אופטיקה חברתית
+          {/* Right Side: Address & Hours Quick Info Banner + Visual Image Container */}
+          <div className="lg:col-span-5 space-y-4">
+            {/* Address & Quick Info Banner - Moved above image, aligned with headline */}
+            <div className="bg-gradient-to-br from-blue-50 via-white to-amber-50/80 border-2 border-[#0047AB]/30 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#0047AB] text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <MapPin className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-extrabold text-gray-500 uppercase tracking-wider block">
+                      📍 כתובת העסק:
+                    </span>
+                    <span className="text-lg sm:text-xl font-black text-[#0047AB] font-['Rubik'] leading-tight block">
+                      {BUSINESS_INFO.address}
+                    </span>
+                    <span className="text-xs text-gray-600 font-semibold block">
+                      (גליל עליון • חניה צמודה ונוחה במקום)
+                    </span>
                   </div>
                 </div>
-                <h3 className="text-2xl font-black text-white font-['Rubik']">
-                  150 ₪ / 250 ₪
-                </h3>
-                <p className="text-gray-200 text-xs sm:text-sm mt-1 leading-normal">
-                  מסגרות מכל הסוגים (פלסטיק, מתכת, טיטניום, אולטם) כולל עדשות איכותיות וציפויים!
+
+                <div className="self-start sm:self-center shrink-0">
+                  <div className="bg-[#0047AB] text-white px-3.5 py-2 rounded-xl font-black shadow-sm flex items-center gap-2.5">
+                    <Clock className="w-4 h-4 text-amber-300 shrink-0" />
+                    <div className="flex flex-col gap-1 text-xs sm:text-sm">
+                      <div className="flex items-center justify-between gap-3 leading-none">
+                        <span className="text-white font-bold">ד', ה'</span>
+                        <span dir="ltr" className="text-amber-300 font-black tracking-wide">12:00-18:00</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-3 leading-none">
+                        <span className="text-white font-bold">ו'</span>
+                        <span dir="ltr" className="text-amber-300 font-black tracking-wide">10:00-14:00</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-gray-200/80 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-700">
+                <p className="font-medium">
+                  תורים (אביגיל): <a href={`tel:${BUSINESS_INFO.phoneAvigail}`} className="text-[#0047AB] font-extrabold hover:underline">{BUSINESS_INFO.phoneAvigail}</a> | צביקה: <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#0047AB] font-extrabold hover:underline">{BUSINESS_INFO.phoneZvika}</a>
                 </p>
-
-                <div className="mt-4 pt-3 border-t border-white/20 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-amber-300 text-xs font-bold">
-                    <HeartHandshake className="w-4 h-4" />
-                    <span>איכות מירבית במחיר הוגן</span>
-                  </div>
-                  <span className="text-xs text-gray-300 font-semibold">אמירים</span>
-                </div>
+                <a
+                  href={BUSINESS_INFO.wazeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[#0047AB] font-black hover:underline"
+                >
+                  <Navigation className="w-3.5 h-3.5" />
+                  <span>נווט בוויז ←</span>
+                </a>
               </div>
             </div>
 
-            {/* Floating Badge */}
-            <div className="absolute -bottom-4 -right-4 bg-white text-[#0047AB] p-4 rounded-2xl shadow-xl font-extrabold text-center border-2 border-[#E8F0FE] hidden sm:block">
-              <span className="block text-2xl font-black text-[#0047AB]">100%</span>
-              <span className="text-xs text-gray-600 font-bold">איכות ואמינות</span>
+            {/* Glasses Visual Image Container */}
+            <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden border-2 border-white shadow-xl bg-white">
+                <img
+                  src="https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=1000&q=80"
+                  alt="האופטיקה הטובה אמירים"
+                  className="w-full h-72 sm:h-80 object-cover"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent p-5 flex flex-col justify-end">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <img
+                      src={logoImg}
+                      alt="האופטיקה הטובה"
+                      className="w-8 h-8 rounded-lg object-cover border border-white/40 shadow-sm"
+                    />
+                    <div className="bg-[#0047AB] text-white text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full w-max">
+                      מיזם אופטיקה חברתית
+                    </div>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-black text-white font-['Rubik']">
+                    150 ₪ / 250 ₪
+                  </h3>
+                  <p className="text-gray-200 text-xs sm:text-sm mt-0.5 leading-normal">
+                    מסגרות מכל הסוגים (פלסטיק, מתכת, טיטניום, אולטם) כולל עדשות איכותיות וציפויים!
+                  </p>
+
+                  <div className="mt-3 pt-2.5 border-t border-white/20 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-amber-300 text-xs font-bold">
+                      <HeartHandshake className="w-4 h-4" />
+                      <span>איכות מירבית במחיר הוגן</span>
+                    </div>
+                    <span className="text-xs text-gray-300 font-semibold">אמירים</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating Badge */}
+              <div className="absolute -bottom-3 -right-3 bg-white text-[#0047AB] p-3 rounded-2xl shadow-xl font-extrabold text-center border-2 border-[#E8F0FE] hidden sm:block">
+                <span className="block text-xl font-black text-[#0047AB]">100%</span>
+                <span className="text-[11px] text-gray-600 font-bold">איכות ואמינות</span>
+              </div>
             </div>
           </div>
         </div>
