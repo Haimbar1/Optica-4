@@ -1,14 +1,32 @@
 import React from 'react';
-import { Calendar, Navigation, Phone, ShieldCheck, Glasses, CheckCircle2, HeartHandshake, MapPin } from 'lucide-react';
+import { Calendar, Navigation, Phone, ShieldCheck, Glasses, CheckCircle2, HeartHandshake, MapPin, Clock } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/opticsData';
 import logoImg from '../assets/images/optics_logo_1786106308756.jpg';
 
 interface HeroProps {
-  onOpenBooking: () => void;
-  onNavigateToCatalog: () => void;
+  onOpenBooking?: () => void;
+  onOpenContact?: () => void;
+  onNavigateToCatalog?: () => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onNavigateToCatalog }) => {
+export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavigateToCatalog }) => {
+  const handleBookingClick = () => {
+    if (onOpenBooking) {
+      onOpenBooking();
+    } else if (onOpenContact) {
+      onOpenContact();
+    } else {
+      document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleCatalogClick = () => {
+    if (onNavigateToCatalog) {
+      onNavigateToCatalog();
+    } else {
+      document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   return (
     <section id="hero" className="relative overflow-hidden bg-[#F8F9FA] text-[#1A1A1A] py-12 lg:py-16 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -63,7 +81,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onNavigateToCatalog }
                 </div>
 
                 <div className="self-start sm:self-center">
-                  <div className="inline-flex items-center gap-1.5 text-xs bg-[#0047AB] text-white px-3 py-1.5 rounded-xl font-bold shadow-xs">
+                  <div className="inline-flex items-center gap-2 text-sm sm:text-base bg-[#0047AB] text-white px-4 py-2 rounded-xl font-black shadow-sm">
+                    <Clock className="w-4 h-4 text-amber-300 shrink-0" />
                     <span>שעות פעילות: ד', ה' 12:00-18:00 | ו' 10:00-14:00</span>
                   </div>
                 </div>
@@ -88,7 +107,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onNavigateToCatalog }
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <button
-                onClick={onOpenBooking}
+                onClick={handleBookingClick}
                 className="bg-[#0047AB] hover:bg-[#003580] text-white font-bold text-base px-6 py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Calendar className="w-5 h-5 text-white" />
@@ -106,7 +125,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onNavigateToCatalog }
               </a>
 
               <button
-                onClick={onNavigateToCatalog}
+                onClick={handleCatalogClick}
                 className="text-[#0047AB] hover:underline font-bold text-sm px-3 py-2 cursor-pointer"
               >
                 לצפייה בקטלוג המסגרות ←

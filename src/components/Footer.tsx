@@ -1,6 +1,6 @@
 import React from 'react';
 import { BUSINESS_INFO } from '../data/opticsData';
-import { Glasses, MapPin, Phone, Navigation, HeartHandshake } from 'lucide-react';
+import { Glasses, MapPin, Phone, Navigation, HeartHandshake, Clock } from 'lucide-react';
 import logoImg from '../assets/images/optics_logo_1786106308756.jpg';
 
 export const Footer: React.FC = () => {
@@ -25,14 +25,20 @@ export const Footer: React.FC = () => {
             </p>
           </div>
 
-          {/* Business Address */}
-          <div className="space-y-2 bg-slate-800/60 border border-slate-700/80 p-3.5 rounded-2xl">
+          {/* Business Address & Hours */}
+          <div className="space-y-2.5 bg-slate-800/60 border border-slate-700/80 p-3.5 rounded-2xl">
             <h4 className="font-bold text-white text-sm flex items-center gap-1.5">
               <MapPin className="w-4 h-4 text-amber-400" />
-              <span>כתובת העסק</span>
+              <span>כתובת ושעות פעילות</span>
             </h4>
             <p className="text-white font-extrabold text-sm">{BUSINESS_INFO.address}</p>
             <p className="text-slate-400 text-xs">מושב אמירים, גליל עליון (חניה במקום)</p>
+            
+            <div className="pt-1 text-amber-300 font-black text-xs flex items-center gap-1.5 bg-slate-900/60 p-2 rounded-xl border border-slate-700/60">
+              <Clock className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+              <span>שעות: ד', ה' 12:00-18:00 | ו' 10:00-14:00</span>
+            </div>
+
             <a
               href={BUSINESS_INFO.wazeUrl}
               target="_blank"

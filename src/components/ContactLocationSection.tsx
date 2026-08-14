@@ -43,7 +43,7 @@ export const ContactLocationSection: React.FC = () => {
               </div>
 
               {/* Exact Location - Extra Prominent */}
-              <div className="bg-gradient-to-br from-[#E8F0FE] to-blue-50/80 border-2 border-[#0047AB]/40 rounded-2xl p-5 shadow-xs space-y-2">
+              <div className="bg-gradient-to-br from-[#E8F0FE] to-blue-50/80 border-2 border-[#0047AB]/40 rounded-2xl p-5 shadow-xs space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 text-xs font-black text-[#0047AB] uppercase tracking-wider bg-white px-2.5 py-1 rounded-full border border-[#0047AB]/20">
                     <MapPin className="w-4 h-4 text-[#0047AB]" />
@@ -59,6 +59,12 @@ export const ContactLocationSection: React.FC = () => {
                 <p className="text-xs sm:text-sm text-gray-700 font-medium">
                   מושב אמירים, מועצה אזורית מרום הגליל (גליל עליון)
                 </p>
+                
+                {/* Hours Box inside card */}
+                <div className="pt-2 border-t border-[#0047AB]/15 flex items-center gap-2 text-xs sm:text-sm font-extrabold text-[#0047AB]">
+                  <Clock className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span>שעות פעילות: ד', ה' 12:00-18:00 | ו' 10:00-14:00</span>
+                </div>
               </div>
 
               {/* Navigation Button */}
@@ -191,11 +197,17 @@ export const ContactLocationSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#E8F0FE] border border-blue-200 text-xs text-[#0047AB] flex flex-col sm:flex-row items-start sm:items-center gap-3">
-              <Clock className="w-5 h-5 text-[#0047AB] shrink-0 mt-0.5 sm:mt-0" />
-              <div>
-                <span className="font-extrabold block sm:inline ml-2">שעות הפעילות בחנות:</span>
-                <span>ימים ד', ה': 12:00-18:00 | יום ו': 10:00-14:00 (בתיאום מראש)</span>
+            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#E8F0FE] via-blue-50 to-amber-50/50 border-2 border-blue-200 text-[#0047AB] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#0047AB] text-white flex items-center justify-center shrink-0">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-gray-600 block">שעות פעילות וקבלת קהל בחנות (בתיאום מראש):</span>
+                  <span className="text-base sm:text-lg font-black text-[#0047AB] font-['Rubik']">
+                    ימים ד', ה': 12:00-18:00 | יום ו': 10:00-14:00
+                  </span>
+                </div>
               </div>
             </div>
           </div>
