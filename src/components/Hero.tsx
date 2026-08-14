@@ -62,7 +62,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
 
             {/* Address & Quick Info Banner - Prominently Highlighted */}
             <div className="bg-gradient-to-r from-blue-50/90 via-white to-amber-50/70 border-2 border-[#0047AB]/30 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[#0047AB] text-white flex items-center justify-center shrink-0 shadow-xs">
                     <MapPin className="w-6 h-6" />
@@ -80,10 +80,18 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
                   </div>
                 </div>
 
-                <div className="self-start sm:self-center">
-                  <div className="inline-flex items-center gap-2 text-sm sm:text-base bg-[#0047AB] text-white px-4 py-2 rounded-xl font-black shadow-sm">
-                    <Clock className="w-4 h-4 text-amber-300 shrink-0" />
-                    <span>שעות פעילות: ד', ה' 12:00-18:00 | ו' 10:00-14:00</span>
+                <div className="self-start lg:self-center">
+                  <div className="inline-flex items-start sm:items-center gap-2.5 text-xs sm:text-sm bg-[#0047AB] text-white px-4 py-2.5 rounded-xl font-black shadow-sm">
+                    <Clock className="w-5 h-5 text-amber-300 shrink-0 mt-0.5 sm:mt-0" />
+                    <div className="flex flex-col gap-1 text-right">
+                      <span className="text-[11px] text-amber-200 font-bold block leading-none">שעות פעילות:</span>
+                      <div className="grid grid-cols-[max-content_auto] items-center gap-x-2.5 gap-y-1 leading-none pt-0.5">
+                        <span className="font-extrabold text-white">ד', ה':</span>
+                        <span dir="ltr" className="font-black text-amber-300 text-left">12:00-18:00</span>
+                        <span className="font-extrabold text-white">ו':</span>
+                        <span dir="ltr" className="font-black text-amber-300 text-left">10:00-14:00</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

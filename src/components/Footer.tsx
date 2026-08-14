@@ -34,9 +34,17 @@ export const Footer: React.FC = () => {
             <p className="text-white font-extrabold text-sm">{BUSINESS_INFO.address}</p>
             <p className="text-slate-400 text-xs">מושב אמירים, גליל עליון (חניה במקום)</p>
             
-            <div className="pt-1 text-amber-300 font-black text-xs flex items-center gap-1.5 bg-slate-900/60 p-2 rounded-xl border border-slate-700/60">
-              <Clock className="w-3.5 h-3.5 shrink-0 text-amber-400" />
-              <span>שעות: ד', ה' 12:00-18:00 | ו' 10:00-14:00</span>
+            <div className="pt-1 text-amber-300 font-black text-xs flex items-start gap-2 bg-slate-900/80 p-2.5 rounded-xl border border-slate-700/60">
+              <Clock className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+              <div className="flex flex-col gap-1 text-xs">
+                <span className="text-[10px] text-slate-400 font-bold uppercase">שעות פעילות:</span>
+                <div className="grid grid-cols-[max-content_auto] items-center gap-x-2.5 gap-y-0.5 leading-tight">
+                  <span className="text-slate-200 font-bold">ד', ה':</span>
+                  <span dir="ltr" className="text-amber-300 font-black text-left">12:00-18:00</span>
+                  <span className="text-slate-200 font-bold">ו':</span>
+                  <span dir="ltr" className="text-amber-300 font-black text-left">10:00-14:00</span>
+                </div>
+              </div>
             </div>
 
             <a
