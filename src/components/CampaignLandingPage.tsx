@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Calendar,
   Clock,
@@ -24,7 +24,12 @@ import {
   Layers
 } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/opticsData';
-import { getNextWednesdayDate } from '../utils/dateUtils';
+import {
+  getNextWednesdayDate,
+  getFirstAvailableBookingDate,
+  getUpcomingBookingDays,
+  BookingDayOption,
+} from '../utils/dateUtils';
 import campaignGlassesImg from '../assets/images/campaign_glasses_1789850551440.jpg';
 import logoImg from '../assets/images/logo_optics.svg';
 
@@ -39,7 +44,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   onOpenPrivacy,
   onOpenTerms,
 }) => {
-  const [selectedWednesday, setSelectedWednesday] = useState<string>('2026-09-23');
+  const upcomingDays = useMemo<BookingDayOption[]>(() => getUpcomingBookingDays(), []);
+  const [selectedDate, setSelectedDate] = useState<string>(() => getFirstAvailableBookingDate());
   const [bookingMode, setBookingMode] = useState<'calendar' | 'callback'>('calendar');
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -52,13 +58,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  useEffect(() => {
-    const computedDate = getNextWednesdayDate();
-    setSelectedWednesday(computedDate);
-  }, []);
-
-  const calUrl = `https://cal.com/haoptika-hatova/30min?date=${selectedWednesday}`;
-  const calEmbedUrl = `https://cal.com/haoptika-hatova/30min?date=${selectedWednesday}&embed=true`;
+  const calUrl = `https://cal.com/haoptika-hatova/30min?date=${selectedDate}&layout=month_view`;
+  const calEmbedUrl = `https://cal.com/haoptika-hatova/30min?date=${selectedDate}&layout=month_view&embed=true`;
 
   const scrollToBooking = () => {
     const el = document.getElementById('booking-above-fold-card');
@@ -209,39 +210,14 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
       <section className="relative overflow-hidden bg-gradient-to-b from-[#F2F8ED] via-white to-slate-50 pt-3.5 pb-10 sm:pt-5 sm:pb-14 border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-4">
           
-          {/* 1. Header Banner: Direct, clear, and highlights the appointment scheduling at the head of the page */}
-          <div className="text-center space-y-2 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-[#EDF7E5] border border-[#B7E2A0] text-[#3D861D] px-3.5 py-1 rounded-full text-xs font-black shadow-2xs">
-              <HeartHandshake className="w-4 h-4 text-[#4C9C29] shrink-0" />
-              <span>תרמנו לחיילים – עכשיו מגיע לכולם! • מיזם חברתי ללא פערי תיווך</span>
-            </div>
-
+          {/* 1. Header Banner: 100% Focused on Scheduling an Appointment */}
+          <div className="text-center space-y-1.5 max-w-2xl mx-auto">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-950 font-['Rubik'] leading-tight tracking-tight">
               לוח קביעת תורים לבדיקת ראייה והתאמת משקפיים
-              <span className="block text-[#0047AB] text-xl sm:text-2xl lg:text-3xl font-extrabold mt-0.5">
-                במצפה מנחם 86, אמירים (15 דק' בלבד מכרמיאל)
-              </span>
             </h1>
-
-            <p className="text-xs sm:text-sm text-slate-700 font-bold max-w-2xl mx-auto">
-              בדיקת ראייה מקיפה ללא עלות ע״י אופטומטריסט מוסמך • לבירורים: אביגיל (מתאמת תורים) {BUSINESS_INFO.phoneAvigail}
+            <p className="text-sm sm:text-base text-slate-600 font-medium">
+              בחרו יום ושעה ביומן – הבדיקה ללא עלות וללא התחייבות
             </p>
-
-            {/* Quick Badges Strip: Offers & Hours */}
-            <div className="flex flex-wrap items-center justify-center gap-2 pt-1 text-xs">
-              <div className="bg-blue-100/90 text-[#0047AB] border border-blue-200 px-3 py-1 rounded-full font-black flex items-center gap-1.5 shadow-2xs">
-                <Glasses className="w-3.5 h-3.5" />
-                <span>משקפי ראייה מלאים ב-₪150 בלבד</span>
-              </div>
-              <div className="bg-emerald-100/90 text-emerald-950 border border-emerald-300 px-3 py-1 rounded-full font-black flex items-center gap-1.5 shadow-2xs">
-                <Layers className="w-3.5 h-3.5" />
-                <span>מולטיפוקל פרימיום ב-800-1,200 ₪ (במקום 4,000 ₪!)</span>
-              </div>
-              <div className="bg-slate-100 text-slate-700 border border-slate-300 px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-[#0047AB]" />
-                <span>ימי בדיקות: ד', ה' (12:00-18:00) | ו' (10:00-14:00)</span>
-              </div>
-            </div>
           </div>
 
           {/* ============================================================= */}
@@ -301,7 +277,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-[#0047AB] shrink-0" />
                       <span className="font-bold text-slate-800">
-                        מועדי הבדיקות הקרובים פתוחים לבחירה. בחרו יום ושעה וקבלו אישור מיידי ללא תשלום מראש:
+                        מועדי הבדיקות הקרובים פתוחים לבחירה. בחרו יום ושעה וקבלו אישור מיידי:
                       </span>
                     </div>
                     <a
@@ -315,13 +291,50 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     </a>
                   </div>
 
+                  {/* Day Picker Pills: Select Clinic Days Starting from Earliest Open Hour */}
+                  <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                    <span className="text-xs font-bold text-slate-700">ימי בדיקות קרובים:</span>
+                    {upcomingDays.map((dayOpt) => {
+                      const isSelected = selectedDate === dayOpt.date;
+                      return (
+                        <button
+                          key={dayOpt.date}
+                          type="button"
+                          onClick={() => {
+                            setSelectedDate(dayOpt.date);
+                            setIframeLoaded(false);
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#0047AB] text-white shadow-sm ring-2 ring-[#0047AB]/30'
+                              : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
+                          }`}
+                        >
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>
+                            {dayOpt.isToday ? 'היום (' + dayOpt.shortLabel + ')' : dayOpt.dayName} • {dayOpt.formattedDate}
+                          </span>
+                          <span
+                            className={`text-[10px] px-1.5 py-0.5 rounded font-black ${
+                              isSelected ? 'bg-white/20 text-white' : 'bg-blue-100 text-[#0047AB]'
+                            }`}
+                          >
+                            {dayOpt.startHourLabel}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
                   {/* Calendar iframe */}
-                  <div className="relative w-full bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 h-[480px] sm:h-[530px]">
+                  <div className="relative w-full bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 h-[580px] sm:h-[660px]">
                     {!iframeLoaded && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-slate-50 z-10">
                         <div className="w-9 h-9 border-3 border-[#0047AB] border-t-transparent rounded-full animate-spin mb-3"></div>
-                        <p className="font-bold text-slate-800 text-sm">טוען את היומן של האופטיקה...</p>
-                        <span className="text-xs text-slate-500 mt-1">ימי בדיקות: רביעי, חמישי ושישי</span>
+                        <p className="font-bold text-slate-800 text-sm">טוען את יומן הבדיקות...</p>
+                        <span className="text-xs text-slate-500 mt-1">
+                          היומן נפתח בשעה הראשונה הזמינה לבחירה
+                        </span>
                       </div>
                     )}
                     <iframe
