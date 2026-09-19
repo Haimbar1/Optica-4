@@ -122,25 +122,43 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
     });
 
     try {
-      // 4. Send Lead to CRM via backend proxy route
-      const crmRes = await fetch('/api/crm/lead', {
+      // 4. Send Lead directly to SmartEsek CRM
+      const crmUrl = 'https://crm.smartesek.com/api/public/lead';
+      const crmRes = await fetch(crmUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Lead-Key': '1234512345',
+        },
         body: JSON.stringify(leadPayload),
       });
 
-      const crmData = await crmRes.json().catch(() => null);
+      const status = crmRes.status;
+      const rawText = await crmRes.text().catch(() => '');
+      let responseData: any = rawText;
+      try {
+        responseData = JSON.parse(rawText);
+      } catch {
+        responseData = rawText;
+      }
 
-      if (crmData && crmData.success) {
+      if (crmRes.ok) {
         console.log('%c✅ [SmartEsek CRM SUCCESS] הליד נשלח ונקלט בהצלחה!', 'color: #10B981; font-weight: bold; font-size: 13px;');
-        console.log('📥 סטטוס תגובה:', crmData.status);
-        console.log('📥 תשובה שהתקבלה מה-CRM:', crmData.response);
-        console.log('📦 כל הפרטים שנשלחו:', crmData.sent);
+        console.log('📥 סטטוס תגובה:', status);
+        console.log('📥 תשובה שהתקבלה מה-CRM:', responseData);
+        console.log('📦 כל הפרטים שנשלחו:', leadPayload);
       } else {
+        const errorReason =
+          typeof responseData === 'object' && responseData?.error
+            ? responseData.error
+            : typeof responseData === 'string' && responseData
+            ? responseData
+            : `HTTP ${status}`;
+
         console.error('%c❌ [SmartEsek CRM FAILED] שליחת הליד ל-CRM נכשלה!', 'color: #EF4444; font-weight: bold; font-size: 13px;');
-        console.error('⚠️ סטטוס שגיאה:', crmData?.status || crmRes.status);
-        console.error('⚠️ מדוע לא הצליח (סיבת הכישלון):', crmData?.error || crmData?.response || 'תגובה לא תקינה משרת ה-CRM');
-        console.error('📥 תשובה מלאה שהתקבלה מהשרת:', crmData?.response || crmData);
+        console.error('⚠️ סטטוס שגיאה:', status);
+        console.error('⚠️ מדוע לא הצליח (סיבת הכישלון):', errorReason);
+        console.error('📥 תשובה מלאה שהתקבלה מהשרת:', responseData);
         console.error('📦 כל הפרטים שנשלחו:', leadPayload);
       }
     } catch (err: any) {
