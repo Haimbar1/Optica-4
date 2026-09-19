@@ -40,7 +40,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   onOpenTerms,
 }) => {
   const [selectedWednesday, setSelectedWednesday] = useState<string>('2026-09-23');
-  const [bookingMode, setBookingMode] = useState<'calendar' | 'callback'>('callback');
+  const [bookingMode, setBookingMode] = useState<'calendar' | 'callback'>('calendar');
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
@@ -204,188 +204,277 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
       </header>
 
       {/* ========================================================================= */}
-      {/* ABOVE THE FOLD HERO: Headlines + Deals + Direct Booking / Callback Module */}
+      {/* ABOVE THE FOLD HERO: Centered Booking Focal Point Framed by Deals & Info */}
       {/* ========================================================================= */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#F2F8ED] via-white to-slate-50 pt-5 pb-10 sm:pt-7 sm:pb-14 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-            
-            {/* Right Column: Hero Content & Deals (150 NIS & Multifocal 800-1200 NIS) */}
-            <div className="lg:col-span-6 space-y-4 text-right">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-[#EDF7E5] border border-[#B7E2A0] text-[#3D861D] px-3 py-1 rounded-full text-xs font-black shadow-2xs">
-                <HeartHandshake className="w-4 h-4 text-[#4C9C29] shrink-0" />
-                <span>מיזם חברתי ללא פערי תיווך • לתושבי הצפון, הגליל והמרכז</span>
-              </div>
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#F2F8ED] via-white to-slate-50 pt-5 pb-12 sm:pt-7 sm:pb-16 border-b border-slate-200">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          
+          {/* 1. Centered Header & Motivation */}
+          <div className="text-center space-y-3 max-w-3xl mx-auto mb-6">
+            <div className="inline-flex items-center gap-2 bg-[#EDF7E5] border border-[#B7E2A0] text-[#3D861D] px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-black shadow-2xs">
+              <HeartHandshake className="w-4 h-4 text-[#4C9C29] shrink-0" />
+              <span>תרמנו לחיילים – עכשיו מגיע לכולם! • מיזם חברתי ללא פערי תיווך</span>
+            </div>
 
-              {/* Main Headline */}
-              <div className="space-y-1.5">
-                <h1 className="text-2xl sm:text-4xl lg:text-[42px] font-black text-slate-950 font-['Rubik'] leading-[1.15] tracking-tight">
-                  תרמנו לחיילים –
-                  <span className="block text-[#0047AB] mt-0.5">
-                    עכשיו מגיע לכולם!
-                  </span>
-                </h1>
-                <p className="text-base sm:text-lg text-slate-700 font-bold leading-snug">
-                  משקפי ראייה ומולטיפוקל איכותיים במחירי עלות הוגנים
-                  <span className="text-emerald-700 block sm:inline"> + בדיקת ראייה מקצועית בחינם!</span>
+            <h1 className="text-2xl sm:text-4xl lg:text-[40px] font-black text-slate-950 font-['Rubik'] leading-[1.2] tracking-tight">
+              קביעת תור לבדיקת ראייה מקצועית והתאמת משקפיים
+              <span className="block text-[#0047AB] mt-1">
+                באמירים (15 דק' בלבד מכרמיאל)
+              </span>
+            </h1>
+
+            <p className="text-sm sm:text-base text-slate-700 font-bold max-w-2xl mx-auto leading-relaxed">
+              בדיקת ראייה יסודית ללא עלות ע"י אופטומטריסטית מורשית (אביגיל) • בחרו מועד פנוי ביומן לשריין את המבצע:
+            </p>
+          </div>
+
+          {/* 2. Surrounding Framing Deals (Directly Above & Around the Booking Module) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-4xl mx-auto mb-5">
+            {/* Offer 1: Full Glasses 150 NIS */}
+            <div className="bg-blue-50/90 border-2 border-[#0047AB]/40 rounded-2xl p-3.5 sm:p-4 shadow-xs relative flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-xl bg-[#0047AB] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Glasses className="w-6 h-6" />
+              </div>
+              <div className="text-right flex-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black text-[#0047AB] uppercase">משקפי ראייה מלאים</span>
+                  <span className="bg-[#0047AB] text-white text-[10px] font-black px-2 py-0.5 rounded-md">מבצע הדגל</span>
+                </div>
+                <div className="flex items-baseline gap-1 my-0.5">
+                  <span className="text-2xl font-black text-slate-950 font-['Rubik']">₪150</span>
+                  <span className="text-xs font-extrabold text-blue-800">בלבד!</span>
+                  <span className="text-[11px] text-slate-600 mr-1.5">• מסגרת + עדשות + ציפויים</span>
+                </div>
+                <p className="text-[11px] text-slate-600 leading-tight">
+                  כולל בדיקת ראייה חינם, ציפוי נגד שריטות ואנטי-רפלקס ללא תוספת מחיר.
                 </p>
-              </div>
-
-              {/* DUAL DEALS BANNER: 150 ₪ & MULTIFOCAL 800-1,200 ₪ */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                {/* Deal 1: 150 NIS Full Glasses */}
-                <div className="bg-blue-50/90 border-2 border-[#0047AB]/40 rounded-2xl p-3.5 shadow-xs relative overflow-hidden">
-                  <div className="absolute top-2 left-2 bg-[#0047AB] text-white text-[10px] font-black px-2 py-0.5 rounded-md">
-                    מבצע הדגל
-                  </div>
-                  <div className="text-xs font-black text-[#0047AB] uppercase">משקפי ראייה מלאים</div>
-                  <div className="flex items-baseline gap-1 my-1">
-                    <span className="text-3xl font-black text-slate-950 font-['Rubik']">₪150</span>
-                    <span className="text-xs font-extrabold text-blue-800">בלבד!</span>
-                  </div>
-                  <p className="text-[12px] text-slate-700 leading-tight">
-                    <strong>מסגרת מלאה + עדשות איכותיות</strong> כולל ציפוי אנטי-רפלקס ונגד שריטות ובדיקה חינם.
-                  </p>
-                </div>
-
-                {/* Deal 2: MULTIFOCAL 800-1,200 NIS (Explicit user requirement) */}
-                <div className="bg-emerald-50/90 border-2 border-[#62B83E] rounded-2xl p-3.5 shadow-xs relative overflow-hidden">
-                  <div className="absolute top-2 left-2 bg-[#4C9C29] text-white text-[10px] font-black px-2 py-0.5 rounded-md">
-                    חיסכון ענק
-                  </div>
-                  <div className="text-xs font-black text-[#38761D] uppercase">משקפי מולטיפוקל פרימיום</div>
-                  <div className="flex items-baseline gap-1 my-1">
-                    <span className="text-2xl sm:text-3xl font-black text-emerald-900 font-['Rubik']">800 - 1,200 ₪</span>
-                    <span className="text-xs font-bold text-slate-500 line-through mr-1">4,000 ₪</span>
-                  </div>
-                  <p className="text-[12px] text-slate-700 leading-tight">
-                    <strong>במקום 4,000 ₪ ברשתות!</strong> עדשות מולטיפוקל מתקדמות עם שדה ראייה רחב ומסגרת איכותית.
-                  </p>
-                </div>
-              </div>
-
-              {/* Image & Quick Badges preview strip */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-3 shadow-2xs flex items-center gap-3">
-                <img
-                  src={campaignGlassesImg}
-                  alt="משקפיים האופטיקה הטובה"
-                  className="w-20 h-20 rounded-xl object-cover border border-slate-200 shrink-0"
-                />
-                <div className="space-y-1 text-xs">
-                  <div className="flex flex-wrap items-center gap-1.5 font-bold text-slate-800">
-                    <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md">✓ בדיקה חינם</span>
-                    <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md">✓ ללא אותיות קטנות</span>
-                    <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md">✓ התאמה אישית</span>
-                  </div>
-                  <p className="text-slate-600 text-[11px] leading-snug">
-                    בדיקות ע"י אופטומטריסטית מורשית באווירה גלילית רגועה. מצפה מנחם 86, אמירים (15 דק' מכרמיאל).
-                  </p>
-                </div>
-              </div>
-
-              {/* Working Hours Notice directly above fold */}
-              <div className="flex items-center gap-2 text-xs text-slate-700 bg-slate-100/90 px-3.5 py-2 rounded-xl border border-slate-200">
-                <Clock className="w-4 h-4 text-[#0047AB] shrink-0" />
-                <span>
-                  <strong>שעות פעילות לבדיקות: </strong>
-                  ימים ד', ה': 12:00-18:00 | יום ו': 10:00-14:00 (בתיאום מראש בלבד)
-                </span>
               </div>
             </div>
 
-            {/* ============================================================= */}
-            {/* Left Column: DIRECTLY ABOVE THE FOLD BOOKING & CALLBACK CARD  */}
-            {/* ============================================================= */}
-            <div id="booking-above-fold-card" className="lg:col-span-6">
-              <div className="bg-white rounded-3xl border-2 border-[#0047AB] shadow-2xl overflow-hidden">
-                
-                {/* Card Header with Tabs (Callback vs Calendar) */}
-                <div className="bg-gradient-to-r from-slate-900 via-[#0047AB] to-slate-900 text-white p-3.5 sm:p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2 font-black text-sm sm:text-base font-['Rubik']">
-                      <Calendar className="w-5 h-5 text-amber-300 shrink-0" />
-                      <span>קביעת תור מהירה – ללא עלות</span>
-                    </div>
-                    <span className="bg-[#62B83E] text-white text-[11px] font-black px-2 py-0.5 rounded-full">
-                      מיידי וללא התחייבות
-                    </span>
+            {/* Offer 2: Multifocal 800 - 1,200 NIS */}
+            <div className="bg-emerald-50/90 border-2 border-[#62B83E] rounded-2xl p-3.5 sm:p-4 shadow-xs relative flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-xl bg-[#4C9C29] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Layers className="w-6 h-6" />
+              </div>
+              <div className="text-right flex-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black text-[#38761D] uppercase">משקפי מולטיפוקל פרימיום</span>
+                  <span className="bg-[#4C9C29] text-white text-[10px] font-black px-2 py-0.5 rounded-md">במקום 4,000 ₪!</span>
+                </div>
+                <div className="flex items-baseline gap-1 my-0.5">
+                  <span className="text-2xl font-black text-emerald-950 font-['Rubik']">800 - 1,200 ₪</span>
+                  <span className="text-[11px] text-slate-500 line-through mr-1">4,000 ₪ ברשתות</span>
+                </div>
+                <p className="text-[11px] text-slate-600 leading-tight">
+                  עדשות מתקדמות עם שדה ראייה רחב, התאמת PD בדיוק מילימטרי ואחריות הסתגלות.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Location and Hours Quick Bar framing the card */}
+          <div className="max-w-4xl mx-auto mb-4 bg-white border border-slate-200 rounded-2xl p-3 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs text-slate-700">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-red-500 shrink-0" />
+              <span>
+                <strong>מיקום: </strong>
+                מצפה מנחם 86, אמירים (15 דק' מכרמיאל, 20 דק' מצפת • חניה חופשית מול הדלת)
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-[#0047AB] shrink-0" />
+              <span>
+                <strong>ימי פעילות: </strong>
+                ד', ה' (12:00-18:00) | יום ו' (10:00-14:00)
+              </span>
+            </div>
+
+            <a
+              href={`tel:${BUSINESS_INFO.phoneAvigail}`}
+              className="inline-flex items-center gap-1 text-[#0047AB] hover:underline font-bold"
+            >
+              <Phone className="w-3.5 h-3.5 text-emerald-600" />
+              <span>בירורים: {BUSINESS_INFO.phoneAvigail}</span>
+            </a>
+          </div>
+
+          {/* ============================================================= */}
+          {/* 3. THE CENTRAL BOOKING CARD (Focal Point of the page)         */}
+          {/* ============================================================= */}
+          <div id="booking-above-fold-card" className="max-w-4xl mx-auto">
+            <div className="bg-white rounded-3xl border-2 border-[#0047AB] shadow-2xl overflow-hidden">
+              
+              {/* Card Header with Tabs: Calendar is DEFAULT, with Callback option */}
+              <div className="bg-gradient-to-r from-slate-900 via-[#0047AB] to-slate-900 text-white p-3.5 sm:p-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3.5">
+                  <div className="flex items-center gap-2 font-black text-base sm:text-lg font-['Rubik']">
+                    <Calendar className="w-5 h-5 text-amber-300 shrink-0" />
+                    <span>קביעת תור מהירה – ללא עלות וללא התחייבות</span>
                   </div>
-
-                  {/* Mode Selector Tabs */}
-                  <div className="grid grid-cols-2 gap-1.5 bg-slate-950/40 p-1 rounded-xl">
-                    <button
-                      id="tab-callback-mode-btn"
-                      onClick={() => setBookingMode('callback')}
-                      className={`py-2 px-3 rounded-lg text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                        bookingMode === 'callback'
-                          ? 'bg-[#62B83E] text-white shadow-xs'
-                          : 'text-slate-200 hover:text-white hover:bg-white/10'
-                      }`}
-                    >
-                      <Phone className="w-3.5 h-3.5" />
-                      <span>חזרו אליי לקביעת תור</span>
-                    </button>
-
-                    <button
-                      id="tab-calendar-mode-btn"
-                      onClick={() => setBookingMode('calendar')}
-                      className={`py-2 px-3 rounded-lg text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                        bookingMode === 'calendar'
-                          ? 'bg-[#0047AB] text-white shadow-xs border border-blue-400/40'
-                          : 'text-slate-200 hover:text-white hover:bg-white/10'
-                      }`}
-                    >
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>בחירת מועד ביומן</span>
-                    </button>
+                  <div className="flex items-center gap-2">
+                    <span className="bg-[#62B83E] text-white text-xs font-black px-2.5 py-0.5 rounded-full shadow-2xs">
+                      מיידי ביומן • בדיקה חינם
+                    </span>
                   </div>
                 </div>
 
-                {/* TAB 1: Fast Name & Phone Callback Form */}
-                {bookingMode === 'callback' && (
-                  <div className="p-4 sm:p-6 bg-white space-y-4">
-                    {submitSuccess ? (
-                      <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-6 text-center space-y-3 animate-in fade-in">
-                        <div className="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center mx-auto shadow-md">
-                          <Check className="w-6 h-6 stroke-[3]" />
-                        </div>
-                        <h3 className="text-lg font-black text-emerald-950 font-['Rubik']">
-                          הפנייה התקבלה בהצלחה!
-                        </h3>
-                        <p className="text-xs sm:text-sm text-emerald-900 leading-relaxed">
-                          תודה {leadName || ''}! נחזור אליך בהקדם לטלפון <strong>{leadPhone}</strong> כדי לתאם עבורך את השעה הנוחה ביותר לבדיקה והתאמת משקפיים באמירים.
-                        </p>
-                        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2">
-                          <a
-                            href={`https://wa.me/${BUSINESS_INFO.phoneAvigailRaw}?text=${encodeURIComponent(
-                              `שלום, השארתי פרטים עבור ${leadInterest === 'multifocal' ? 'מולטיפוקל' : 'משקפיים ב-150 ₪'}. שמי ${leadName}.`
-                            )}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs transition-colors"
-                          >
-                            <MessageCircle className="w-4 h-4" />
-                            <span>לפנייה מיידית בוואטסאפ</span>
-                          </a>
-                          <button
-                            onClick={() => {
-                              setSubmitSuccess(false);
-                              setLeadPhone('');
-                              setLeadName('');
-                            }}
-                            className="text-xs text-slate-500 hover:text-slate-800 underline cursor-pointer py-1 px-2"
-                          >
-                            שליחת פנייה נוספת
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <form onSubmit={handleLeadSubmit} className="space-y-3.5 text-right">
-                        <div className="text-slate-700 text-xs sm:text-sm leading-relaxed">
-                          השאירו שם וטלפון, ואביגיל או צביקה יחזרו אליכם בהקדם לתיאום מועד בדיקה שנוח לכם:
-                        </div>
+                {/* Mode Selector Tabs: Calendar is DEFAULT */}
+                <div className="grid grid-cols-2 gap-2 bg-slate-950/40 p-1.5 rounded-xl border border-white/10">
+                  <button
+                    id="tab-calendar-mode-btn"
+                    onClick={() => setBookingMode('calendar')}
+                    className={`py-2.5 px-3 rounded-lg text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      bookingMode === 'calendar'
+                        ? 'bg-[#0047AB] text-white shadow-md border border-blue-300/40'
+                        : 'text-slate-200 hover:text-white hover:bg-white/10'
+                    }`}
+                  >
+                    <Calendar className="w-4 h-4 text-amber-300" />
+                    <span>📅 בחירת מועד ביומן (מומלץ)</span>
+                  </button>
 
+                  <button
+                    id="tab-callback-mode-btn"
+                    onClick={() => setBookingMode('callback')}
+                    className={`py-2.5 px-3 rounded-lg text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      bookingMode === 'callback'
+                        ? 'bg-[#62B83E] text-white shadow-md'
+                        : 'text-slate-200 hover:text-white hover:bg-white/10'
+                    }`}
+                  >
+                    <Phone className="w-4 h-4" />
+                    <span>📞 חזרו אליי לקביעת תור</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* TAB 1 (DEFAULT): Embedded Interactive Cal.com Calendar */}
+              {bookingMode === 'calendar' && (
+                <div className="p-3 sm:p-5 bg-white space-y-3.5">
+                  <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-[#0047AB] shrink-0" />
+                      <span className="font-bold text-slate-800">
+                        מועדי הבדיקות הקרובים פתוחים לבחירה. בחרו יום ושעה וקבלו אישור מיידי ללא תשלום מראש:
+                      </span>
+                    </div>
+                    <a
+                      href={calUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[#0047AB] hover:underline font-extrabold text-xs"
+                    >
+                      <span>פתיחת יומן במסך מלא</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+
+                  {/* Calendar iframe */}
+                  <div className="relative w-full bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 h-[480px] sm:h-[530px]">
+                    {!iframeLoaded && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-slate-50 z-10">
+                        <div className="w-9 h-9 border-3 border-[#0047AB] border-t-transparent rounded-full animate-spin mb-3"></div>
+                        <p className="font-bold text-slate-800 text-sm">טוען את היומן של האופטיקה...</p>
+                        <span className="text-xs text-slate-500 mt-1">ימי בדיקות: רביעי, חמישי ושישי</span>
+                      </div>
+                    )}
+                    <iframe
+                      id="cal-com-above-fold-iframe"
+                      src={calEmbedUrl}
+                      title="קביעת תור ביומן Cal.com"
+                      className="w-full h-full border-0"
+                      onLoad={() => setIframeLoaded(true)}
+                    />
+                  </div>
+
+                  {/* Footer actions underneath calendar */}
+                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2 text-slate-700 font-medium">
+                      <span>לא מוצאים שעה שנוחה לכם?</span>
+                      <button
+                        onClick={() => setBookingMode('callback')}
+                        className="text-[#62B83E] font-black hover:underline cursor-pointer flex items-center gap-1"
+                      >
+                        <span>השאירו שם וטלפון ונחזור אליכם לתיאום אישי ←</span>
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <a
+                        href={BUSINESS_INFO.wazeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 font-bold"
+                      >
+                        <Navigation className="w-3.5 h-3.5 fill-current" />
+                        <span>ניווט ב-Waze</span>
+                      </a>
+                      <span className="text-slate-300">|</span>
+                      <a
+                        href={`tel:${BUSINESS_INFO.phoneAvigail}`}
+                        className="inline-flex items-center gap-1 text-slate-700 hover:text-slate-900 font-bold"
+                      >
+                        <Phone className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>שיחה לאביגיל: {BUSINESS_INFO.phoneAvigail}</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 2: Fast Name & Phone Callback Form */}
+              {bookingMode === 'callback' && (
+                <div className="p-4 sm:p-7 bg-white space-y-4">
+                  {submitSuccess ? (
+                    <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-6 sm:p-8 text-center space-y-3 animate-in fade-in">
+                      <div className="w-14 h-14 rounded-full bg-emerald-500 text-white flex items-center justify-center mx-auto shadow-md">
+                        <Check className="w-7 h-7 stroke-[3]" />
+                      </div>
+                      <h3 className="text-xl font-black text-emerald-950 font-['Rubik']">
+                        הפנייה התקבלה בהצלחה!
+                      </h3>
+                      <p className="text-sm text-emerald-900 leading-relaxed max-w-md mx-auto">
+                        תודה {leadName || ''}! נחזור אליך בהקדם לטלפון <strong>{leadPhone}</strong> כדי לתאם עבורך את השעה הנוחה ביותר לבדיקה והתאמת משקפיים באמירים.
+                      </p>
+                      <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+                        <a
+                          href={`https://wa.me/${BUSINESS_INFO.phoneAvigailRaw}?text=${encodeURIComponent(
+                            `שלום, השארתי פרטים עבור ${leadInterest === 'multifocal' ? 'מולטיפוקל' : 'משקפיים ב-150 ₪'}. שמי ${leadName}.`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-xs transition-colors"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                          <span>לפנייה ישירה בוואטסאפ</span>
+                        </a>
+                        <button
+                          onClick={() => {
+                            setSubmitSuccess(false);
+                            setLeadPhone('');
+                            setLeadName('');
+                          }}
+                          className="text-xs text-slate-500 hover:text-slate-800 underline cursor-pointer py-1 px-2"
+                        >
+                          שליחת פנייה נוספת
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleLeadSubmit} className="space-y-4 text-right max-w-2xl mx-auto">
+                      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-slate-700 text-xs sm:text-sm leading-relaxed flex items-center justify-between">
+                        <span>השאירו שם וטלפון, ונחזור אליכם בהקדם לתיאום מועד שנוח לכם:</span>
+                        <button
+                          type="button"
+                          onClick={() => setBookingMode('calendar')}
+                          className="text-[#0047AB] font-bold hover:underline cursor-pointer shrink-0 mr-2 text-xs"
+                        >
+                          מעדיפים לבחור ביומן? ←
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         {/* Name Input */}
                         <div>
                           <label className="block text-xs font-bold text-slate-800 mb-1">
@@ -423,155 +512,128 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                             <Phone className="w-4 h-4 text-slate-400 absolute right-3.5 top-3 pointer-events-none" />
                           </div>
                         </div>
+                      </div>
 
-                        {/* Interest Selection (Radio/Chips) */}
-                        <div>
-                          <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                            במה אתם מעוניינים?
-                          </label>
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            <button
-                              type="button"
-                              onClick={() => setLeadInterest('glasses150')}
-                              className={`p-2.5 rounded-xl border text-xs font-bold text-right transition-all cursor-pointer ${
-                                leadInterest === 'glasses150'
-                                  ? 'bg-blue-50 border-[#0047AB] text-[#0047AB] shadow-2xs'
-                                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
-                              }`}
-                            >
-                              <span className="block font-black text-sm text-slate-900">150 ₪</span>
-                              <span>משקפי ראייה מלאים</span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => setLeadInterest('multifocal')}
-                              className={`p-2.5 rounded-xl border text-xs font-bold text-right transition-all cursor-pointer ${
-                                leadInterest === 'multifocal'
-                                  ? 'bg-emerald-50 border-[#62B83E] text-[#38761D] shadow-2xs'
-                                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
-                              }`}
-                            >
-                              <span className="block font-black text-sm text-emerald-900">800-1,200 ₪</span>
-                              <span>משקפי מולטיפוקל</span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => setLeadInterest('both')}
-                              className={`p-2.5 rounded-xl border text-xs font-bold text-right transition-all cursor-pointer ${
-                                leadInterest === 'both'
-                                  ? 'bg-amber-50 border-amber-500 text-amber-900 shadow-2xs'
-                                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
-                              }`}
-                            >
-                              <span className="block font-black text-sm text-slate-900">גם וגם</span>
-                              <span>מתלבט / בדיקה חינם</span>
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Optional Notes */}
-                        <div>
-                          <label className="block text-xs font-bold text-slate-800 mb-1">
-                            הערה / יום מועדף לבדיקה (רביעי, חמישי או שישי)
-                          </label>
-                          <input
-                            type="text"
-                            id="lead-notes-input"
-                            value={leadNotes}
-                            onChange={(e) => setLeadNotes(e.target.value)}
-                            placeholder="לדוגמה: יום חמישי אחה״צ, מספר קיים..."
-                            className="w-full bg-slate-50 border border-slate-300 rounded-xl py-2 px-3 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:border-[#0047AB] text-right"
-                          />
-                        </div>
-
-                        {/* Submit Button */}
-                        <button
-                          type="submit"
-                          id="submit-callback-lead-btn"
-                          disabled={isSubmitting}
-                          className="w-full inline-flex items-center justify-center gap-2 bg-[#62B83E] hover:bg-[#529e32] text-white font-black text-base py-3.5 px-6 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-50"
-                        >
-                          {isSubmitting ? (
-                            <span>שולח פנייה...</span>
-                          ) : (
-                            <>
-                              <Send className="w-4 h-4" />
-                              <span>חזרו אליי לקביעת תור (ללא תשלום)</span>
-                            </>
-                          )}
-                        </button>
-
-                        <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
-                          <span className="flex items-center gap-1">
-                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                            <span>פרטיכם שמורים ומאובטחים</span>
-                          </span>
+                      {/* Interest Selection (Radio/Chips) */}
+                      <div>
+                        <label className="block text-xs font-bold text-slate-800 mb-1.5">
+                          באיזה מבצע אתם מעוניינים?
+                        </label>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                           <button
                             type="button"
-                            onClick={() => setBookingMode('calendar')}
-                            className="text-[#0047AB] hover:underline cursor-pointer font-bold"
+                            onClick={() => setLeadInterest('glasses150')}
+                            className={`p-3 rounded-xl border text-xs font-bold text-right transition-all cursor-pointer ${
+                              leadInterest === 'glasses150'
+                                ? 'bg-blue-50 border-[#0047AB] text-[#0047AB] shadow-2xs'
+                                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                            }`}
                           >
-                            מעדיפים לבחור שעה ביומן? לחצו כאן
+                            <span className="block font-black text-sm text-slate-900">150 ₪</span>
+                            <span>משקפי ראייה מלאים</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setLeadInterest('multifocal')}
+                            className={`p-3 rounded-xl border text-xs font-bold text-right transition-all cursor-pointer ${
+                              leadInterest === 'multifocal'
+                                ? 'bg-emerald-50 border-[#62B83E] text-[#38761D] shadow-2xs'
+                                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                            }`}
+                          >
+                            <span className="block font-black text-sm text-emerald-900">800-1,200 ₪</span>
+                            <span>משקפי מולטיפוקל</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setLeadInterest('both')}
+                            className={`p-3 rounded-xl border text-xs font-bold text-right transition-all cursor-pointer ${
+                              leadInterest === 'both'
+                                ? 'bg-amber-50 border-amber-500 text-amber-900 shadow-2xs'
+                                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                            }`}
+                          >
+                            <span className="block font-black text-sm text-slate-900">גם וגם / ייעוץ</span>
+                            <span>בדיקת ראייה חינם</span>
                           </button>
                         </div>
-                      </form>
-                    )}
-                  </div>
-                )}
-
-                {/* TAB 2: Embedded Interactive Cal.com Calendar */}
-                {bookingMode === 'calendar' && (
-                  <div className="p-3 sm:p-4 bg-white space-y-3">
-                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-                      <div>
-                        <span className="font-bold text-slate-900 block">ימי פעילות לבדיקות ביומן:</span>
-                        <span className="text-slate-600">ימים ד', ה' (12:00-18:00) | יום ו' (10:00-14:00)</span>
                       </div>
-                      <a
-                        href={calUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[#0047AB] hover:underline font-bold text-xs"
-                      >
-                        <span>מסך מלא</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </div>
 
-                    <div className="relative w-full bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 h-[430px] sm:h-[480px]">
-                      {!iframeLoaded && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-slate-50 z-10">
-                          <div className="w-8 h-8 border-3 border-[#0047AB] border-t-transparent rounded-full animate-spin mb-3"></div>
-                          <p className="font-bold text-slate-800 text-xs">טוען את היומן של האופטיקה...</p>
-                        </div>
-                      )}
-                      <iframe
-                        id="cal-com-above-fold-iframe"
-                        src={calEmbedUrl}
-                        title="קביעת תור ביומן Cal.com"
-                        className="w-full h-full border-0"
-                        onLoad={() => setIframeLoaded(true)}
-                      />
-                    </div>
+                      {/* Optional Notes */}
+                      <div>
+                        <label className="block text-xs font-bold text-slate-800 mb-1">
+                          הערה / יום מועדף לבדיקה (רביעי, חמישי או שישי)
+                        </label>
+                        <input
+                          type="text"
+                          id="lead-notes-input"
+                          value={leadNotes}
+                          onChange={(e) => setLeadNotes(e.target.value)}
+                          placeholder="לדוגמה: יום חמישי אחה״צ, מספר קיים..."
+                          className="w-full bg-slate-50 border border-slate-300 rounded-xl py-2 px-3 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:border-[#0047AB] text-right"
+                        />
+                      </div>
 
-                    <div className="flex items-center justify-between text-xs text-slate-600 pt-1">
-                      <span>לא מוצאים שעה נוחה?</span>
+                      {/* Submit Button */}
                       <button
-                        onClick={() => setBookingMode('callback')}
-                        className="text-[#62B83E] font-bold hover:underline cursor-pointer"
+                        type="submit"
+                        id="submit-callback-lead-btn"
+                        disabled={isSubmitting}
+                        className="w-full inline-flex items-center justify-center gap-2 bg-[#62B83E] hover:bg-[#529e32] text-white font-black text-base py-3.5 px-6 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-50"
                       >
-                        השאירו שם וטלפון ונחזור אליכם ←
+                        {isSubmitting ? (
+                          <span>שולח פנייה...</span>
+                        ) : (
+                          <>
+                            <Send className="w-4 h-4" />
+                            <span>חזרו אליי לקביעת תור (ללא עלות)</span>
+                          </>
+                        )}
                       </button>
-                    </div>
-                  </div>
-                )}
 
-              </div>
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+                        <span className="flex items-center gap-1">
+                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>פרטיכם שמורים ומאובטחים</span>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setBookingMode('calendar')}
+                          className="text-[#0047AB] hover:underline cursor-pointer font-bold"
+                        >
+                          מעדיפים לבחור שעה ביומן? לחצו כאן
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              )}
+
             </div>
-
           </div>
+
+          {/* 4. Surrounding Reassurance Bar (Directly beneath the Central Card) */}
+          <div className="max-w-4xl mx-auto mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs font-bold text-slate-700">
+            <div className="bg-white border border-slate-200 rounded-xl p-2.5 shadow-2xs flex items-center justify-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>אופטומטריסטית מורשית</span>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-2.5 shadow-2xs flex items-center justify-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>בדיקת ראייה חינם</span>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-2.5 shadow-2xs flex items-center justify-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>ללא אותיות קטנות</span>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-2.5 shadow-2xs flex items-center justify-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>חניה חופשית במקום</span>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -629,18 +691,29 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                 </li>
               </ul>
 
-              <div className="pt-2">
+              <div className="pt-2 space-y-2">
                 <button
                   onClick={() => {
-                    setBookingMode('callback');
-                    setLeadInterest('glasses150');
+                    setBookingMode('calendar');
                     scrollToBooking();
                   }}
                   className="w-full inline-flex items-center justify-center gap-2 bg-[#0047AB] hover:bg-blue-800 text-white font-extrabold text-sm py-3 px-5 rounded-2xl shadow-xs transition-colors cursor-pointer"
                 >
-                  <span>השאירו פרטים למשקפיים ב-150 ₪</span>
-                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  <Calendar className="w-4 h-4" />
+                  <span>קביעת תור ביומן למשקפיים ב-150 ₪</span>
                 </button>
+                <div className="text-center">
+                  <button
+                    onClick={() => {
+                      setBookingMode('callback');
+                      setLeadInterest('glasses150');
+                      scrollToBooking();
+                    }}
+                    className="text-xs text-slate-600 hover:text-[#0047AB] font-bold underline cursor-pointer"
+                  >
+                    מעדיפים שנחזור אליכם טלפונית? השאירו פרטים ←
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -683,18 +756,29 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                 </li>
               </ul>
 
-              <div className="pt-2">
+              <div className="pt-2 space-y-2">
                 <button
                   onClick={() => {
-                    setBookingMode('callback');
-                    setLeadInterest('multifocal');
+                    setBookingMode('calendar');
                     scrollToBooking();
                   }}
                   className="w-full inline-flex items-center justify-center gap-2 bg-[#62B83E] hover:bg-[#529e32] text-white font-extrabold text-sm py-3 px-5 rounded-2xl shadow-md transition-colors cursor-pointer"
                 >
-                  <span>השאירו פרטים למולטיפוקל ב-800-1,200 ₪</span>
-                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  <Calendar className="w-4 h-4" />
+                  <span>קביעת תור ביומן למולטיפוקל (בדיקה חינם)</span>
                 </button>
+                <div className="text-center">
+                  <button
+                    onClick={() => {
+                      setBookingMode('callback');
+                      setLeadInterest('multifocal');
+                      scrollToBooking();
+                    }}
+                    className="text-xs text-slate-600 hover:text-[#38761D] font-bold underline cursor-pointer"
+                  >
+                    מעדיפים שנחזור אליכם טלפונית? השאירו פרטים ←
+                  </button>
+                </div>
               </div>
             </div>
           </div>
