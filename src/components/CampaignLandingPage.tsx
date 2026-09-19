@@ -207,15 +207,15 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
       {/* ========================================================================= */}
       {/* ABOVE THE FOLD HERO: Centered Booking Focal Point Framed by Deals & Info */}
       {/* ========================================================================= */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#F2F8ED] via-white to-slate-50 pt-3.5 pb-10 sm:pt-5 sm:pb-14 border-b border-slate-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-4">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#F2F8ED] via-white to-slate-50 pt-2 pb-6 sm:pt-3 sm:pb-8 border-b border-slate-200">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-2.5 sm:space-y-3">
           
           {/* 1. Header Banner: 100% Focused on Scheduling an Appointment */}
-          <div className="text-center space-y-1.5 max-w-2xl mx-auto">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-950 font-['Rubik'] leading-tight tracking-tight">
+          <div className="text-center space-y-1 max-w-2xl mx-auto">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-950 font-['Rubik'] leading-tight tracking-tight">
               לוח קביעת תורים לבדיקת ראייה והתאמת משקפיים
             </h1>
-            <p className="text-sm sm:text-base text-slate-600 font-medium">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium">
               בחרו יום ושעה ביומן – הבדיקה ללא עלות וללא התחייבות
             </p>
           </div>
@@ -224,28 +224,28 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
           {/* 2. THE CENTRAL BOOKING BOARD (Right at the head of the page)  */}
           {/* ============================================================= */}
           <div id="booking-above-fold-card" className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-3xl border-2 border-[#0047AB] shadow-2xl overflow-hidden">
+            <div className="bg-white rounded-3xl border-2 border-[#0047AB] shadow-xl overflow-hidden">
               
               {/* Card Header with Tabs: Calendar is DEFAULT, with Callback option */}
-              <div className="bg-gradient-to-r from-slate-900 via-[#0047AB] to-slate-900 text-white p-3.5 sm:p-5">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3.5">
-                  <div className="flex items-center gap-2 font-black text-base sm:text-lg font-['Rubik']">
-                    <Calendar className="w-5 h-5 text-amber-300 shrink-0" />
+              <div className="bg-gradient-to-r from-slate-900 via-[#0047AB] to-slate-900 text-white p-2.5 sm:p-3.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2 sm:mb-2.5">
+                  <div className="flex items-center gap-2 font-black text-sm sm:text-base font-['Rubik']">
+                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300 shrink-0" />
                     <span>קביעת תור מהירה – ללא עלות וללא התחייבות</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="bg-[#62B83E] text-white text-xs font-black px-2.5 py-0.5 rounded-full shadow-2xs">
+                    <span className="bg-[#62B83E] text-white text-[11px] sm:text-xs font-black px-2.5 py-0.5 rounded-full shadow-2xs">
                       מיידי ביומן • בדיקה חינם
                     </span>
                   </div>
                 </div>
 
                 {/* Mode Selector Tabs: Calendar is DEFAULT */}
-                <div className="grid grid-cols-2 gap-2 bg-slate-950/40 p-1.5 rounded-xl border border-white/10">
+                <div className="grid grid-cols-2 gap-2 bg-slate-950/40 p-1 sm:p-1.5 rounded-xl border border-white/10">
                   <button
                     id="tab-calendar-mode-btn"
                     onClick={() => setBookingMode('calendar')}
-                    className={`py-2.5 px-3 rounded-lg text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                    className={`py-2 px-3 rounded-lg text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all cursor-pointer ${
                       bookingMode === 'calendar'
                         ? 'bg-[#0047AB] text-white shadow-md border border-blue-300/40'
                         : 'text-slate-200 hover:text-white hover:bg-white/10'
@@ -258,7 +258,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   <button
                     id="tab-callback-mode-btn"
                     onClick={() => setBookingMode('callback')}
-                    className={`py-2.5 px-3 rounded-lg text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                    className={`py-2 px-3 rounded-lg text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                       bookingMode === 'callback'
                         ? 'bg-[#62B83E] text-white shadow-md'
                         : 'text-slate-200 hover:text-white hover:bg-white/10'
@@ -272,8 +272,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
 
               {/* TAB 1 (DEFAULT): Embedded Interactive Cal.com Calendar */}
               {bookingMode === 'calendar' && (
-                <div className="p-3 sm:p-5 bg-white space-y-3.5">
-                  <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="p-2.5 sm:p-4 bg-white space-y-2.5">
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-2 sm:p-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-[#0047AB] shrink-0" />
                       <span className="font-bold text-slate-800">
@@ -292,7 +292,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   </div>
 
                   {/* Day Picker Pills: Select Clinic Days Starting from Earliest Open Hour */}
-                  <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                  <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
                     <span className="text-xs font-bold text-slate-700">ימי בדיקות קרובים:</span>
                     {upcomingDays.map((dayOpt) => {
                       const isSelected = selectedDate === dayOpt.date;
@@ -304,7 +304,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                             setSelectedDate(dayOpt.date);
                             setIframeLoaded(false);
                           }}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                          className={`px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                             isSelected
                               ? 'bg-[#0047AB] text-white shadow-sm ring-2 ring-[#0047AB]/30'
                               : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
@@ -326,13 +326,13 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     })}
                   </div>
 
-                  {/* Calendar iframe */}
-                  <div className="relative w-full bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 h-[580px] sm:h-[660px]">
+                  {/* Calendar iframe: Exact height to eliminate wasted space at the bottom and slight zoom/scaling */}
+                  <div className="relative w-full bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 h-[470px] sm:h-[485px]">
                     {!iframeLoaded && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-slate-50 z-10">
-                        <div className="w-9 h-9 border-3 border-[#0047AB] border-t-transparent rounded-full animate-spin mb-3"></div>
+                        <div className="w-8 h-8 border-3 border-[#0047AB] border-t-transparent rounded-full animate-spin mb-2"></div>
                         <p className="font-bold text-slate-800 text-sm">טוען את יומן הבדיקות...</p>
-                        <span className="text-xs text-slate-500 mt-1">
+                        <span className="text-xs text-slate-500 mt-0.5">
                           היומן נפתח בשעה הראשונה הזמינה לבחירה
                         </span>
                       </div>
@@ -342,12 +342,13 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                       src={calEmbedUrl}
                       title="קביעת תור ביומן Cal.com"
                       className="w-full h-full border-0"
+                      style={{ zoom: 0.94 }}
                       onLoad={() => setIframeLoaded(true)}
                     />
                   </div>
 
                   {/* Footer actions underneath calendar */}
-                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 sm:p-3 flex flex-wrap items-center justify-between gap-2.5 text-xs">
                     <div className="flex items-center gap-2 text-slate-700 font-medium">
                       <span>לא מוצאים שעה שנוחה לכם?</span>
                       <button
