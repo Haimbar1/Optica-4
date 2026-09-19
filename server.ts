@@ -419,6 +419,106 @@ app.post('/api/bot/whatsapp', async (req, res) => {
   });
 });
 
+// Helper to export Lead to SmartEsek CRM
+async function exportLeadToSmartEsek(lead: {
+  name: string;
+  phone: string;
+  source?: string;
+  campaign?: string;
+  message?: string;
+}) {
+  const leadKey = process.env.SMARTESEK_LEAD_KEY || '1234512345';
+  const crmUrl = 'https://crm.smartesek.com/api/public/lead';
+
+  const payload = {
+    name: lead.name || 'פנייה מאתר האינטרנט',
+    phone: lead.phone || '',
+    source: lead.source || 'אתר',
+    campaign: lead.campaign || '',
+    message: lead.message || '',
+  };
+
+  console.log('\n================== [CRM LEAD EXPORT START] ==================');
+  console.log('⏰ זמן שליחה:', new Date().toLocaleString('he-IL'));
+  console.log('🌐 כתובת יעד (URL):', crmUrl);
+  console.log('🔑 Headers:', { 'Content-Type': 'application/json', 'X-Lead-Key': leadKey });
+  console.log('📦 פרטים שנשלחו (Payload):', JSON.stringify(payload, null, 2));
+
+  try {
+    const crmResponse = await fetch(crmUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Lead-Key': leadKey,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const status = crmResponse.status;
+    const rawText = await crmResponse.text();
+    let responseData: any = rawText;
+    try {
+      responseData = JSON.parse(rawText);
+    } catch {
+      responseData = rawText;
+    }
+
+    if (crmResponse.ok) {
+      console.log(`✅ [CRM LEAD EXPORT SUCCESS] הליד נקלט בהצלחה ב-SmartEsek CRM! (סטטוס: ${status})`);
+      console.log('📥 תשובה שהתקבלה מה-CRM:', responseData);
+      console.log('================== [CRM LEAD EXPORT END] ==================\n');
+
+      return {
+        success: true,
+        status,
+        sent: payload,
+        response: responseData,
+      };
+    } else {
+      const errorReason =
+        typeof responseData === 'object' && responseData?.error
+          ? responseData.error
+          : typeof responseData === 'string' && responseData
+          ? responseData
+          : `HTTP ${status}`;
+
+      console.error(`❌ [CRM LEAD EXPORT FAILED] שליחת הליד ל-SmartEsek CRM נכשלה! (סטטוס: ${status})`);
+      console.error(`⚠️ סיבת הכישלון (למה נכשל): ${errorReason}`);
+      console.error('📥 תשובה מלאה שהתקבלה מהשרת:', responseData);
+      console.log('================== [CRM LEAD EXPORT END] ==================\n');
+
+      return {
+        success: false,
+        status,
+        sent: payload,
+        response: responseData,
+        error: errorReason,
+      };
+    }
+  } catch (err: any) {
+    console.error('💥 [CRM LEAD EXPORT ERROR] אירעה שגיאה/חריגה במהלך שליחת הליד:', err.message || err);
+    console.log('================== [CRM LEAD EXPORT END] ==================\n');
+
+    return {
+      success: false,
+      status: 500,
+      sent: payload,
+      error: err.message || 'שגיאת תקשורת עם שרת ה-CRM',
+    };
+  }
+}
+
+// Endpoint to export lead from frontend form
+app.post('/api/crm/lead', async (req, res) => {
+  const { name, phone, source, campaign, message } = req.body;
+  if (!phone) {
+    return res.status(400).json({ success: false, error: 'מספר טלפון הוא שדה חובה' });
+  }
+
+  const result = await exportLeadToSmartEsek({ name, phone, source, campaign, message });
+  return res.json(result);
+});
+
 // Appointment booking submission endpoint
 app.post('/api/appointments', async (req, res) => {
   const { fullName, phone, email, appointmentType, preferredDate, preferredTime, notes, sessionId, sessionID } = req.body;
@@ -467,6 +567,15 @@ app.post('/api/appointments', async (req, res) => {
       }),
     }).catch((err) => console.error('Webhook error:', err));
   } catch (e) {}
+
+  // Also export lead to SmartEsek CRM
+  exportLeadToSmartEsek({
+    name: fullName,
+    phone: phone,
+    source: 'מערכת תורים',
+    campaign: 'טופס תיאום תור באתר',
+    message: `סוג תור: ${appointmentType} | תאריך מבוקש: ${preferredDate || 'גמיש'} | שעה מבוקשת: ${preferredTime || 'גמיש'}${notes ? ` | הערות: ${notes}` : ''}`,
+  }).catch(() => null);
 
   res.json({
     success: true,

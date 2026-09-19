@@ -90,22 +90,77 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
         ? 'גם משקפי ראייה 150 ₪ וגם מולטיפוקל'
         : 'משקפי ראייה מלאים ב-150 ₪';
 
-    const payload = {
-      name: leadName.trim() || 'פנייה מדף קמפיין',
-      phone: leadPhone.trim(),
-      interest: interestLabel,
-      notes: leadNotes.trim(),
-      source: 'campaign_page_above_fold',
-      timestamp: new Date().toISOString(),
+    // 1. Extract UTM parameters from current URL
+    const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
+    const utmSource = urlParams.get('utm_source') || 'אתר';
+    const utmCampaign = urlParams.get('utm_campaign') || 'קמפיין משקפיים 150 ומולטיפוקל';
+
+    // 2. Build CRM Lead Payload matching SmartEsek specifications
+    const customerName = leadName.trim() || 'לקוח מדף נחיתה';
+    const customerPhone = leadPhone.trim();
+    const customerMessage = `מבצע: ${interestLabel}${leadNotes.trim() ? ` | הערה: ${leadNotes.trim()}` : ''}`;
+
+    const leadPayload = {
+      name: customerName,
+      phone: customerPhone,
+      source: utmSource,
+      campaign: utmCampaign,
+      message: customerMessage,
     };
 
+    // 3. Log all sent details to browser console
+    console.log('%c🚀 [SmartEsek CRM] מתחיל ייצוא ליד למערכת...', 'color: #0047AB; font-weight: bold; font-size: 13px;');
+    console.log('📋 כל הפרטים שנשלחים (Payload):', leadPayload);
+    console.log('🌐 כתובת היעד:', 'https://crm.smartesek.com/api/public/lead');
+    console.log('🔑 Headers:', {
+      'Content-Type': 'application/json',
+      'X-Lead-Key': '1234512345',
+    });
+    console.log('🏷️ פרמטרי UTM שחולצו:', {
+      utm_source: urlParams.get('utm_source') || '(לא נמצא ב-URL, נבחר: "אתר")',
+      utm_campaign: urlParams.get('utm_campaign') || '(לא נמצא ב-URL, נבחרה ברירת מחדל)',
+    });
+
     try {
-      // Fire to n8n webhook (silently catch if offline/sandbox)
+      // 4. Send Lead to CRM via backend proxy route
+      const crmRes = await fetch('/api/crm/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(leadPayload),
+      });
+
+      const crmData = await crmRes.json().catch(() => null);
+
+      if (crmData && crmData.success) {
+        console.log('%c✅ [SmartEsek CRM SUCCESS] הליד נשלח ונקלט בהצלחה!', 'color: #10B981; font-weight: bold; font-size: 13px;');
+        console.log('📥 סטטוס תגובה:', crmData.status);
+        console.log('📥 תשובה שהתקבלה מה-CRM:', crmData.response);
+        console.log('📦 כל הפרטים שנשלחו:', crmData.sent);
+      } else {
+        console.error('%c❌ [SmartEsek CRM FAILED] שליחת הליד ל-CRM נכשלה!', 'color: #EF4444; font-weight: bold; font-size: 13px;');
+        console.error('⚠️ סטטוס שגיאה:', crmData?.status || crmRes.status);
+        console.error('⚠️ מדוע לא הצליח (סיבת הכישלון):', crmData?.error || crmData?.response || 'תגובה לא תקינה משרת ה-CRM');
+        console.error('📥 תשובה מלאה שהתקבלה מהשרת:', crmData?.response || crmData);
+        console.error('📦 כל הפרטים שנשלחו:', leadPayload);
+      }
+    } catch (err: any) {
+      console.error('%c❌ [SmartEsek CRM ERROR] אירעה שגיאת תקשורת:', 'color: #EF4444; font-weight: bold; font-size: 13px;', err);
+      console.error('⚠️ סיבת השגיאה:', err.message || err);
+      console.error('📦 כל הפרטים שנשלחו:', leadPayload);
+    }
+
+    // 5. Fire to n8n webhook notification as well
+    try {
       if (BUSINESS_INFO.webBotWebhook) {
         await fetch(BUSINESS_INFO.webBotWebhook, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({
+            ...leadPayload,
+            interest: interestLabel,
+            rawNotes: leadNotes.trim(),
+            timestamp: new Date().toISOString(),
+          }),
         }).catch(() => null);
       }
     } catch {
