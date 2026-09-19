@@ -1,15 +1,16 @@
 import React, { useState } from 'react'; 
 import { Eye, Phone, MapPin, Menu, X, Calendar, MessageCircle, Navigation, Glasses, Clock } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/opticsData';
-import logoImg from '../assets/images/optics_logo_1786106308756.jpg';
+import logoImg from '../assets/images/logo_optics.svg';
 
 interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onOpenBooking: () => void;
+  onOpenCampaign?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenBooking }) => {
+export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenBooking, onOpenCampaign }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -123,6 +124,16 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
                 </button>
               );
             })}
+
+            {onOpenCampaign && (
+              <button
+                id="navbar-campaign-link-btn"
+                onClick={onOpenCampaign}
+                className="px-3.5 py-1.5 rounded-xl text-xs xl:text-sm font-black bg-gradient-to-r from-[#62B83E] to-[#4C9C29] text-white hover:opacity-95 shadow-xs flex items-center gap-1.5 cursor-pointer animate-pulse whitespace-nowrap"
+              >
+                <span>🔥 מבצע 150 ₪ (קמפיין)</span>
+              </button>
+            )}
           </nav>
 
           {/* CTA Action Buttons */}
@@ -180,6 +191,15 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
               </button>
             );
           })}
+          {onOpenCampaign && (
+            <button
+              id="mobile-scroll-campaign-btn"
+              onClick={onOpenCampaign}
+              className="px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-[#62B83E] to-[#4C9C29] text-white whitespace-nowrap cursor-pointer shadow-2xs"
+            >
+              🔥 מבצע 150 ₪
+            </button>
+          )}
         </div>
       </div>
 
@@ -187,6 +207,19 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-2 animate-in slide-in-from-top-2">
           <div className="grid gap-1 py-2">
+            {onOpenCampaign && (
+              <button
+                id="mobile-dropdown-campaign-btn"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenCampaign();
+                }}
+                className="w-full text-right px-4 py-3 rounded-xl text-base font-black bg-gradient-to-r from-[#EDF7E5] to-[#D8EECA] text-[#2C6A15] border border-[#B7E2A0] transition-colors cursor-pointer flex items-center justify-between"
+              >
+                <span>🔥 דף קמפיין: משקפיים ב-150 ₪ + בדיקה חינם</span>
+                <span className="text-xs bg-[#4C9C29] text-white px-2 py-0.5 rounded-full font-bold">מעבר</span>
+              </button>
+            )}
             {navItems.map((item) => {
               const isBooking = item.id === 'booking';
               const isActive = activeTab === item.id;

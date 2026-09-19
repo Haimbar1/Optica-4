@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Concentric Green Circles Favicon -->
+  <circle cx="32" cy="32" r="30" fill="#EDF7E5" />
+  <circle cx="32" cy="32" r="24" fill="#B7E2A0" />
+  <circle cx="32" cy="32" r="17" fill="#62B83E" />
+  <circle cx="32" cy="32" r="9" fill="#3D861D" />
+  <!-- Minimalist glasses icon in center for tiny favicon readability -->
+  <circle cx="26" cy="32" r="4.5" fill="none" stroke="#FFFFFF" stroke-width="1.8"/>
+  <circle cx="38" cy="32" r="4.5" fill="none" stroke="#FFFFFF" stroke-width="1.8"/>
+  <path d="M30.5 32 Q32 30.5 33.5 32" fill="none" stroke="#FFFFFF" stroke-width="1.8"/>
+</svg>

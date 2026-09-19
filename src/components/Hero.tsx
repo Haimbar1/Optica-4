@@ -1,15 +1,16 @@
 import React from 'react';
 import { Calendar, Navigation, Phone, ShieldCheck, Glasses, CheckCircle2, HeartHandshake, MapPin, Clock } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/opticsData';
-import logoImg from '../assets/images/optics_logo_1786106308756.jpg';
+import logoImg from '../assets/images/logo_optics.svg';
 
 interface HeroProps {
   onOpenBooking?: () => void;
   onOpenContact?: () => void;
   onNavigateToCatalog?: () => void;
+  onOpenCampaign?: () => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavigateToCatalog }) => {
+export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavigateToCatalog, onOpenCampaign }) => {
   const handleBookingClick = () => {
     if (onOpenBooking) {
       onOpenBooking();
@@ -33,6 +34,20 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
         <div className="grid lg:grid-cols-12 gap-10 items-center">
           {/* Main Hero Text (Left side in RTL) */}
           <div className="lg:col-span-7 space-y-6 text-right">
+            {onOpenCampaign && (
+              <div>
+                <button
+                  id="hero-campaign-banner-btn"
+                  onClick={onOpenCampaign}
+                  className="inline-flex items-center gap-2 bg-[#EDF7E5] border border-[#B7E2A0] text-[#3D861D] px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-2xs hover:bg-[#E3F2D8] transition-colors cursor-pointer group text-right"
+                >
+                  <span className="bg-[#4C9C29] text-white text-[10px] font-black px-2 py-0.5 rounded-full">מבצע פייסבוק</span>
+                  <span>תרמנו לחיילים – עכשיו מגיע לכולם! משקפיים מלאים ב-150 ₪ בלבד</span>
+                  <span className="text-xs font-black underline mr-1 group-hover:translate-x-0.5 transition-transform">לפרטים וקביעת תור ←</span>
+                </button>
+              </div>
+            )}
+
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#1A1A1A] font-['Rubik'] leading-none">
               רואים צלול,
               <span className="block text-[#0047AB] mt-2">

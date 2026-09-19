@@ -1,7 +1,7 @@
 import React from 'react';
 import { BUSINESS_INFO } from '../data/opticsData';
 import { Glasses, MapPin, Phone, Navigation, HeartHandshake, Clock, ShieldCheck, Lock, FileText } from 'lucide-react';
-import logoImg from '../assets/images/optics_logo_1786106308756.jpg';
+import logoImg from '../assets/images/logo_optics.svg';
 
 interface FooterProps {
   onOpenPrivacy?: () => void;
