@@ -90,7 +90,7 @@ export default function App() {
           onOpenPrivacy={handleOpenPrivacy}
           onOpenTerms={handleOpenTerms}
         />
-        <ChatWidget />
+        <ChatWidget isCampaignPage={true} />
         <LegalModal
           isOpen={isLegalModalOpen}
           onClose={() => setIsLegalModalOpen(false)}
@@ -125,7 +125,7 @@ export default function App() {
         onOpenPrivacy={handleOpenPrivacy}
         onOpenTerms={handleOpenTerms}
       />
-      <ChatWidget />
+      <ChatWidget isCampaignPage={false} />
 
       <LegalModal
         isOpen={isLegalModalOpen}

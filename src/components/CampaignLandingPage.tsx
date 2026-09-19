@@ -187,8 +187,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               onClick={triggerChatBot}
               className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition-colors cursor-pointer"
             >
-              <MessageCircle className="w-4 h-4 text-emerald-600" />
-              <span>שאלות בצ'אט</span>
+              <MessageCircle className="w-4 h-4 text-[#0047AB]" />
+              <span>בוט קביעת תור</span>
             </button>
 
             <button
@@ -1048,7 +1048,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               className="bg-white/20 hover:bg-white/30 text-white font-bold text-sm px-4 py-3 rounded-xl transition-colors cursor-pointer flex items-center gap-1.5"
             >
               <MessageCircle className="w-4 h-4 text-amber-300" />
-              <span>עזרה בצ'אט</span>
+              <span>בוט לקביעת תור</span>
             </button>
           </div>
         </div>

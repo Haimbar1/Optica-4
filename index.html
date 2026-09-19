@@ -28,6 +28,25 @@
     <script type="module" src="/src/main.tsx"></script>
 
     <!-- סקריפט בועת הצ'אט - SmartEsek Bot Widget -->
+    <script>
+      (function() {
+        var p = (window.location.pathname || '').toLowerCase();
+        var s = (window.location.search || '').toLowerCase();
+        var h = (window.location.hash || '').toLowerCase();
+        var isCampaign = (
+          p.indexOf('/campaign') !== -1 || p.indexOf('/lp') !== -1 || p.indexOf('/150') !== -1 || p.indexOf('/promo') !== -1 ||
+          s.indexOf('campaign') !== -1 || s.indexOf('lp') !== -1 || s.indexOf('150') !== -1 || s.indexOf('page=campaign') !== -1 ||
+          h.indexOf('campaign') !== -1 || h.indexOf('lp') !== -1 || h.indexOf('150') !== -1
+        );
+        if (isCampaign) {
+          window.OpticsBotConfig = {
+            botId: 'bot_generic_252',
+            title: 'האופטיקה הטובה - קביעת תור',
+            welcomeMessage: 'אני רואה שהגעת אלינו, לקבוע תור! 👋\nצריך עזרה?'
+          };
+        }
+      })();
+    </script>
     <script 
       src="https://app.smartesek.com/bot-widget.js" 
       data-bot-id="bot_generic_252"
