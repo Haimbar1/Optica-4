@@ -208,7 +208,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
       {/* ABOVE THE FOLD HERO: Centered Booking Focal Point Framed by Deals & Info */}
       {/* ========================================================================= */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#F2F8ED] via-white to-slate-50 pt-2 pb-6 sm:pt-3 sm:pb-8 border-b border-slate-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-2.5 sm:space-y-3">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 space-y-2.5 sm:space-y-3">
           
           {/* 1. Header Banner: Direct instruction */}
           <div className="text-center max-w-2xl mx-auto pb-0.5">
@@ -218,9 +218,79 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
           </div>
 
           {/* ============================================================= */}
-          {/* 2. THE CENTRAL BOOKING BOARD (Right at the head of the page)  */}
+          {/* 2. THE BOOKING BOARD (Flanked on sides on Desktop; Full width on Mobile) */}
           {/* ============================================================= */}
-          <div id="booking-above-fold-card" className="max-w-4xl mx-auto">
+          <div className="xl:flex xl:items-start xl:justify-center xl:gap-3.5">
+
+            {/* Desktop Right Side Column: Offer 1 + Location & Hours + 2 Trust Badges */}
+            <aside className="hidden xl:flex xl:flex-col xl:w-[260px] 2xl:w-[280px] xl:shrink-0 space-y-2.5">
+              {/* Offer 1: Full Glasses 150 NIS */}
+              <div className="bg-blue-50/95 border-2 border-[#0047AB]/40 rounded-2xl p-3 shadow-xs relative flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <div className="w-8 h-8 rounded-lg bg-[#0047AB] text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <Glasses className="w-4 h-4" />
+                  </div>
+                  <span className="bg-[#0047AB] text-white text-[10px] font-black px-2 py-0.5 rounded-md">מבצע הדגל</span>
+                </div>
+                <div>
+                  <span className="text-[11px] font-black text-[#0047AB] uppercase block">משקפי ראייה מלאים</span>
+                  <div className="flex items-baseline gap-1 my-0.5">
+                    <span className="text-2xl font-black text-slate-950 font-['Rubik']">₪150</span>
+                    <span className="text-xs font-extrabold text-blue-800">בלבד!</span>
+                  </div>
+                  <span className="text-[11px] text-slate-600 block mb-1">• מסגרת + עדשות + ציפויים</span>
+                  <p className="text-[11px] text-slate-600 leading-tight">
+                    כולל בדיקת ראייה חינם ע"י אופטומטריסט מוסמך, ציפוי נגד שריטות ואנטי-רפלקס ללא תוספת מחיר.
+                  </p>
+                </div>
+              </div>
+
+              {/* Location & Hours Card */}
+              <div className="bg-white border border-slate-200 rounded-2xl p-3 shadow-2xs space-y-2 text-xs text-slate-700">
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                  <div className="text-[11px] leading-tight">
+                    <strong className="text-slate-900 block font-bold mb-0.5">מיקום הקליניקה:</strong>
+                    <span className="text-slate-600">מצפה מנחם 86, אמירים</span>
+                    <span className="text-slate-500 block text-[10px]">(15 דק' מכרמיאל, 20 דק' מצפת)</span>
+                    <a
+                      href="https://waze.com/ul?q=מצפה%20מנחם%2086%20אמירים"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[#0047AB] font-bold hover:underline mt-1"
+                    >
+                      <Navigation className="w-3 h-3" />
+                      <span>ניווט ב-Waze</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div className="border-t border-slate-100 pt-2 flex items-start gap-2">
+                  <Clock className="w-4 h-4 text-[#0047AB] shrink-0 mt-0.5" />
+                  <div className="text-[11px] leading-tight">
+                    <strong className="text-slate-900 block font-bold mb-0.5">ימי פעילות:</strong>
+                    <span className="text-slate-600">ד', ה': 12:00-18:00</span>
+                    <br />
+                    <span className="text-slate-600">יום ו': 10:00-14:00</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Trust Badges: Group 1 */}
+              <div className="space-y-1.5">
+                <div className="bg-white border border-slate-200 rounded-xl p-2 shadow-2xs flex items-center gap-2 text-xs font-bold text-slate-700">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>אופטומטריסט מוסמך</span>
+                </div>
+                <div className="bg-white border border-slate-200 rounded-xl p-2 shadow-2xs flex items-center gap-2 text-xs font-bold text-slate-700">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>בדיקת ראייה חינם</span>
+                </div>
+              </div>
+            </aside>
+
+            {/* Central Booking Board */}
+            <div id="booking-above-fold-card" className="w-full max-w-4xl xl:max-w-[760px] 2xl:max-w-[800px] xl:shrink-0 mx-auto">
             <div className="bg-white rounded-3xl border-2 border-[#0047AB] shadow-xl overflow-hidden">
               
               {/* Card Header with Tabs: Calendar is DEFAULT, with Callback option */}
@@ -570,12 +640,71 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
             </div>
           </div>
 
-          {/* 3. Framing Deals (Directly beneath the Booking Board) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-4xl mx-auto pt-1">
+          {/* Desktop Left Side Column: Offer 2 + Avigail Phone + 2 Trust Badges */}
+          <aside className="hidden xl:flex xl:flex-col xl:w-[260px] 2xl:w-[280px] xl:shrink-0 space-y-2.5">
+            {/* Offer 2: Multifocal 800 - 1,200 NIS */}
+            <div className="bg-emerald-50/95 border-2 border-[#62B83E] rounded-2xl p-3 shadow-xs relative flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <div className="w-8 h-8 rounded-lg bg-[#4C9C29] text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <Layers className="w-4 h-4" />
+                </div>
+                <span className="bg-[#4C9C29] text-white text-[10px] font-black px-2 py-0.5 rounded-md">במקום 4,000 ₪!</span>
+              </div>
+              <div>
+                <span className="text-[11px] font-black text-[#38761D] uppercase block">משקפי מולטיפוקל פרימיום</span>
+                <div className="flex items-baseline gap-1 my-0.5">
+                  <span className="text-2xl font-black text-emerald-950 font-['Rubik']">800 - 1,200 ₪</span>
+                </div>
+                <span className="text-[11px] text-slate-500 line-through block mb-1">4,000 ₪ ברשתות</span>
+                <p className="text-[11px] text-slate-600 leading-tight">
+                  עדשות מתקדמות עם שדה ראייה רחב, התאמת PD בדיוק מילימטרי ע"י אופטומטריסט מוסמך ואחריות הסתגלות.
+                </p>
+              </div>
+            </div>
+
+            {/* Personal Care / Avigail Direct Call Card */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-3 shadow-2xs space-y-2 text-xs text-slate-700">
+              <div className="flex items-center gap-1.5 font-bold text-slate-900">
+                <Phone className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>מענה אישי לתיאום תור:</span>
+              </div>
+              <p className="text-[11px] text-slate-600 leading-tight">
+                רוצים עזרה בקביעת שעה או לברר זמינות מיוחדת?
+              </p>
+              <a
+                href={`tel:${BUSINESS_INFO.phoneAvigail}`}
+                className="w-full text-center py-2 px-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 rounded-xl font-black text-xs transition-colors flex items-center justify-center gap-1.5"
+              >
+                <Phone className="w-3.5 h-3.5 text-emerald-700" />
+                <span>אביגיל: {BUSINESS_INFO.phoneAvigail}</span>
+              </a>
+            </div>
+
+            {/* Trust Badges: Group 2 */}
+            <div className="space-y-1.5">
+              <div className="bg-white border border-slate-200 rounded-xl p-2 shadow-2xs flex items-center gap-2 text-xs font-bold text-slate-700">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>ללא אותיות קטנות</span>
+              </div>
+              <div className="bg-white border border-slate-200 rounded-xl p-2 shadow-2xs flex items-center gap-2 text-xs font-bold text-slate-700">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>חניה חופשית במקום</span>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+
+        {/* ============================================================= */}
+        {/* MOBILE & TABLET ONLY (< xl): Clean Stack Underneath Calendar */}
+        {/* ============================================================= */}
+        <div className="xl:hidden space-y-2.5 max-w-4xl mx-auto pt-1">
+          {/* Mobile Deals: 150 NIS & Multifocal */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
             {/* Offer 1: Full Glasses 150 NIS */}
-            <div className="bg-blue-50/90 border-2 border-[#0047AB]/40 rounded-2xl p-3.5 sm:p-4 shadow-xs relative flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-xl bg-[#0047AB] text-white flex items-center justify-center shrink-0 shadow-xs">
-                <Glasses className="w-6 h-6" />
+            <div className="bg-blue-50/90 border-2 border-[#0047AB]/40 rounded-2xl p-3 shadow-xs relative flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-[#0047AB] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Glasses className="w-5 h-5" />
               </div>
               <div className="text-right flex-1">
                 <div className="flex items-center justify-between">
@@ -594,9 +723,9 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
             </div>
 
             {/* Offer 2: Multifocal 800 - 1,200 NIS */}
-            <div className="bg-emerald-50/90 border-2 border-[#62B83E] rounded-2xl p-3.5 sm:p-4 shadow-xs relative flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-xl bg-[#4C9C29] text-white flex items-center justify-center shrink-0 shadow-xs">
-                <Layers className="w-6 h-6" />
+            <div className="bg-emerald-50/90 border-2 border-[#62B83E] rounded-2xl p-3 shadow-xs relative flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-[#4C9C29] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Layers className="w-5 h-5" />
               </div>
               <div className="text-right flex-1">
                 <div className="flex items-center justify-between">
@@ -614,8 +743,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
             </div>
           </div>
 
-          {/* 4. Location and Hours Quick Bar framing the card */}
-          <div className="max-w-4xl mx-auto bg-white border border-slate-200 rounded-2xl p-3 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs text-slate-700">
+          {/* Location & Hours Quick Bar */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex flex-wrap items-center justify-between gap-2.5 text-xs text-slate-700">
             <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-red-500 shrink-0" />
               <span>
@@ -641,25 +770,26 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
             </a>
           </div>
 
-          {/* 5. Surrounding Reassurance Bar (Directly beneath the Central Card) */}
-          <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-xs font-bold text-slate-700">
-            <div className="bg-white border border-slate-200 rounded-xl p-2.5 shadow-2xs flex items-center justify-center gap-1.5">
+          {/* 4 Trust Badges */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs font-bold text-slate-700">
+            <div className="bg-white border border-slate-200 rounded-xl p-2 shadow-2xs flex items-center justify-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>אופטומטריסט מוסמך</span>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-2.5 shadow-2xs flex items-center justify-center gap-1.5">
+            <div className="bg-white border border-slate-200 rounded-xl p-2 shadow-2xs flex items-center justify-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>בדיקת ראייה חינם</span>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-2.5 shadow-2xs flex items-center justify-center gap-1.5">
+            <div className="bg-white border border-slate-200 rounded-xl p-2 shadow-2xs flex items-center justify-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>ללא אותיות קטנות</span>
             </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-2.5 shadow-2xs flex items-center justify-center gap-1.5">
+            <div className="bg-white border border-slate-200 rounded-xl p-2 shadow-2xs flex items-center justify-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>חניה חופשית במקום</span>
             </div>
           </div>
+        </div>
 
         </div>
       </section>
@@ -899,71 +1029,6 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
 
             </div>
 
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* SECTION: Social Proof */}
-      {/* ========================================================================= */}
-      <section className="py-12 bg-white border-b border-slate-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-8">
-          <div className="text-center space-y-2">
-            <div className="flex items-center justify-center gap-1 text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-5 h-5 fill-current" />
-              ))}
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-['Rubik']">
-              מה אומרים הלקוחות שהגיעו אלינו?
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600">
-              מאות לקוחות מכרמיאל, צפת, הגליל והמרכז כבר עברו לאופטיקה חברתית
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
-              <div className="flex items-center gap-1 text-amber-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                ))}
-              </div>
-              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-                "תיאמתי תור לבדיקה באמירים ועשיתי משקפי מולטיפוקל ב-1,000 ש״ח. ברשת בקניון דרשו ממני 4,200 ש״ח! ההסתגלות הייתה חלקה מהיום הראשון, חסכתי מעל 3,000 שקל. פשוט מדהים."
-              </p>
-              <div className="text-xs font-bold text-slate-900 border-t border-slate-100 pt-2">
-                — אליעזר ב., כרמיאל
-              </div>
-            </div>
-
-            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
-              <div className="flex items-center gap-1 text-amber-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                ))}
-              </div>
-              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-                "הייתי סקפטית לגבי 150 ש״ח למשקפיים שלמים כולל בדיקה. הגעתי לאמירים, קיבלתי יחס חם ובחרתי מסגרת משגעת. לא שילמתי שקל מעבר ל-150. ממליצה לכל מי שמחפש הוגנות!"
-              </p>
-              <div className="text-xs font-bold text-slate-900 border-t border-slate-100 pt-2">
-                — רחל מ., צפת
-              </div>
-            </div>
-
-            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
-              <div className="flex items-center gap-1 text-amber-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                ))}
-              </div>
-              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-                "שמעתי עליהם מהתרומות לחיילים במלחמה והגעתי לבדוק. האווירה רגועה, הבדיקה של האופטומטריסט הייתה הכי יסודית שעברתי אי פעם, ואביגיל תיאמה לי הכל בנועם ובסבלנות. אין תחליף לשירות כזה."
-              </p>
-              <div className="text-xs font-bold text-slate-900 border-t border-slate-100 pt-2">
-                — איתי ש., גליל עליון
-              </div>
-            </div>
           </div>
         </div>
       </section>
