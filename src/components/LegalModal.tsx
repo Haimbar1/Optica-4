@@ -133,7 +133,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                   <h4>2. שמירת תוצאות בדיקות ראייה ומרשמים (חיסיון מלא)</h4>
                 </div>
                 <p className="text-slate-600 text-sm sm:text-base">
-                  תוצאות בדיקות הראייה, מרשמי האופטומטריסטית (מספרי ראייה, צילינדרים, ציר, PD, נתוני מולטיפוקל וסוגי ציפויים) מתועדים לצורך מעקב רציף והבטחת איכות הראייה שלכם לאורך זמן:
+                  תוצאות בדיקות הראייה, מרשמי האופטומטריסט המוסמך (מספרי ראייה, צילינדרים, ציר, PD, נתוני מולטיפוקל וסוגי ציפויים) מתועדים לצורך מעקב רציף והבטחת איכות הראייה שלכם לאורך זמן:
                 </p>
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2 text-xs sm:text-sm text-slate-700">
                   <div className="flex items-center gap-2">
@@ -211,7 +211,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                   בדיקות הראייה וההגעה לחנות מתקיימות בימים ד' ו-ה' (12:00-18:00) וביום ו' (10:00-14:00) <strong>בתיאום מראש בלבד</strong> כדי להבטיח יחס אישי והימנעות מעומסים.
                 </p>
                 <ul className="list-disc list-inside text-sm text-slate-600 space-y-1 pr-2">
-                  <li>תיאום בדיקות ראייה מול אופטומטריסטית (אביגיל): <a href={`tel:${BUSINESS_INFO.phoneAvigail}`} className="text-[#0047AB] font-bold">{BUSINESS_INFO.phoneAvigail}</a></li>
+                  <li>תיאום בדיקות ראייה (אביגיל, מתאמת תורים): <a href={`tel:${BUSINESS_INFO.phoneAvigail}`} className="text-[#0047AB] font-bold">{BUSINESS_INFO.phoneAvigail}</a></li>
                   <li>בירורים ושינוי מועד מול צביקה: <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#0047AB] font-bold">{BUSINESS_INFO.phoneZvika}</a></li>
                 </ul>
               </div>
