@@ -1,9 +1,14 @@
 import React from 'react';
 import { BUSINESS_INFO } from '../data/opticsData';
-import { Glasses, MapPin, Phone, Navigation, HeartHandshake, Clock } from 'lucide-react';
+import { Glasses, MapPin, Phone, Navigation, HeartHandshake, Clock, ShieldCheck, Lock, FileText } from 'lucide-react';
 import logoImg from '../assets/images/optics_logo_1786106308756.jpg';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onOpenPrivacy?: () => void;
+  onOpenTerms?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) => {
   return (
     <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -70,28 +75,60 @@ export const Footer: React.FC = () => {
             <p className="text-slate-500 pt-1">הגעה בתיאום מראש בלבד</p>
           </div>
 
-          {/* Social Policy Notice */}
-          <div className="bg-slate-800/80 border border-slate-700 p-4 rounded-2xl space-y-2">
-            <h4 className="font-bold text-blue-300 flex items-center gap-1.5 text-xs">
-              <HeartHandshake className="w-4 h-4 text-blue-300" />
-              <span>התחייבות חברתית</span>
-            </h4>
-            <p className="text-[11px] text-slate-300 leading-relaxed">
-              המיזם שלנו פועל ללא מתווכים ושכר דירה של קניונים, במטרה לתת לכם מוצר מצוין במחיר הטוב ביותר.
-            </p>
+          {/* Data Security & Social Policy Notice */}
+          <div className="space-y-3">
+            <div className="bg-slate-800/80 border border-slate-700 p-3.5 rounded-2xl space-y-1.5">
+              <h4 className="font-bold text-blue-300 flex items-center gap-1.5 text-xs">
+                <HeartHandshake className="w-4 h-4 text-blue-300 shrink-0" />
+                <span>התחייבות חברתית</span>
+              </h4>
+              <p className="text-[11px] text-slate-300 leading-relaxed">
+                המיזם שלנו פועל ללא מתווכים ושכר דירה של קניונים, במטרה לתת לכם מוצר מצוין במחיר הטוב ביותר.
+              </p>
+            </div>
+
+            {/* Security Assurance Badge */}
+            <div className="bg-emerald-950/40 border border-emerald-800/50 p-3 rounded-2xl space-y-1">
+              <div className="flex items-center gap-1.5 text-emerald-400 font-bold text-xs">
+                <ShieldCheck className="w-4 h-4 shrink-0" />
+                <span>אבטחת מידע וסודיות מלאה</span>
+              </div>
+              <p className="text-[10.5px] text-emerald-200/80 leading-relaxed">
+                כל פרטי הלקוחות, תוצאות בדיקות הראייה והיסטוריית הרכישות שמורים במערכת מאובטחת וחסויה.
+              </p>
+            </div>
           </div>
         </div>
 
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-slate-500 gap-4">
           <p>© {new Date().getFullYear()} האופטיקה הטובה - מצפה מנחם 86, אמירים. כל הזכויות שמורות.</p>
-          <div className="flex gap-4">
-            <a href="#catalog" className="hover:text-slate-300">קטלוג משקפיים</a>
-            <a href="#booking" className="hover:text-slate-300">בדיקת ראייה</a>
-            <a href="#about" className="hover:text-slate-300">אודות</a>
-            <a href="#faq" className="hover:text-slate-300">שאלות נפוצות</a>
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
+            <a href="#catalog" className="hover:text-slate-300 transition-colors">קטלוג משקפיים</a>
+            <a href="#booking" className="hover:text-slate-300 transition-colors">בדיקת ראייה</a>
+            <a href="#about" className="hover:text-slate-300 transition-colors">אודות</a>
+            <a href="#faq" className="hover:text-slate-300 transition-colors">שאלות נפוצות</a>
+            <span className="text-slate-700">|</span>
+            <button
+              id="footer-privacy-policy-link"
+              onClick={onOpenPrivacy}
+              className="text-slate-400 hover:text-blue-400 font-bold underline transition-colors inline-flex items-center gap-1 cursor-pointer"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>מדיניות פרטיות ואבטחת מידע</span>
+            </button>
+            <span className="text-slate-700">|</span>
+            <button
+              id="footer-terms-link"
+              onClick={onOpenTerms}
+              className="text-slate-400 hover:text-blue-400 font-bold underline transition-colors inline-flex items-center gap-1 cursor-pointer"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>תנאי שימוש ושירות</span>
+            </button>
           </div>
         </div>
       </div>
     </footer>
   );
 };
+

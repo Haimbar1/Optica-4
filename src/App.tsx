@@ -7,9 +7,12 @@ import { FaqSection } from './components/FaqSection';
 import { ContactLocationSection } from './components/ContactLocationSection';
 import { ChatWidget } from './components/ChatWidget';
 import { Footer } from './components/Footer';
+import { LegalModal } from './components/LegalModal';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('hero') ; 
+  const [activeTab, setActiveTab] = useState('hero'); 
+  const [isLegalModalOpen, setIsLegalModalOpen] = useState(false);
+  const [legalModalTab, setLegalModalTab] = useState<'privacy' | 'terms'>('privacy');
 
   const scrollToSection = (sectionId: string) => {
     setActiveTab(sectionId);
@@ -17,6 +20,16 @@ export default function App() {
     if (elem) {
       elem.scrollIntoView({ behavior: 'smooth' }); 
     }
+  };
+
+  const handleOpenPrivacy = () => {
+    setLegalModalTab('privacy');
+    setIsLegalModalOpen(true);
+  };
+
+  const handleOpenTerms = () => {
+    setLegalModalTab('terms');
+    setIsLegalModalOpen(true);
   };
 
   return (
@@ -38,8 +51,18 @@ export default function App() {
         <ContactLocationSection />
       </main>
 
-      <Footer />
+      <Footer
+        onOpenPrivacy={handleOpenPrivacy}
+        onOpenTerms={handleOpenTerms}
+      />
       <ChatWidget />
+
+      <LegalModal
+        isOpen={isLegalModalOpen}
+        onClose={() => setIsLegalModalOpen(false)}
+        initialTab={legalModalTab}
+      />
     </div>
   );
 }
+
