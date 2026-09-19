@@ -210,14 +210,11 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
       <section className="relative overflow-hidden bg-gradient-to-b from-[#F2F8ED] via-white to-slate-50 pt-2 pb-6 sm:pt-3 sm:pb-8 border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-2.5 sm:space-y-3">
           
-          {/* 1. Header Banner: 100% Focused on Scheduling an Appointment */}
-          <div className="text-center space-y-1 max-w-2xl mx-auto">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-950 font-['Rubik'] leading-tight tracking-tight">
-              לוח קביעת תורים לבדיקת ראייה והתאמת משקפיים
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium">
+          {/* 1. Header Banner: Direct instruction */}
+          <div className="text-center max-w-2xl mx-auto pb-0.5">
+            <h1 className="text-base sm:text-lg lg:text-xl font-black text-slate-900 font-['Rubik'] leading-snug tracking-tight">
               בחרו יום ושעה ביומן – הבדיקה ללא עלות וללא התחייבות
-            </p>
+            </h1>
           </div>
 
           {/* ============================================================= */}
