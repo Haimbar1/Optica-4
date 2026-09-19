@@ -15,12 +15,16 @@ import {
   ArrowRight,
   HeartHandshake,
   Star,
-  Users,
   Award,
-  AlertCircle
+  AlertCircle,
+  Eye,
+  User,
+  Send,
+  Check,
+  Layers
 } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/opticsData';
-import { getNextWednesdayDate, formatHebrewDate } from '../utils/dateUtils';
+import { getNextWednesdayDate } from '../utils/dateUtils';
 import campaignGlassesImg from '../assets/images/campaign_glasses_1789850551440.jpg';
 import logoImg from '../assets/images/logo_optics.svg';
 
@@ -36,8 +40,17 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   onOpenTerms,
 }) => {
   const [selectedWednesday, setSelectedWednesday] = useState<string>('2026-09-23');
+  const [bookingMode, setBookingMode] = useState<'calendar' | 'callback'>('callback');
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
+  // Quick Callback Form state
+  const [leadName, setLeadName] = useState('');
+  const [leadPhone, setLeadPhone] = useState('');
+  const [leadInterest, setLeadInterest] = useState<'glasses150' | 'multifocal' | 'both'>('glasses150');
+  const [leadNotes, setLeadNotes] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   useEffect(() => {
     const computedDate = getNextWednesdayDate();
@@ -48,34 +61,71 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   const calEmbedUrl = `https://cal.com/haoptika-hatova/30min?date=${selectedWednesday}&embed=true`;
 
   const scrollToBooking = () => {
-    const el = document.getElementById('booking-calendar-section');
+    const el = document.getElementById('booking-above-fold-card');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   const triggerChatBot = () => {
-    // Trigger the SmartEsek chat widget
     const fab = document.getElementById('obw-fab') || document.querySelector('.obw-fab-button');
     if (fab) {
       (fab as HTMLElement).click();
     } else {
-      // Fallback to WhatsApp
       window.open(BUSINESS_INFO.whatsappDirectAvigail, '_blank');
+    }
+  };
+
+  const handleLeadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!leadPhone.trim()) return;
+
+    setIsSubmitting(true);
+
+    const interestLabel =
+      leadInterest === 'multifocal'
+        ? 'מולטיפוקל (800-1,200 ₪)'
+        : leadInterest === 'both'
+        ? 'גם משקפי ראייה 150 ₪ וגם מולטיפוקל'
+        : 'משקפי ראייה מלאים ב-150 ₪';
+
+    const payload = {
+      name: leadName.trim() || 'פנייה מדף קמפיין',
+      phone: leadPhone.trim(),
+      interest: interestLabel,
+      notes: leadNotes.trim(),
+      source: 'campaign_page_above_fold',
+      timestamp: new Date().toISOString(),
+    };
+
+    try {
+      // Fire to n8n webhook (silently catch if offline/sandbox)
+      if (BUSINESS_INFO.webBotWebhook) {
+        await fetch(BUSINESS_INFO.webBotWebhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }).catch(() => null);
+      }
+    } catch {
+      // Fallback is smooth
+    } finally {
+      setIsSubmitting(false);
+      setSubmitSuccess(true);
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-['Assistant',sans-serif] selection:bg-[#62B83E] selection:text-white" dir="rtl">
       {/* Top Notification Bar */}
-      <div className="bg-gradient-to-r from-[#0047AB] via-[#0A2540] to-[#0047AB] text-white py-2.5 px-4 text-xs sm:text-sm font-semibold shadow-xs">
-        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div className="bg-gradient-to-r from-[#0047AB] via-[#0A2540] to-[#0047AB] text-white py-2 px-4 text-xs sm:text-sm font-semibold shadow-xs">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="bg-[#62B83E] text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-2xs">
-              מבצע קמפיין פייסבוק מיוחד
+              מבצע קמפיין מיוחד
             </span>
             <span className="text-blue-100 font-medium hidden sm:inline">
-              משקפיים שלמים (מסגרת + עדשות) ב-150 ₪ בלבד!
+              משקפי ראייה מלאים ב-150 ₪ בלבד | מולטיפוקל ב-800-1,200 ₪ בלבד במקום 4,000 ₪!
             </span>
           </div>
 
@@ -103,7 +153,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
 
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-2xs">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
           {/* Logo */}
           <div
             onClick={onBackToMain}
@@ -113,7 +163,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
             <img
               src={logoImg}
               alt="האופטיקה הטובה"
-              className="w-12 h-12 rounded-xl object-contain shadow-2xs group-hover:scale-105 transition-transform"
+              className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl object-contain shadow-2xs group-hover:scale-105 transition-transform"
             />
             <div>
               <div className="flex items-center gap-2">
@@ -135,7 +185,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
             <button
               id="header-chat-btn"
               onClick={triggerChatBot}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition-colors cursor-pointer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition-colors cursor-pointer"
             >
               <MessageCircle className="w-4 h-4 text-emerald-600" />
               <span>שאלות בצ'אט</span>
@@ -144,358 +194,520 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
             <button
               id="header-book-btn"
               onClick={scrollToBooking}
-              className="inline-flex items-center gap-2 bg-[#0047AB] hover:bg-blue-800 text-white font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-sm hover:shadow transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 bg-[#0047AB] hover:bg-blue-800 text-white font-extrabold text-xs sm:text-sm px-4 py-2 rounded-xl shadow-sm hover:shadow transition-all cursor-pointer"
             >
               <Calendar className="w-4 h-4 text-amber-300" />
-              <span>קביעת תור ביומן</span>
+              <span>שריין תור עכשיו</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Main Campaign Hero Section (Ad Continuation) */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#F2F8ED] via-white to-slate-50 pt-8 pb-14 sm:pt-12 sm:pb-20 border-b border-slate-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+      {/* ========================================================================= */}
+      {/* ABOVE THE FOLD HERO: Headlines + Deals + Direct Booking / Callback Module */}
+      {/* ========================================================================= */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#F2F8ED] via-white to-slate-50 pt-5 pb-10 sm:pt-7 sm:pb-14 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
             
-            {/* Right Column: High-Impact Ad Headlines & CTAs */}
-            <div className="lg:col-span-7 space-y-6 text-right">
+            {/* Right Column: Hero Content & Deals (150 NIS & Multifocal 800-1200 NIS) */}
+            <div className="lg:col-span-6 space-y-4 text-right">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-[#EDF7E5] border border-[#B7E2A0] text-[#3D861D] px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-black shadow-2xs">
+              <div className="inline-flex items-center gap-2 bg-[#EDF7E5] border border-[#B7E2A0] text-[#3D861D] px-3 py-1 rounded-full text-xs font-black shadow-2xs">
                 <HeartHandshake className="w-4 h-4 text-[#4C9C29] shrink-0" />
-                <span>מיזם חברתי ללא מטרות רווח מנופח • לכל תושבי הצפון והגליל</span>
+                <span>מיזם חברתי ללא פערי תיווך • לתושבי הצפון, הגליל והמרכז</span>
               </div>
 
-              {/* Main Headline (Direct match with Facebook ad) */}
-              <div className="space-y-2">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-950 font-['Rubik'] leading-[1.15] tracking-tight">
+              {/* Main Headline */}
+              <div className="space-y-1.5">
+                <h1 className="text-2xl sm:text-4xl lg:text-[42px] font-black text-slate-950 font-['Rubik'] leading-[1.15] tracking-tight">
                   תרמנו לחיילים –
-                  <span className="block text-[#0047AB] mt-1">
+                  <span className="block text-[#0047AB] mt-0.5">
                     עכשיו מגיע לכולם!
                   </span>
                 </h1>
-                <p className="text-lg sm:text-xl text-slate-700 font-bold leading-snug">
-                  משקפי ראייה מלאים איכותיים ב-<span className="text-[#0047AB] font-black text-2xl">150 ₪</span> בלבד
-                  <span className="text-emerald-700 block sm:inline"> + בדיקת ראייה מקיפה בחינם!</span>
+                <p className="text-base sm:text-lg text-slate-700 font-bold leading-snug">
+                  משקפי ראייה ומולטיפוקל איכותיים במחירי עלות הוגנים
+                  <span className="text-emerald-700 block sm:inline"> + בדיקת ראייה מקצועית בחינם!</span>
                 </p>
               </div>
 
-              <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-xl">
-                בלי פערי תיווך של רשתות ענק, בלי שכר דירה של קניונים ובלי טריקים. 
-                מגיעים לאמירים, עוברים בדיקת ראייה מקצועית ע"י אופטומטריסטית מורשית, בוחרים מסגרת יפהפייה ויוצאים עם משקפיים במחיר שפוי והוגן.
-              </p>
-
-              {/* Badges Bar (Visual echo of the Facebook creative) */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-                <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-3 text-center shadow-2xs">
-                  <div className="text-emerald-800 font-black text-lg sm:text-xl leading-none">חינם!</div>
-                  <div className="text-xs font-bold text-emerald-950 mt-1">בדיקת ראייה מקצועית</div>
-                </div>
-
-                <div className="bg-blue-50 border-2 border-[#0047AB]/30 rounded-2xl p-3 text-center shadow-2xs">
-                  <div className="text-[#0047AB] font-black text-lg sm:text-xl leading-none">150 ₪ בלבד</div>
-                  <div className="text-xs font-bold text-blue-950 mt-1">מסגרת מלאה + עדשות</div>
-                </div>
-
-                <div className="col-span-2 sm:col-span-1 bg-amber-50 border-2 border-amber-300 rounded-2xl p-3 text-center shadow-2xs flex sm:flex-col items-center justify-center gap-1">
-                  <div className="text-amber-900 font-black text-sm sm:text-base leading-none">כולל ציפויים</div>
-                  <div className="text-xs font-bold text-amber-950">אנטי-רפלקס + נגד שריטות</div>
-                </div>
-              </div>
-
-              {/* Immediate Primary CTA Button */}
-              <div className="pt-3 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-                <button
-                  id="hero-book-now-button"
-                  onClick={scrollToBooking}
-                  className="inline-flex items-center justify-center gap-3 bg-[#62B83E] hover:bg-[#529e32] text-white text-base sm:text-lg font-black px-7 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 cursor-pointer"
-                >
-                  <Calendar className="w-5 h-5 text-white" />
-                  <span>שריינו תור ביומן עכשיו (ללא תשלום)</span>
-                </button>
-
-                <button
-                  id="hero-chat-question-button"
-                  onClick={triggerChatBot}
-                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-100 text-slate-800 border-2 border-slate-300 text-sm font-bold px-5 py-4 rounded-2xl transition-all cursor-pointer"
-                >
-                  <MessageCircle className="w-5 h-5 text-[#0047AB]" />
-                  <span>יש לי שאלה בצ'אט</span>
-                </button>
-              </div>
-
-              {/* Hours notice banner directly in hero */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-2xs flex items-center gap-3 text-xs sm:text-sm">
-                <Clock className="w-5 h-5 text-[#0047AB] shrink-0" />
-                <div className="text-slate-700">
-                  <strong className="text-slate-900 block sm:inline">שעות פעילות לבדיקות: </strong>
-                  <span>ימים ד', ה': 12:00-18:00 | יום ו': 10:00-14:00 (בתיאום מראש בלבד)</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Left Column: Visual Ad Card (Exact Facebook campaign mood) */}
-            <div className="lg:col-span-5">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900">
-                <img
-                  src={campaignGlassesImg}
-                  alt="משקפיים איכותיים ב-150 שקלים - האופטיקה הטובה אמירים"
-                  className="w-full h-auto object-cover max-h-[460px]"
-                />
-
-                {/* Overlay Floating Badges Echoing the Facebook Graphic */}
-                <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-xs p-2 rounded-2xl shadow-lg border border-emerald-200 flex items-center gap-2">
-                  <img src={logoImg} alt="לוגו" className="w-8 h-8 rounded-lg object-contain" />
-                  <div className="text-right">
-                    <span className="font-black text-xs text-[#0047AB] block leading-tight">האופטיקה הטובה</span>
-                    <span className="text-[10px] text-emerald-700 font-extrabold block">אופטיקה חברתית</span>
+              {/* DUAL DEALS BANNER: 150 ₪ & MULTIFOCAL 800-1,200 ₪ */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                {/* Deal 1: 150 NIS Full Glasses */}
+                <div className="bg-blue-50/90 border-2 border-[#0047AB]/40 rounded-2xl p-3.5 shadow-xs relative overflow-hidden">
+                  <div className="absolute top-2 left-2 bg-[#0047AB] text-white text-[10px] font-black px-2 py-0.5 rounded-md">
+                    מבצע הדגל
                   </div>
+                  <div className="text-xs font-black text-[#0047AB] uppercase">משקפי ראייה מלאים</div>
+                  <div className="flex items-baseline gap-1 my-1">
+                    <span className="text-3xl font-black text-slate-950 font-['Rubik']">₪150</span>
+                    <span className="text-xs font-extrabold text-blue-800">בלבד!</span>
+                  </div>
+                  <p className="text-[12px] text-slate-700 leading-tight">
+                    <strong>מסגרת מלאה + עדשות איכותיות</strong> כולל ציפוי אנטי-רפלקס ונגד שריטות ובדיקה חינם.
+                  </p>
                 </div>
 
-                {/* 150 NIS Circle Badge */}
-                <div className="absolute bottom-16 left-4 bg-[#0047AB] text-white w-24 h-24 sm:w-28 sm:h-28 rounded-full flex flex-col items-center justify-center p-2 shadow-2xl border-4 border-white text-center transform -rotate-6">
-                  <span className="text-[10px] sm:text-xs font-bold leading-tight">מסגרת + עדשות</span>
-                  <span className="text-xl sm:text-2xl font-black leading-none my-0.5">₪150</span>
-                  <span className="text-[10px] sm:text-xs font-extrabold text-amber-300">בלבד!</span>
-                </div>
-
-                {/* Free Eye Exam Badge */}
-                <div className="absolute bottom-16 right-4 bg-[#62B83E] text-white w-20 h-20 sm:w-24 sm:h-24 rounded-full flex flex-col items-center justify-center p-2 shadow-xl border-3 border-white text-center transform rotate-6">
-                  <span className="text-xs sm:text-sm font-black leading-tight">בדיקת ראייה</span>
-                  <span className="text-xs sm:text-sm font-extrabold text-yellow-100">בחינם</span>
-                </div>
-
-                {/* Bottom Bar matching the ad footer */}
-                <div className="absolute bottom-0 inset-x-0 bg-white/95 backdrop-blur-xs py-2 px-3 text-center border-t border-slate-200 text-xs font-bold text-slate-800 flex items-center justify-between">
-                  <span className="text-[#0047AB]">משקפיים מחוברים חברתית - זכאות לכל כיס!</span>
-                  <span className="text-slate-600 flex items-center gap-1 text-[11px]">
-                    <MapPin className="w-3 h-3 text-red-500" />
-                    <span>אמירים (15 ק"מ מכרמיאל)</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Trust & Package Breakdown: What is in the 150 ₪ Deal */}
-      <section className="py-12 bg-white border-b border-slate-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-            <span className="text-[#0047AB] font-black text-xs tracking-wider uppercase bg-blue-50 px-3 py-1 rounded-full">
-              שקיפות מלאה ללא אותיות קטנות
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-['Rubik']">
-              מה בדיוק כוללת חבילת ה-150 ₪ שלנו?
-            </h2>
-            <p className="text-slate-600 text-sm sm:text-base">
-              אין שום התחייבות, אין הפתעות בקופה, ואין שום צורך לשלם 1,000 ש"ח ברשתות.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3 hover:border-[#62B83E] transition-colors shadow-2xs">
-              <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black">
-                <Glasses className="w-6 h-6 text-[#4C9C29]" />
-              </div>
-              <h3 className="font-extrabold text-slate-900 text-base">1. מסגרת מעוצבת ואיכותית</h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                מבחר גדול של מאות מסגרות לבחירה – פלסטיק איכותי, מתכת, מסגרות קלאסיות ומודרניות לגברים, נשים וילדים.
-              </p>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3 hover:border-[#0047AB] transition-colors shadow-2xs">
-              <div className="w-12 h-12 rounded-xl bg-blue-100 text-[#0047AB] flex items-center justify-center font-black">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <h3 className="font-extrabold text-slate-900 text-base">2. עדשות אופטיות עם ציפויים</h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                עדשות אופטיות מדויקות כולל ציפוי אנטי-רפלקס (מונע סנוור בנהיגה ומסכים) וציפוי הגנה מפני שריטות.
-              </p>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3 hover:border-amber-400 transition-colors shadow-2xs">
-              <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center font-black">
-                <Award className="w-6 h-6 text-amber-700" />
-              </div>
-              <h3 className="font-extrabold text-slate-900 text-base">3. בדיקת ראייה ללא עלות</h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                בדיקה מקיפה וסבלנית בציוד אופטומטרי מתקדם ע"י אופטומטריסטית מורשית בעלת ניסיון רב (אביגיל).
-              </p>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3 hover:border-purple-400 transition-colors shadow-2xs">
-              <div className="w-12 h-12 rounded-xl bg-purple-100 text-purple-900 flex items-center justify-center font-black">
-                <ShieldCheck className="w-6 h-6 text-purple-700" />
-              </div>
-              <h3 className="font-extrabold text-slate-900 text-base">4. נרתיק, מטלית ואחריות</h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                כל זוג מגיע עם נרתיק קשיח ומטלית מיקרופייבר, התאמה וכיוונון אישיים למבנה הפנים ואחריות מלאה.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CORE CTA SECTION: Embedded Cal.com Calendar */}
-      <section id="booking-calendar-section" className="py-14 bg-gradient-to-b from-slate-50 via-[#F3F8EE] to-white scroll-mt-20 border-b border-slate-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          
-          {/* Main Booking Header */}
-          <div className="text-center max-w-3xl mx-auto mb-8 space-y-3">
-            <div className="inline-flex items-center gap-2 bg-[#62B83E] text-white px-4 py-1.5 rounded-full text-xs sm:text-sm font-black shadow-xs">
-              <Calendar className="w-4 h-4 text-white" />
-              <span>שלב 1: בחירת יום ושעה ביומן המקוון</span>
-            </div>
-            <h2 className="text-2xl sm:text-4xl font-black text-slate-950 font-['Rubik']">
-              קביעת תור מהירה – שריינו את מקומכם
-            </h2>
-            <p className="text-slate-600 text-sm sm:text-base">
-              הבדיקות וההגעה מתקיימות <strong>בתיאום מראש בלבד</strong> כדי להעניק לכם יחס אישי וללא המתנה בתור.
-            </p>
-          </div>
-
-          {/* CRUCIAL REQUIREMENT: Explicit days & hours heading explanation */}
-          <div className="bg-white border-2 border-[#0047AB] rounded-3xl p-5 sm:p-7 shadow-lg mb-8 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-[#0047AB] text-white flex items-center justify-center shadow-xs shrink-0">
-                  <Clock className="w-6 h-6 text-amber-300" />
-                </div>
-                <div>
-                  <h3 className="text-lg sm:text-xl font-black text-slate-900 font-['Rubik']">
-                    שעות פעילות וימים שניתן לבחור ביומן:
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-600">
-                    נא לבחור ביומן למטה יום רביעי, חמישי או שישי בלבד:
+                {/* Deal 2: MULTIFOCAL 800-1,200 NIS (Explicit user requirement) */}
+                <div className="bg-emerald-50/90 border-2 border-[#62B83E] rounded-2xl p-3.5 shadow-xs relative overflow-hidden">
+                  <div className="absolute top-2 left-2 bg-[#4C9C29] text-white text-[10px] font-black px-2 py-0.5 rounded-md">
+                    חיסכון ענק
+                  </div>
+                  <div className="text-xs font-black text-[#38761D] uppercase">משקפי מולטיפוקל פרימיום</div>
+                  <div className="flex items-baseline gap-1 my-1">
+                    <span className="text-2xl sm:text-3xl font-black text-emerald-900 font-['Rubik']">800 - 1,200 ₪</span>
+                    <span className="text-xs font-bold text-slate-500 line-through mr-1">4,000 ₪</span>
+                  </div>
+                  <p className="text-[12px] text-slate-700 leading-tight">
+                    <strong>במקום 4,000 ₪ ברשתות!</strong> עדשות מולטיפוקל מתקדמות עם שדה ראייה רחב ומסגרת איכותית.
                   </p>
                 </div>
               </div>
 
-              {/* Quick Link Button to Cal */}
-              <a
-                href={calUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl transition-colors shrink-0"
-              >
-                <span>פתיחת היומן במסך מלא</span>
-                <ExternalLink className="w-4 h-4 text-slate-500" />
-              </a>
-            </div>
-
-            {/* Days Badges Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-              {/* Wed & Thu */}
-              <div className="bg-blue-50/90 border border-blue-200 rounded-2xl p-4 flex items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-[#0047AB]"></span>
-                    <span className="font-black text-base sm:text-lg text-slate-950">ימים ד', ה' (רביעי וחמישי)</span>
+              {/* Image & Quick Badges preview strip */}
+              <div className="bg-white border border-slate-200 rounded-2xl p-3 shadow-2xs flex items-center gap-3">
+                <img
+                  src={campaignGlassesImg}
+                  alt="משקפיים האופטיקה הטובה"
+                  className="w-20 h-20 rounded-xl object-cover border border-slate-200 shrink-0"
+                />
+                <div className="space-y-1 text-xs">
+                  <div className="flex flex-wrap items-center gap-1.5 font-bold text-slate-800">
+                    <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md">✓ בדיקה חינם</span>
+                    <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md">✓ ללא אותיות קטנות</span>
+                    <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md">✓ התאמה אישית</span>
                   </div>
-                  <div className="text-xs text-slate-600">שעות פעילות לבדיקות והתאמה</div>
-                </div>
-                <div className="bg-[#0047AB] text-white px-4 py-2 rounded-xl text-center shadow-xs shrink-0">
-                  <span dir="ltr" className="font-black text-base sm:text-lg text-amber-300 tracking-wide block">
-                    12:00 - 18:00
-                  </span>
+                  <p className="text-slate-600 text-[11px] leading-snug">
+                    בדיקות ע"י אופטומטריסטית מורשית באווירה גלילית רגועה. מצפה מנחם 86, אמירים (15 דק' מכרמיאל).
+                  </p>
                 </div>
               </div>
 
-              {/* Fri */}
-              <div className="bg-emerald-50/90 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-[#62B83E]"></span>
-                    <span className="font-black text-base sm:text-lg text-slate-950">יום ו' (שישי)</span>
-                  </div>
-                  <div className="text-xs text-slate-600">שעות פעילות ערב שבת</div>
-                </div>
-                <div className="bg-[#4C9C29] text-white px-4 py-2 rounded-xl text-center shadow-xs shrink-0">
-                  <span dir="ltr" className="font-black text-base sm:text-lg text-white tracking-wide block">
-                    10:00 - 14:00
-                  </span>
-                </div>
+              {/* Working Hours Notice directly above fold */}
+              <div className="flex items-center gap-2 text-xs text-slate-700 bg-slate-100/90 px-3.5 py-2 rounded-xl border border-slate-200">
+                <Clock className="w-4 h-4 text-[#0047AB] shrink-0" />
+                <span>
+                  <strong>שעות פעילות לבדיקות: </strong>
+                  ימים ד', ה': 12:00-18:00 | יום ו': 10:00-14:00 (בתיאום מראש בלבד)
+                </span>
               </div>
             </div>
 
-            {/* Notice */}
-            <div className="flex items-center gap-2 text-xs text-amber-900 bg-amber-50 p-3 rounded-xl border border-amber-200 font-medium">
-              <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
-              <span>
-                💡 <strong>טיפ:</strong> היומן נפתח אוטומטית על יום רביעי הקרוב ({selectedWednesday}). ניתן לדפדף לתאריכים נוספים בימי רביעי, חמישי ושישי.
-              </span>
+            {/* ============================================================= */}
+            {/* Left Column: DIRECTLY ABOVE THE FOLD BOOKING & CALLBACK CARD  */}
+            {/* ============================================================= */}
+            <div id="booking-above-fold-card" className="lg:col-span-6">
+              <div className="bg-white rounded-3xl border-2 border-[#0047AB] shadow-2xl overflow-hidden">
+                
+                {/* Card Header with Tabs (Callback vs Calendar) */}
+                <div className="bg-gradient-to-r from-slate-900 via-[#0047AB] to-slate-900 text-white p-3.5 sm:p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2 font-black text-sm sm:text-base font-['Rubik']">
+                      <Calendar className="w-5 h-5 text-amber-300 shrink-0" />
+                      <span>קביעת תור מהירה – ללא עלות</span>
+                    </div>
+                    <span className="bg-[#62B83E] text-white text-[11px] font-black px-2 py-0.5 rounded-full">
+                      מיידי וללא התחייבות
+                    </span>
+                  </div>
+
+                  {/* Mode Selector Tabs */}
+                  <div className="grid grid-cols-2 gap-1.5 bg-slate-950/40 p-1 rounded-xl">
+                    <button
+                      id="tab-callback-mode-btn"
+                      onClick={() => setBookingMode('callback')}
+                      className={`py-2 px-3 rounded-lg text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        bookingMode === 'callback'
+                          ? 'bg-[#62B83E] text-white shadow-xs'
+                          : 'text-slate-200 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>חזרו אליי לקביעת תור</span>
+                    </button>
+
+                    <button
+                      id="tab-calendar-mode-btn"
+                      onClick={() => setBookingMode('calendar')}
+                      className={`py-2 px-3 rounded-lg text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        bookingMode === 'calendar'
+                          ? 'bg-[#0047AB] text-white shadow-xs border border-blue-400/40'
+                          : 'text-slate-200 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      <Calendar className="w-3.5 h-3.5" />
+                      <span>בחירת מועד ביומן</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* TAB 1: Fast Name & Phone Callback Form */}
+                {bookingMode === 'callback' && (
+                  <div className="p-4 sm:p-6 bg-white space-y-4">
+                    {submitSuccess ? (
+                      <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-6 text-center space-y-3 animate-in fade-in">
+                        <div className="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center mx-auto shadow-md">
+                          <Check className="w-6 h-6 stroke-[3]" />
+                        </div>
+                        <h3 className="text-lg font-black text-emerald-950 font-['Rubik']">
+                          הפנייה התקבלה בהצלחה!
+                        </h3>
+                        <p className="text-xs sm:text-sm text-emerald-900 leading-relaxed">
+                          תודה {leadName || ''}! נחזור אליך בהקדם לטלפון <strong>{leadPhone}</strong> כדי לתאם עבורך את השעה הנוחה ביותר לבדיקה והתאמת משקפיים באמירים.
+                        </p>
+                        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2">
+                          <a
+                            href={`https://wa.me/${BUSINESS_INFO.phoneAvigailRaw}?text=${encodeURIComponent(
+                              `שלום, השארתי פרטים עבור ${leadInterest === 'multifocal' ? 'מולטיפוקל' : 'משקפיים ב-150 ₪'}. שמי ${leadName}.`
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs transition-colors"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                            <span>לפנייה מיידית בוואטסאפ</span>
+                          </a>
+                          <button
+                            onClick={() => {
+                              setSubmitSuccess(false);
+                              setLeadPhone('');
+                              setLeadName('');
+                            }}
+                            className="text-xs text-slate-500 hover:text-slate-800 underline cursor-pointer py-1 px-2"
+                          >
+                            שליחת פנייה נוספת
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <form onSubmit={handleLeadSubmit} className="space-y-3.5 text-right">
+                        <div className="text-slate-700 text-xs sm:text-sm leading-relaxed">
+                          השאירו שם וטלפון, ואביגיל או צביקה יחזרו אליכם בהקדם לתיאום מועד בדיקה שנוח לכם:
+                        </div>
+
+                        {/* Name Input */}
+                        <div>
+                          <label className="block text-xs font-bold text-slate-800 mb-1">
+                            שם מלא
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              id="lead-name-input"
+                              value={leadName}
+                              onChange={(e) => setLeadName(e.target.value)}
+                              placeholder="ישראל ישראלי"
+                              className="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 px-3.5 pr-10 text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:border-[#0047AB] focus:ring-2 focus:ring-[#0047AB]/20 transition-all text-right"
+                            />
+                            <User className="w-4 h-4 text-slate-400 absolute right-3.5 top-3 pointer-events-none" />
+                          </div>
+                        </div>
+
+                        {/* Phone Input (Required) */}
+                        <div>
+                          <label className="block text-xs font-bold text-slate-800 mb-1">
+                            טלפון לחזרה <span className="text-red-500">*</span>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="tel"
+                              id="lead-phone-input"
+                              required
+                              value={leadPhone}
+                              onChange={(e) => setLeadPhone(e.target.value)}
+                              placeholder="050-1234567"
+                              dir="ltr"
+                              className="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 px-3.5 pr-10 text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:border-[#0047AB] focus:ring-2 focus:ring-[#0047AB]/20 transition-all text-right font-mono"
+                            />
+                            <Phone className="w-4 h-4 text-slate-400 absolute right-3.5 top-3 pointer-events-none" />
+                          </div>
+                        </div>
+
+                        {/* Interest Selection (Radio/Chips) */}
+                        <div>
+                          <label className="block text-xs font-bold text-slate-800 mb-1.5">
+                            במה אתם מעוניינים?
+                          </label>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setLeadInterest('glasses150')}
+                              className={`p-2.5 rounded-xl border text-xs font-bold text-right transition-all cursor-pointer ${
+                                leadInterest === 'glasses150'
+                                  ? 'bg-blue-50 border-[#0047AB] text-[#0047AB] shadow-2xs'
+                                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                              }`}
+                            >
+                              <span className="block font-black text-sm text-slate-900">150 ₪</span>
+                              <span>משקפי ראייה מלאים</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => setLeadInterest('multifocal')}
+                              className={`p-2.5 rounded-xl border text-xs font-bold text-right transition-all cursor-pointer ${
+                                leadInterest === 'multifocal'
+                                  ? 'bg-emerald-50 border-[#62B83E] text-[#38761D] shadow-2xs'
+                                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                              }`}
+                            >
+                              <span className="block font-black text-sm text-emerald-900">800-1,200 ₪</span>
+                              <span>משקפי מולטיפוקל</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => setLeadInterest('both')}
+                              className={`p-2.5 rounded-xl border text-xs font-bold text-right transition-all cursor-pointer ${
+                                leadInterest === 'both'
+                                  ? 'bg-amber-50 border-amber-500 text-amber-900 shadow-2xs'
+                                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                              }`}
+                            >
+                              <span className="block font-black text-sm text-slate-900">גם וגם</span>
+                              <span>מתלבט / בדיקה חינם</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Optional Notes */}
+                        <div>
+                          <label className="block text-xs font-bold text-slate-800 mb-1">
+                            הערה / יום מועדף לבדיקה (רביעי, חמישי או שישי)
+                          </label>
+                          <input
+                            type="text"
+                            id="lead-notes-input"
+                            value={leadNotes}
+                            onChange={(e) => setLeadNotes(e.target.value)}
+                            placeholder="לדוגמה: יום חמישי אחה״צ, מספר קיים..."
+                            className="w-full bg-slate-50 border border-slate-300 rounded-xl py-2 px-3 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:border-[#0047AB] text-right"
+                          />
+                        </div>
+
+                        {/* Submit Button */}
+                        <button
+                          type="submit"
+                          id="submit-callback-lead-btn"
+                          disabled={isSubmitting}
+                          className="w-full inline-flex items-center justify-center gap-2 bg-[#62B83E] hover:bg-[#529e32] text-white font-black text-base py-3.5 px-6 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-50"
+                        >
+                          {isSubmitting ? (
+                            <span>שולח פנייה...</span>
+                          ) : (
+                            <>
+                              <Send className="w-4 h-4" />
+                              <span>חזרו אליי לקביעת תור (ללא תשלום)</span>
+                            </>
+                          )}
+                        </button>
+
+                        <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+                          <span className="flex items-center gap-1">
+                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>פרטיכם שמורים ומאובטחים</span>
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setBookingMode('calendar')}
+                            className="text-[#0047AB] hover:underline cursor-pointer font-bold"
+                          >
+                            מעדיפים לבחור שעה ביומן? לחצו כאן
+                          </button>
+                        </div>
+                      </form>
+                    )}
+                  </div>
+                )}
+
+                {/* TAB 2: Embedded Interactive Cal.com Calendar */}
+                {bookingMode === 'calendar' && (
+                  <div className="p-3 sm:p-4 bg-white space-y-3">
+                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                      <div>
+                        <span className="font-bold text-slate-900 block">ימי פעילות לבדיקות ביומן:</span>
+                        <span className="text-slate-600">ימים ד', ה' (12:00-18:00) | יום ו' (10:00-14:00)</span>
+                      </div>
+                      <a
+                        href={calUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[#0047AB] hover:underline font-bold text-xs"
+                      >
+                        <span>מסך מלא</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+
+                    <div className="relative w-full bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 h-[430px] sm:h-[480px]">
+                      {!iframeLoaded && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-slate-50 z-10">
+                          <div className="w-8 h-8 border-3 border-[#0047AB] border-t-transparent rounded-full animate-spin mb-3"></div>
+                          <p className="font-bold text-slate-800 text-xs">טוען את היומן של האופטיקה...</p>
+                        </div>
+                      )}
+                      <iframe
+                        id="cal-com-above-fold-iframe"
+                        src={calEmbedUrl}
+                        title="קביעת תור ביומן Cal.com"
+                        className="w-full h-full border-0"
+                        onLoad={() => setIframeLoaded(true)}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs text-slate-600 pt-1">
+                      <span>לא מוצאים שעה נוחה?</span>
+                      <button
+                        onClick={() => setBookingMode('callback')}
+                        className="text-[#62B83E] font-bold hover:underline cursor-pointer"
+                      >
+                        השאירו שם וטלפון ונחזור אליכם ←
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+              </div>
             </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION: Deep Dive on the Two Exclusive Campaign Offers (150 ₪ & Multifocal) */}
+      {/* ========================================================================= */}
+      <section className="py-12 bg-white border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-10">
+          <div className="text-center max-w-3xl mx-auto space-y-2">
+            <span className="text-[#0047AB] font-black text-xs tracking-wider uppercase bg-blue-50 px-3 py-1 rounded-full">
+              שקיפות חברתית מלאה
+            </span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 font-['Rubik']">
+              שני מסלולי המבצע המשתלמים שלנו באמירים
+            </h2>
+            <p className="text-slate-600 text-sm sm:text-base">
+              איך אנחנו מוכרים במחירים כאלה? פשוט מאוד: אופטיקה חברתית ללא שכירות מנופחת בקניונים וללא פערי תיווך של רשתות.
+            </p>
           </div>
 
-          {/* Embedded Cal.com Calendar Card */}
-          <div className="bg-white rounded-3xl border-2 border-slate-200 shadow-2xl overflow-hidden relative">
-            <div className="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between text-xs sm:text-sm">
-              <div className="flex items-center gap-2 font-bold">
-                <Calendar className="w-4 h-4 text-emerald-400" />
-                <span>יומן קביעת תורים ישיר - האופטיקה הטובה (30 דקות בדיקה והתאמה)</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            {/* CARD 1: Full Glasses 150 ₪ */}
+            <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-6 sm:p-8 space-y-5 hover:border-[#0047AB] transition-colors shadow-2xs relative">
+              <div className="inline-flex items-center gap-1.5 bg-blue-100 text-[#0047AB] text-xs font-black px-3 py-1 rounded-full">
+                <Glasses className="w-4 h-4" />
+                <span>מסלול ראייה / קריאה שלם</span>
               </div>
-              <span className="text-slate-400 hidden sm:inline text-xs">
-                אישור מיידי במייל וב-SMS
-              </span>
-            </div>
 
-            {/* Cal.com Iframe container */}
-            <div className="relative w-full bg-white min-h-[680px]">
-              {!iframeLoaded && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-slate-50 z-10">
-                  <div className="w-10 h-10 border-4 border-[#0047AB] border-t-transparent rounded-full animate-spin mb-4"></div>
-                  <p className="font-bold text-slate-800 text-sm">טוען את לוח הזמנים של האופטיקה...</p>
-                  <p className="text-xs text-slate-500 mt-1">תוכלו לבחור יום ושעה שנוחים לכם</p>
+              <div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl sm:text-5xl font-black text-[#0047AB] font-['Rubik']">₪150</span>
+                  <span className="text-sm font-bold text-slate-600">מחיר סופי לזוג שלם</span>
                 </div>
-              )}
-
-              <iframe
-                id="cal-com-embedded-iframe"
-                src={calEmbedUrl}
-                title="קביעת תור ביומן Cal.com"
-                className="w-full h-[700px] border-0"
-                onLoad={() => setIframeLoaded(true)}
-              />
-            </div>
-
-            {/* Assistance footer below calendar */}
-            <div className="bg-slate-50 border-t border-slate-200 p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm">
-              <div className="text-slate-600 text-center sm:text-right">
-                <span>מסתבכים עם היומן המקוון? אפשר לקבוע גם בוואטסאפ או בשיחה ישירה:</span>
+                <h3 className="text-xl font-black text-slate-900 font-['Rubik'] mt-1">
+                  מסגרת איכותית + עדשות אופטיות עם ציפויים
+                </h3>
               </div>
-              <div className="flex items-center gap-3">
-                <a
-                  href={`tel:${BUSINESS_INFO.phoneAvigail}`}
-                  className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3.5 py-1.5 rounded-xl font-bold transition-colors"
-                >
-                  <Phone className="w-3.5 h-3.5" />
-                  <span>אביגיל: {BUSINESS_INFO.phoneAvigail}</span>
-                </a>
+
+              <ul className="space-y-3 text-xs sm:text-sm text-slate-700">
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span><strong>בדיקת ראייה מקצועית בחינם:</strong> מבוצעת ע"י אופטומטריסטית מורשית (אביגיל).</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span><strong>מסגרת לבחירה:</strong> מגוון רחב של מסגרות מודרניות, קלאסיות וקלות משקל.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span><strong>ציפויים מלאים כלולים:</strong> אנטי-רפלקס נגד סנוור בנהיגה ובמסכים + הגנה משריטות.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span><strong>ערכה מלאה:</strong> כולל נרתיק קשיח ומטלית מיקרופייבר.</span>
+                </li>
+              </ul>
+
+              <div className="pt-2">
                 <button
-                  id="chat-help-booking-btn"
-                  onClick={triggerChatBot}
-                  className="inline-flex items-center gap-1.5 text-[#0047AB] bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3.5 py-1.5 rounded-xl font-bold transition-colors cursor-pointer"
+                  onClick={() => {
+                    setBookingMode('callback');
+                    setLeadInterest('glasses150');
+                    scrollToBooking();
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-2 bg-[#0047AB] hover:bg-blue-800 text-white font-extrabold text-sm py-3 px-5 rounded-2xl shadow-xs transition-colors cursor-pointer"
                 >
-                  <MessageCircle className="w-3.5 h-3.5" />
-                  <span>עזרה בצ'אט</span>
+                  <span>השאירו פרטים למשקפיים ב-150 ₪</span>
+                  <ArrowRight className="w-4 h-4 rotate-180" />
                 </button>
               </div>
             </div>
 
-          </div>
+            {/* CARD 2: MULTIFOCAL 800 - 1,200 ₪ (CRITICAL REQUIREMENT) */}
+            <div className="bg-emerald-50/50 border-2 border-[#62B83E] rounded-3xl p-6 sm:p-8 space-y-5 hover:border-[#4C9C29] transition-colors shadow-sm relative">
+              <div className="inline-flex items-center gap-1.5 bg-[#4C9C29] text-white text-xs font-black px-3 py-1 rounded-full">
+                <Layers className="w-4 h-4" />
+                <span>מבצע מולטיפוקל ללא תחרות</span>
+              </div>
 
+              <div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl sm:text-5xl font-black text-emerald-950 font-['Rubik']">800 - 1,200 ₪</span>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-slate-500 line-through">במקום 4,000 ₪ ברשתות!</span>
+                    <span className="text-xs font-black text-emerald-700">חיסכון של עד 3,000 ₪</span>
+                  </div>
+                </div>
+                <h3 className="text-xl font-black text-slate-900 font-['Rubik'] mt-1">
+                  משקפי מולטיפוקל מתקדמים – ראייה חלקה לכל המרחקים
+                </h3>
+              </div>
+
+              <ul className="space-y-3 text-xs sm:text-sm text-slate-700">
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span><strong>עדשות מולטיפוקל איכותיות:</strong> מעבר רציף וטבעי בין קריאה (קרוב), מחשב (ביניים) ונהיגה (רחוק).</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span><strong>בדיקת התאמה מולטיפוקל יסודית:</strong> מדידות גובה ומרחק אישונים (PD) בדיוק מילימטרי.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span><strong>במקום לשלם 3,500-4,500 ₪:</strong> מחיר חברתי נגיש שמאפשר לכל אדם ליהנות ממולטיפוקל איכותי.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span><strong>אחריות הסתגלות מלאה:</strong> ליווי אישי עד שאתם רואים בצורה מושלמת ונוחה.</span>
+                </li>
+              </ul>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => {
+                    setBookingMode('callback');
+                    setLeadInterest('multifocal');
+                    scrollToBooking();
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-2 bg-[#62B83E] hover:bg-[#529e32] text-white font-extrabold text-sm py-3 px-5 rounded-2xl shadow-md transition-colors cursor-pointer"
+                >
+                  <span>השאירו פרטים למולטיפוקל ב-800-1,200 ₪</span>
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Location & Navigation Section (Waze link as specified) */}
-      <section className="py-12 bg-white border-b border-slate-200">
+      {/* ========================================================================= */}
+      {/* SECTION: Location & Waze Navigation */}
+      {/* ========================================================================= */}
+      <section className="py-12 bg-slate-50 border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="bg-gradient-to-br from-slate-900 via-[#0A2540] to-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
             
-            {/* Background decorative glow */}
             <div className="absolute -top-24 -left-24 w-72 h-72 bg-[#0047AB]/30 rounded-full blur-3xl pointer-events-none"></div>
             <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-[#62B83E]/20 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -508,7 +720,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                 </div>
 
                 <h3 className="text-2xl sm:text-3xl font-black font-['Rubik'] text-white">
-                  איך מגיעים אלינו?
+                  איך מגיעים אלינו לאמירים?
                 </h3>
 
                 <div className="space-y-2 text-slate-200 text-sm sm:text-base leading-relaxed">
@@ -516,7 +728,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     <MapPin className="w-5 h-5 text-red-400 shrink-0" />
                     <span>מצפה מנחם 86, אמירים. 15 ק"מ מכרמיאל לכיוון צפת.</span>
                   </p>
-                  <p className="text-slate-300">
+                  <p className="text-slate-300 text-xs sm:text-sm">
                     החנות ממוקמת באווירה גלילית ירוקה ושלווה, 15 דקות בלבד נסיעה מכרמיאל ו-20 דקות מצפת. חניה חופשית ובחינם ממש בפתח המקום.
                   </p>
                 </div>
@@ -534,21 +746,19 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   </a>
 
                   <a
-                    href="https://maps.google.com/?q=32.936389,35.454517"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={`tel:${BUSINESS_INFO.phoneAvigail}`}
                     className="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white font-bold px-4 py-3.5 rounded-2xl transition-colors text-sm"
                   >
-                    <MapPin className="w-4 h-4 text-emerald-300" />
-                    <span>Google Maps</span>
+                    <Phone className="w-4 h-4 text-emerald-300" />
+                    <span>חיוג לאביגיל: {BUSINESS_INFO.phoneAvigail}</span>
                   </a>
                 </div>
               </div>
 
-              {/* Coordinates and visual map card */}
+              {/* Coordinates and visual distance card */}
               <div className="lg:col-span-5 bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/15 space-y-3">
                 <div className="flex items-center justify-between text-xs text-slate-300 border-b border-white/10 pb-2">
-                  <span>נקודת ציון:</span>
+                  <span>נקודת ציון GPS:</span>
                   <span dir="ltr" className="font-mono text-amber-300 font-bold">32.936389, 35.454517</span>
                 </div>
                 <div className="space-y-2 text-xs text-slate-200">
@@ -564,7 +774,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
 
                 <div className="pt-2">
                   <div className="bg-slate-950/60 rounded-xl p-3 text-center">
-                    <span className="text-[11px] text-slate-400 block">מרחקי הגעה לדוגמה:</span>
+                    <span className="text-[11px] text-slate-400 block">זמני נסיעה לדוגמה:</span>
                     <div className="flex items-center justify-around text-xs font-bold text-white pt-1">
                       <span>כרמיאל: 15 דק'</span>
                       <span>•</span>
@@ -582,8 +792,10 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
         </div>
       </section>
 
-      {/* Social Proof & Reviews */}
-      <section className="py-12 bg-slate-50 border-b border-slate-200">
+      {/* ========================================================================= */}
+      {/* SECTION: Social Proof */}
+      {/* ========================================================================= */}
+      <section className="py-12 bg-white border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-8">
           <div className="text-center space-y-2">
             <div className="flex items-center justify-center gap-1 text-amber-400">
@@ -600,42 +812,42 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-3.5 h-3.5 fill-current" />
                 ))}
               </div>
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-                "הייתי סקפטי לגבי מחיר של 150 ש״ח למשקפיים מלאים. הגעתי לאמירים, אביגיל בדקה אותי בסבלנות מדהימה ובחרתי מסגרת מהממת. לא שילמתי שקל יותר. ממליץ בחום לכולם!"
+                "עשיתי אצל אביגיל משקפי מולטיפוקל ב-1,000 ש״ח. ברשת בקניון דרשו ממני 4,200 ש״ח! ההסתגלות הייתה חלקה מהיום הראשון, חסכתי מעל 3,000 שקל. פשוט מדהים."
               </p>
               <div className="text-xs font-bold text-slate-900 border-t border-slate-100 pt-2">
-                — דניאל ק., כרמיאל
+                — אליעזר ב., כרמיאל
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-3.5 h-3.5 fill-current" />
                 ))}
               </div>
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-                "מיזם מבורך ומרגש. קניתי כבר 3 זוגות – אחד לראייה, אחד לקריאה ואחד משקפי שמש אופטיות. האיכות מצוינת והשירות של צביקה ואביגיל זה חוויה אחרת לגמרי."
+                "הייתי סקפטית לגבי 150 ש״ח למשקפיים שלמים כולל בדיקה. הגעתי לאמירים, קיבלתי יחס חם ובחרתי מסגרת משגעת. לא שילמתי שקל מעבר ל-150. ממליצה לכל מי שמחפש הוגנות!"
               </p>
               <div className="text-xs font-bold text-slate-900 border-t border-slate-100 pt-2">
                 — רחל מ., צפת
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-3.5 h-3.5 fill-current" />
                 ))}
               </div>
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-                "שמעתי עליהם מהתרומות לחיילים במלחמה והחלטתי להגיע. אין מילים לתאר את ההוגנות והמקצועיות. חסכתי מעל 800 שקלים בהשוואה לרשת בקניון!"
+                "שמעתי עליהם מהתרומות לחיילים במלחמה והגעתי לבדוק. האווירה רגועה, הבדיקה של אביגיל הייתה הכי יסודית שעברתי אי פעם. אין תחליף לשירות כזה."
               </p>
               <div className="text-xs font-bold text-slate-900 border-t border-slate-100 pt-2">
                 — איתי ש., גליל עליון
@@ -645,35 +857,41 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
         </div>
       </section>
 
-      {/* FAQ Accordion */}
-      <section className="py-12 bg-white border-b border-slate-200">
+      {/* ========================================================================= */}
+      {/* SECTION: FAQ Accordion (Updated with Multifocal details) */}
+      {/* ========================================================================= */}
+      <section className="py-12 bg-slate-50 border-b border-slate-200">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-6">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-['Rubik']">
               שאלות נפוצות על המבצע
             </h2>
             <p className="text-xs sm:text-sm text-slate-600">
-              כל מה שחשוב לדעת לפני שמגיעים
+              כל מה שחשוב לדעת על משקפי ה-150 ₪ ועל המולטיפוקל
             </p>
           </div>
 
           <div className="space-y-3">
             {[
               {
+                q: 'כמה עולים אצלכם משקפי מולטיפוקל ומה זה כולל?',
+                a: 'משקפי מולטיפוקל מלאים (מסגרת איכותית + עדשות מולטיפוקל מתקדמות עם שדה ראייה רחב + בדיקת התאמה מקיפה ואחריות) עולים אצלנו 800 עד 1,200 ₪ בלבד (תלוי בסוג העדשה והציפויים), במקום 3,500-4,500 ₪ שגובים ברשתות!',
+              },
+              {
                 q: 'האם המחיר של 150 ₪ באמת כולל גם מסגרת וגם עדשות?',
                 a: 'חד משמעית כן! החבילה כוללת מסגרת מלאה לבחירה מתוך המגוון המשתתף במבצע + זוג עדשות אופטיות איכותיות כולל ציפוי אנטי-רפלקס ונגד שריטות + בדיקת ראייה ללא עלות.',
               },
               {
                 q: 'באילו ימים ושעות אפשר להגיע לבדיקה?',
-                a: 'שעות הפעילות הן: ימים ד\' ו-ה\' בין 12:00 ל-18:00, ויום ו\' בין 10:00 ל-14:00. ההגעה הינה בתיאום מראש בלבד דרך היומן או הטלפון.',
+                a: 'שעות הפעילות הן: ימים ד\' ו-ה\' בין 12:00 ל-18:00, ויום ו\' בין 10:00 ל-14:00. ההגעה הינה בתיאום מראש בלבד דרך היומן, הטלפון או השארת פרטים למעלה.',
+              },
+              {
+                q: 'איך עובדת השארת הפרטים לקביעת תור?',
+                a: 'פשוט משאירים שם וטלפון בטופס שלמעלה בראש הדף. אביגיל או צביקה יחזרו אליכם בהקדם ויתאמו עבורכם שעה שנוחה לכם, מבלי שתצטרכו להסתבך עם לוח שנה.',
               },
               {
                 q: 'האם אפשר להביא מרשם מוכן מבדיקה קודמת?',
                 a: 'בהחלט! אם יש לכם מרשם עדכני מרופא עיניים או אופטומטריסט שאתם מרוצים ממנו, אפשר להביא אותו ונכין לפיו בדיוק. כמובן שניתן גם לעבור אצלנו בדיקה מלאה בחינם.',
-              },
-              {
-                q: 'מה קורה אם יש לי צילינדר גבוה או מספר מעל 4?',
-                a: 'חבילת הבסיס ב-150 ₪ מכסה את רוב המרשמים הסטנדרטיים (עד מספר 4 וצילינדר עד 2). עבור מרשמים מיוחדים, עדשות דקות במיוחד (אינדקס 1.67/1.74) או מולטיפוקל, ישנה תוספת מחיר הוגנת ושקופה שמוסברת במלואה מראש – עדיין בשבריר ממחירי השוק!',
               },
               {
                 q: 'תוך כמה זמן המשקפיים מוכנים?',
@@ -682,11 +900,11 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-colors"
+                className="border border-slate-200 rounded-2xl overflow-hidden bg-white transition-colors"
               >
                 <button
                   onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                  className="w-full text-right p-4 font-bold text-slate-900 flex items-center justify-between gap-3 hover:bg-slate-100 transition-colors text-sm sm:text-base cursor-pointer"
+                  className="w-full text-right p-4 font-bold text-slate-900 flex items-center justify-between gap-3 hover:bg-slate-50 transition-colors text-sm sm:text-base cursor-pointer"
                 >
                   <span>{item.q}</span>
                   <ChevronDown
@@ -696,7 +914,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   />
                 </button>
                 {activeFaq === idx && (
-                  <div className="p-4 pt-0 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-white">
+                  <div className="p-4 pt-0 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/50">
                     {item.a}
                   </div>
                 )}
@@ -714,7 +932,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               מוכנים לראות צלול במחיר הגון?
             </h4>
             <p className="text-xs sm:text-sm text-blue-100">
-              שריינו תור עכשיו ביומן או לחצו לפתיחת הצ'אט לקבלת מענה אישי ומהיר.
+              משקפי ראייה ב-150 ₪ או מולטיפוקל ב-800-1,200 ₪ במקום 4,000 ₪. השאירו פרטים בראש הדף או צרו קשר ישיר.
             </p>
           </div>
 
@@ -723,7 +941,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               onClick={scrollToBooking}
               className="bg-[#62B83E] hover:bg-[#529e32] text-white font-black text-sm px-5 py-3 rounded-xl shadow-md transition-all cursor-pointer"
             >
-              קביעת תור ביומן
+              קביעת תור בראש הדף
             </button>
             <button
               onClick={triggerChatBot}

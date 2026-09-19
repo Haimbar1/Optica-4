@@ -42,7 +42,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
                   className="inline-flex items-center gap-2 bg-[#EDF7E5] border border-[#B7E2A0] text-[#3D861D] px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-2xs hover:bg-[#E3F2D8] transition-colors cursor-pointer group text-right"
                 >
                   <span className="bg-[#4C9C29] text-white text-[10px] font-black px-2 py-0.5 rounded-full">מבצע פייסבוק</span>
-                  <span>תרמנו לחיילים – עכשיו מגיע לכולם! משקפיים מלאים ב-150 ₪ בלבד</span>
+                  <span>תרמנו לחיילים – עכשיו מגיע לכולם! משקפיים ב-150 ₪ ומולטיפוקל ב-800-1,200 ₪ בלבד</span>
                   <span className="text-xs font-black underline mr-1 group-hover:translate-x-0.5 transition-transform">לפרטים וקביעת תור ←</span>
                 </button>
               </div>

@@ -131,7 +131,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
                 onClick={onOpenCampaign}
                 className="px-3.5 py-1.5 rounded-xl text-xs xl:text-sm font-black bg-gradient-to-r from-[#62B83E] to-[#4C9C29] text-white hover:opacity-95 shadow-xs flex items-center gap-1.5 cursor-pointer animate-pulse whitespace-nowrap"
               >
-                <span>🔥 מבצע 150 ₪ (קמפיין)</span>
+                <span>🔥 מבצעי קמפיין (150 ₪ / מולטיפוקל)</span>
               </button>
             )}
           </nav>
@@ -197,7 +197,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
               onClick={onOpenCampaign}
               className="px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-[#62B83E] to-[#4C9C29] text-white whitespace-nowrap cursor-pointer shadow-2xs"
             >
-              🔥 מבצע 150 ₪
+              🔥 מבצע 150 ₪ ומולטיפוקל
             </button>
           )}
         </div>
@@ -216,7 +216,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
                 }}
                 className="w-full text-right px-4 py-3 rounded-xl text-base font-black bg-gradient-to-r from-[#EDF7E5] to-[#D8EECA] text-[#2C6A15] border border-[#B7E2A0] transition-colors cursor-pointer flex items-center justify-between"
               >
-                <span>🔥 דף קמפיין: משקפיים ב-150 ₪ + בדיקה חינם</span>
+                <span>🔥 דף קמפיין: משקפיים ב-150 ₪ ומולטיפוקל ב-800-1,200 ₪</span>
                 <span className="text-xs bg-[#4C9C29] text-white px-2 py-0.5 rounded-full font-bold">מעבר</span>
               </button>
             )}
