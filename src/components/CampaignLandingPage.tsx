@@ -560,6 +560,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                             <input
                               type="text"
                               id="lead-name-input"
+                              name="name"
+                              autoComplete="name"
                               value={leadName}
                               onChange={(e) => setLeadName(e.target.value)}
                               placeholder="ישראל ישראלי"
@@ -581,6 +583,9 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                             <input
                               type="tel"
                               id="lead-phone-input"
+                              name="tel"
+                              autoComplete="tel"
+                              inputMode="tel"
                               required
                               value={leadPhone}
                               onChange={(e) => {
@@ -682,6 +687,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                         <input
                           type="text"
                           id="lead-notes-input"
+                          name="notes"
+                          autoComplete="off"
                           value={leadNotes}
                           onChange={(e) => setLeadNotes(e.target.value)}
                           placeholder="לדוגמה: יום חמישי אחה״צ, מספר קיים..."
