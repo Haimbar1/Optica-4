@@ -482,16 +482,6 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                         <Phone className="w-3.5 h-3.5 text-emerald-600" />
                         <span>מתאמת תורים (אביגיל): {BUSINESS_INFO.phoneAvigail}</span>
                       </a>
-                      <span className="text-slate-300">|</span>
-                      <a
-                        href="https://wa.me/972545404183?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A0%D7%99%20%D7%A4%D7%95%D7%A0%D7%94%20%D7%9E%D7%93%D7%A3%20%D7%94%D7%9E%D7%91%D7%A6%D7%A2%20%D7%91%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7%D7%94%20%D7%94%D7%98%D7%95%D7%91%D7%94"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[#25D366] hover:text-[#20ba59] font-bold"
-                      >
-                        <MessageCircle className="w-3.5 h-3.5 fill-[#25D366] text-[#25D366]" />
-                        <span>לחץ למעבר לוואטסאפ (054-540-4183)</span>
-                      </a>
                     </div>
                   </div>
                 </div>
