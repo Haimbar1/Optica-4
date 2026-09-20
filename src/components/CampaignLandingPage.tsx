@@ -386,24 +386,6 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               {/* TAB 1 (DEFAULT): Embedded Interactive Cal.com Calendar */}
               {bookingMode === 'calendar' && (
                 <div className="p-2.5 sm:p-4 bg-white space-y-2.5">
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-2 sm:p-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-[#0047AB] shrink-0" />
-                      <span className="font-bold text-slate-800">
-                        מועדי הבדיקות הקרובים פתוחים לבחירה. בחרו יום ושעה וקבלו אישור מיידי:
-                      </span>
-                    </div>
-                    <a
-                      href={calUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[#0047AB] hover:underline font-extrabold text-xs"
-                    >
-                      <span>פתיחת יומן במסך מלא</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-
                   {/* Day Picker Pills: Select Clinic Days Starting from Earliest Open Hour */}
                   <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
                     <span className="text-xs font-bold text-slate-700">ימי בדיקות קרובים:</span>
@@ -453,6 +435,23 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     <div id="cal-inline-embed" className="w-full h-full overflow-auto sm:[zoom:0.8]" />
                   </div>
 
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-2 sm:p-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-[#0047AB] shrink-0" />
+                      <span className="font-bold text-slate-800">
+                        מועדי הבדיקות הקרובים פתוחים לבחירה. בחרו יום ושעה וקבלו אישור מיידי:
+                      </span>
+                    </div>
+                    <a
+                      href={calUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[#0047AB] hover:underline font-extrabold text-xs"
+                    >
+                      <span>פתיחת יומן במסך מלא</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
                   {/* Footer actions underneath calendar */}
                   <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 sm:p-3 flex flex-wrap items-center justify-between gap-2.5 text-xs">
                     <div className="flex items-center gap-2 text-slate-700 font-medium">
