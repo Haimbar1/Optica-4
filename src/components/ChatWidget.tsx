@@ -159,7 +159,8 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ isCampaignPage = false }
     setShowTeaser(false);
   };
 
-  if (!isCampaignPage || !showTeaser || isBotWindowOpen) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  if (!isCampaignPage || !showTeaser || isBotWindowOpen || isMobile) {
     return null;
   }
 

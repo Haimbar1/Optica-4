@@ -210,92 +210,6 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-['Assistant',sans-serif] selection:bg-[#62B83E] selection:text-white" dir="rtl">
-      {/* Top Notification Bar */}
-      <div className="bg-gradient-to-r from-[#0047AB] via-[#0A2540] to-[#0047AB] text-white py-2 px-4 text-xs sm:text-sm font-semibold shadow-xs">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="bg-[#62B83E] text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-2xs">
-              מבצע קמפיין מיוחד
-            </span>
-            <span className="text-blue-100 font-medium hidden sm:inline">
-              משקפי ראייה מלאים ב-150 ₪ בלבד | מולטיפוקל ב-800-1,200 ₪ בלבד במקום 4,000 ₪!
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 text-xs font-bold">
-            <a
-              href={`tel:${BUSINESS_INFO.phoneAvigail}`}
-              className="flex items-center gap-1.5 text-emerald-300 hover:text-white transition-colors"
-            >
-              <Phone className="w-3.5 h-3.5" />
-              <span>תורים ובירורים: {BUSINESS_INFO.phoneAvigail}</span>
-            </a>
-            {onBackToMain && (
-              <button
-                id="back-to-main-site-btn"
-                onClick={onBackToMain}
-                className="inline-flex items-center gap-1 text-blue-200 hover:text-white underline underline-offset-4 cursor-pointer text-xs"
-              >
-                <span>לאתר המלא</span>
-                <ArrowRight className="w-3.5 h-3.5 rotate-180" />
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-          {/* Logo */}
-          <div
-            onClick={onBackToMain}
-            className="flex items-center gap-3 cursor-pointer group"
-            title="האופטיקה הטובה - אופטיקה חברתית"
-          >
-            <img
-              src={logoImg}
-              alt="האופטיקה הטובה"
-              className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl object-contain shadow-2xs group-hover:scale-105 transition-transform"
-            />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-black text-xl sm:text-2xl tracking-tight text-[#0047AB] font-['Rubik'] leading-none">
-                  האופטיקה הטובה
-                </span>
-                <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
-                  אופטיקה חברתית
-                </span>
-              </div>
-              <span className="text-xs text-slate-500 font-medium block mt-0.5">
-                מצפה מנחם 86, אמירים • 15 ק"מ מכרמיאל
-              </span>
-            </div>
-          </div>
-
-          {/* Action CTAs */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <button
-              id="header-chat-btn"
-              onClick={triggerChatBot}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition-colors cursor-pointer"
-            >
-              <MessageCircle className="w-4 h-4 text-[#0047AB]" />
-              <span>בוט קביעת תור</span>
-            </button>
-
-            <button
-              id="header-book-btn"
-              onClick={scrollToBooking}
-              className="inline-flex items-center gap-2 bg-[#0047AB] hover:bg-blue-800 text-white font-extrabold text-xs sm:text-sm px-4 py-2 rounded-xl shadow-sm hover:shadow transition-all cursor-pointer"
-            >
-              <Calendar className="w-4 h-4 text-amber-300" />
-              <span>שריין תור עכשיו</span>
-            </button>
-          </div>
-        </div>
-      </header>
-
       {/* ========================================================================= */}
       {/* ABOVE THE FOLD HERO: Centered Booking Focal Point Framed by Deals & Info */}
       {/* ========================================================================= */}
@@ -303,19 +217,13 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
         <div className="max-w-7xl mx-auto px-3 sm:px-6 space-y-2.5 sm:space-y-3">
           
           {/* 1. Header Banner: Direct instruction */}
-          <div className="text-center max-w-2xl mx-auto pb-0.5">
-            <h1 className="text-base sm:text-lg lg:text-xl font-black text-slate-900 font-['Rubik'] leading-snug tracking-tight">
-              בחרו יום ושעה ביומן – הבדיקה ללא עלות וללא התחייבות
-            </h1>
-          </div>
-
           {/* ============================================================= */}
           {/* 2. THE BOOKING BOARD (Flanked on sides on Desktop; Full width on Mobile) */}
           {/* ============================================================= */}
           <div className="xl:flex xl:items-start xl:justify-center xl:gap-3.5">
 
             {/* Desktop Right Side Column: Offer 1 + Location & Hours + 2 Trust Badges */}
-            <aside className="hidden xl:flex xl:flex-col xl:w-[260px] 2xl:w-[280px] xl:shrink-0 space-y-2.5">
+            <aside className="hidden xl:w-[260px] 2xl:w-[280px] xl:shrink-0 space-y-2.5">
               {/* Offer 1: Full Glasses 150 NIS */}
               <div className="bg-blue-50/95 border-2 border-[#0047AB]/40 rounded-2xl p-3 shadow-xs relative flex flex-col gap-2">
                 <div className="flex items-center justify-between">
@@ -795,7 +703,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
           </div>
 
           {/* Desktop Left Side Column: Offer 2 + Avigail Phone + 2 Trust Badges */}
-          <aside className="hidden xl:flex xl:flex-col xl:w-[260px] 2xl:w-[280px] xl:shrink-0 space-y-2.5">
+          <aside className="hidden xl:w-[260px] 2xl:w-[280px] xl:shrink-0 space-y-2.5">
             {/* Offer 2: Multifocal 800 - 1,200 NIS */}
             <div className="bg-emerald-50/95 border-2 border-[#62B83E] rounded-2xl p-3 shadow-xs relative flex flex-col gap-2">
               <div className="flex items-center justify-between">

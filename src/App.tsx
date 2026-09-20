@@ -90,6 +90,7 @@ export default function App() {
           onOpenPrivacy={handleOpenPrivacy}
           onOpenTerms={handleOpenTerms}
         />
+        <style>{`@media (max-width: 767px) { #obw-fab, .obw-fab, #obw-window, .obw-window, .obw-fab-button, [id^="obw-"] { display: none !important; } }`}</style>
         <ChatWidget isCampaignPage={true} />
         <LegalModal
           isOpen={isLegalModalOpen}
