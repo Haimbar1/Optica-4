@@ -10,7 +10,7 @@
   var webhookUrl = userConfig.webhookUrl || (currentScript ? currentScript.getAttribute('data-webhook-url') : null) || 'https://n8n.srv1239769.hstgr.cloud/webhook/65325d34-0c9e-4cc3-8b7c-c03c47105b3a';
   var botTitle = userConfig.title || (currentScript ? currentScript.getAttribute('data-title') : null) || 'האופטיקה הטובה - מושב אמירים';
   var botSubtitle = userConfig.subtitle || (currentScript ? currentScript.getAttribute('data-subtitle') : null) || '';
-  var whatsappNumber = userConfig.whatsappNumber || (currentScript ? currentScript.getAttribute('data-whatsapp') : null) || '972547866119';
+  var whatsappNumber = userConfig.whatsappNumber || (currentScript ? currentScript.getAttribute('data-whatsapp') : null) || '972545404183';
   var themeColor = userConfig.themeColor || (currentScript ? currentScript.getAttribute('data-theme-color') : null) || '#0047AB';
   var welcomeMessage = userConfig.welcomeMessage || userConfig.FirstMessage || userConfig.firstMessage || (currentScript ? currentScript.getAttribute('data-welcome-message') : null) || '';
   var conversationFlow = userConfig.conversationFlow || (currentScript ? currentScript.getAttribute('data-conversation-flow') : null) || '';

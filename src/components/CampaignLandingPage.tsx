@@ -30,6 +30,11 @@ import {
   getUpcomingBookingDays,
   BookingDayOption,
 } from '../utils/dateUtils';
+import {
+  isValidIsraeliPhone,
+  getIsraeliPhoneValidationError,
+  formatIsraeliPhone,
+} from '../utils/phoneValidation';
 import campaignGlassesImg from '../assets/images/campaign_glasses_1789850551440.jpg';
 import logoImg from '../assets/images/logo_optics.svg';
 
@@ -53,6 +58,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   // Quick Callback Form state
   const [leadName, setLeadName] = useState('');
   const [leadPhone, setLeadPhone] = useState('');
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [leadInterest, setLeadInterest] = useState<'glasses150' | 'multifocal' | 'both'>('glasses150');
   const [leadNotes, setLeadNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -79,7 +86,19 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
 
   const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!leadPhone.trim()) return;
+    setPhoneTouched(true);
+
+    // Validate Israeli phone number
+    const validationErr = getIsraeliPhoneValidationError(leadPhone);
+    if (validationErr) {
+      setPhoneError(validationErr);
+      const phoneInput = document.getElementById('lead-phone-input');
+      if (phoneInput) {
+        phoneInput.focus();
+      }
+      return;
+    }
+    setPhoneError(null);
 
     setIsSubmitting(true);
 
@@ -95,9 +114,9 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
     const utmSource = urlParams.get('utm_source') || 'אתר';
     const utmCampaign = urlParams.get('utm_campaign') || 'קמפיין משקפיים 150 ומולטיפוקל';
 
-    // 2. Build CRM Lead Payload matching SmartEsek specifications
+    // 2. Build CRM Lead Payload matching SmartEsek specifications with clean Israeli phone
     const customerName = leadName.trim() || 'לקוח מדף נחיתה';
-    const customerPhone = leadPhone.trim();
+    const customerPhone = formatIsraeliPhone(leadPhone.trim());
     const customerMessage = `מבצע: ${interestLabel}${leadNotes.trim() ? ` | הערה: ${leadNotes.trim()}` : ''}`;
 
     const leadPayload = {
@@ -517,6 +536,16 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                         <Phone className="w-3.5 h-3.5 text-emerald-600" />
                         <span>מתאמת תורים (אביגיל): {BUSINESS_INFO.phoneAvigail}</span>
                       </a>
+                      <span className="text-slate-300">|</span>
+                      <a
+                        href="https://wa.me/972545404183?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A0%D7%99%20%D7%A4%D7%95%D7%A0%D7%94%20%D7%9E%D7%93%D7%A3%20%D7%94%D7%9E%D7%91%D7%A6%D7%A2%20%D7%91%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7%D7%94%20%D7%94%D7%98%D7%95%D7%91%D7%94"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[#25D366] hover:text-[#20ba59] font-bold"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5 fill-[#25D366] text-[#25D366]" />
+                        <span>לחץ למעבר לוואטסאפ (054-540-4183)</span>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -538,21 +567,23 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                       </p>
                       <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
                         <a
-                          href={`https://wa.me/${BUSINESS_INFO.phoneAvigailRaw}?text=${encodeURIComponent(
+                          href={`https://wa.me/972545404183?text=${encodeURIComponent(
                             `שלום, השארתי פרטים עבור ${leadInterest === 'multifocal' ? 'מולטיפוקל' : 'משקפיים ב-150 ₪'}. שמי ${leadName}.`
                           )}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-xs transition-colors"
                         >
-                          <MessageCircle className="w-4 h-4" />
-                          <span>לפנייה ישירה בוואטסאפ</span>
+                          <MessageCircle className="w-4 h-4 fill-white" />
+                          <span>לחץ למעבר לוואטסאפ (054-540-4183) 📱</span>
                         </a>
                         <button
                           onClick={() => {
                             setSubmitSuccess(false);
                             setLeadPhone('');
                             setLeadName('');
+                            setPhoneError(null);
+                            setPhoneTouched(false);
                           }}
                           className="text-xs text-slate-500 hover:text-slate-800 underline cursor-pointer py-1 px-2"
                         >
@@ -561,7 +592,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <form onSubmit={handleLeadSubmit} className="space-y-4 text-right max-w-2xl mx-auto">
+                    <form onSubmit={handleLeadSubmit} className="space-y-4 text-right max-w-2xl mx-auto" noValidate>
                       <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-slate-700 text-xs sm:text-sm leading-relaxed flex items-center justify-between">
                         <span>השאירו שם וטלפון, ונחזור אליכם בהקדם לתיאום מועד שנוח לכם:</span>
                         <button
@@ -592,24 +623,61 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                           </div>
                         </div>
 
-                        {/* Phone Input (Required) */}
+                        {/* Phone Input (Required + Israeli validation) */}
                         <div>
-                          <label className="block text-xs font-bold text-slate-800 mb-1">
-                            טלפון לחזרה <span className="text-red-500">*</span>
-                          </label>
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="block text-xs font-bold text-slate-800">
+                              טלפון לחזרה <span className="text-red-500">*</span>
+                            </label>
+                            <span className="text-[11px] text-slate-500">מספר ישראלי (נייד או קווי)</span>
+                          </div>
                           <div className="relative">
                             <input
                               type="tel"
                               id="lead-phone-input"
                               required
                               value={leadPhone}
-                              onChange={(e) => setLeadPhone(e.target.value)}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setLeadPhone(val);
+                                if (phoneTouched) {
+                                  setPhoneError(getIsraeliPhoneValidationError(val));
+                                }
+                              }}
+                              onBlur={() => {
+                                setPhoneTouched(true);
+                                setPhoneError(getIsraeliPhoneValidationError(leadPhone));
+                              }}
                               placeholder="050-1234567"
                               dir="ltr"
-                              className="w-full bg-slate-50 border border-slate-300 rounded-xl py-2.5 px-3.5 pr-10 text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:border-[#0047AB] focus:ring-2 focus:ring-[#0047AB]/20 transition-all text-right font-mono"
+                              aria-invalid={!!phoneError && phoneTouched}
+                              className={`w-full bg-slate-50 border rounded-xl py-2.5 px-3.5 pr-10 pl-9 text-sm text-slate-900 focus:bg-white focus:outline-hidden transition-all text-right font-mono ${
+                                phoneError && phoneTouched
+                                  ? 'border-red-500 bg-red-50/40 focus:border-red-600 focus:ring-2 focus:ring-red-500/20 text-red-950'
+                                  : phoneTouched && !phoneError && leadPhone.trim()
+                                  ? 'border-emerald-500 bg-emerald-50/20 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20'
+                                  : 'border-slate-300 focus:border-[#0047AB] focus:ring-2 focus:ring-[#0047AB]/20'
+                              }`}
                             />
                             <Phone className="w-4 h-4 text-slate-400 absolute right-3.5 top-3 pointer-events-none" />
+                            {phoneTouched && !phoneError && leadPhone.trim() && (
+                              <Check className="w-4 h-4 text-emerald-600 absolute left-3 top-3 pointer-events-none" />
+                            )}
+                            {phoneTouched && phoneError && (
+                              <AlertCircle className="w-4 h-4 text-red-500 absolute left-3 top-3 pointer-events-none" />
+                            )}
                           </div>
+                          {phoneError && phoneTouched ? (
+                            <div className="flex items-center gap-1.5 text-xs text-red-600 font-bold mt-1.5">
+                              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                              <span>{phoneError}</span>
+                            </div>
+                          ) : phoneTouched && !phoneError && leadPhone.trim() ? (
+                            <div className="flex items-center gap-1 text-[11px] text-emerald-700 font-semibold mt-1">
+                              <Check className="w-3.5 h-3.5 shrink-0" />
+                              <span>מספר טלפון תקין בישראל</span>
+                            </div>
+                          ) : null}
                         </div>
                       </div>
 
@@ -692,18 +760,31 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                         )}
                       </button>
 
-                      <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+                      <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100">
+                        <a
+                          href="https://wa.me/972545404183?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A0%D7%99%20%D7%9E%D7%A2%D7%95%D7%A0%D7%99%D7%99%D7%9F%2F%D7%AA%20%D7%91%D7%A4%D7%A8%D7%98%D7%99%D7%9D%20%D7%A2%D7%9C%20%D7%94%D7%9E%D7%91%D7%A6%D7%A2%20%D7%91%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7%D7%94%20%D7%94%D7%98%D7%95%D7%91%D7%94%20%D7%91%D7%90%D7%9E%D7%99%D7%A8%D7%99%D7%9D"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs sm:text-sm py-2 px-4 rounded-xl shadow-xs transition-colors w-full sm:w-auto"
+                        >
+                          <MessageCircle className="w-4 h-4 fill-white" />
+                          <span>לפנייה ישירה בוואטסאפ: לחץ למעבר לוואטסאפ (054-540-4183) 📱</span>
+                        </a>
+
+                        <button
+                          type="button"
+                          onClick={() => setBookingMode('calendar')}
+                          className="text-[#0047AB] hover:underline cursor-pointer font-bold text-xs"
+                        >
+                          מעדיפים לבחור שעה ביומן? לחצו כאן
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-start text-[11px] text-slate-500 pt-0.5">
                         <span className="flex items-center gap-1">
                           <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                           <span>פרטיכם שמורים ומאובטחים</span>
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => setBookingMode('calendar')}
-                          className="text-[#0047AB] hover:underline cursor-pointer font-bold"
-                        >
-                          מעדיפים לבחור שעה ביומן? לחצו כאן
-                        </button>
                       </div>
                     </form>
                   )}
@@ -1065,6 +1146,16 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   >
                     <Phone className="w-4 h-4 text-emerald-300" />
                     <span>חיוג לאביגיל (מתאמת תורים): {BUSINESS_INFO.phoneAvigail}</span>
+                  </a>
+
+                  <a
+                    href="https://wa.me/972545404183?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A0%D7%99%20%D7%A4%D7%95%D7%A0%D7%94%20%D7%9E%D7%93%D7%A3%20%D7%94%D7%9E%D7%91%D7%A6%D7%A2%20%D7%91%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7%D7%94%20%D7%94%D7%98%D7%95%D7%91%D7%94"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold px-4 py-3.5 rounded-2xl transition-colors text-sm shadow-md"
+                  >
+                    <MessageCircle className="w-4 h-4 fill-white" />
+                    <span>לחץ למעבר לוואטסאפ (054-540-4183) 📱</span>
                   </a>
                 </div>
               </div>

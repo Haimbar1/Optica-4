@@ -26,7 +26,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ isCampaignPage = false }
         botId: 'bot_generic_252',
         title: targetTitle,
         welcomeMessage: targetWelcome,
-        whatsappNumber: '972547866119',
+        whatsappNumber: '972545404183',
         webhookUrl: 'https://n8n.srv1239769.hstgr.cloud/webhook/65325d34-0c9e-4cc3-8b7c-c03c47105b3a'
       };
     }
@@ -37,7 +37,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ isCampaignPage = false }
           botId: 'bot_generic_252',
           title: targetTitle,
           welcomeMessage: targetWelcome,
-          whatsappNumber: '972547866119',
+          whatsappNumber: '972545404183',
           webhookUrl: 'https://n8n.srv1239769.hstgr.cloud/webhook/65325d34-0c9e-4cc3-8b7c-c03c47105b3a'
         });
         return true;

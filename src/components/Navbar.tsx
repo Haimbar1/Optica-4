@@ -249,6 +249,15 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
 
           <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
             <a
+              href="https://wa.me/972545404183?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%A4%D7%A8%D7%98%D7%99%D7%9D%20%D7%A2%D7%9C%20%D7%94%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7%D7%94%20%D7%94%D7%98%D7%95%D7%91%D7%94%20%D7%91%D7%90%D7%9E%D7%99%D7%A8%D7%99%D7%9D"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white py-2.5 rounded-xl font-bold text-center flex items-center justify-center gap-2 text-sm cursor-pointer shadow-xs"
+            >
+              <MessageCircle className="w-4 h-4 fill-white" />
+              <span>לחץ למעבר לוואטסאפ (054-540-4183) 📱</span>
+            </a>
+            <a
               href={BUSINESS_INFO.wazeUrl}
               target="_blank"
               rel="noopener noreferrer"

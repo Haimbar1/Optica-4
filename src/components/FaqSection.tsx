@@ -108,7 +108,7 @@ export const FaqSection: React.FC = () => {
             className="bg-[#25D366] hover:bg-[#1DA851] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-colors flex items-center gap-1.5 shrink-0"
           >
             <MessageCircle className="w-4 h-4" />
-            <span>שאל אותנו בוואטסאפ</span>
+            <span>לחץ למעבר לוואטסאפ 📱</span>
           </a>
         </div>
       </div>

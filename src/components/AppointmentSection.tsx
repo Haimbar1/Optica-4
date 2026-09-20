@@ -88,7 +88,7 @@ export const AppointmentSection: React.FC = () => {
                 <p className="text-xs font-bold text-gray-800">
                   אם קרה משהו בלתי צפוי, אנא הודיעו לנו מראש בוואטסאפ:
                   <a href={BUSINESS_INFO.whatsappDirectZvika} target="_blank" rel="noopener noreferrer" className="underline font-black mr-1 text-[#0047AB]">
-                    055-250-2584 (צביקה)
+                    054-540-4183 (לחץ למעבר לוואטסאפ)
                   </a>
                 </p>
               </div>
@@ -125,7 +125,7 @@ export const AppointmentSection: React.FC = () => {
                   className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1DA851] text-white p-2.5 rounded-xl font-bold transition-colors cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>וואטסאפ לאביגיל</span>
+                  <span>לחץ למעבר לוואטסאפ (054-540-4183)</span>
                 </a>
               </div>
             </div>
@@ -158,7 +158,7 @@ export const AppointmentSection: React.FC = () => {
                   className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1DA851] text-white p-2.5 rounded-xl font-bold transition-colors cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>וואטסאפ לצביקה</span>
+                  <span>לחץ למעבר לוואטסאפ (054-540-4183)</span>
                 </a>
               </div>
             </div>

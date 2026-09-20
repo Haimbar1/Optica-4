@@ -16,11 +16,12 @@ export const BUSINESS_INFO = {
   phoneAvigailRaw: '972549131704',
   webBotWebhook: 'https://n8n.srv1239769.hstgr.cloud/webhook/65325d34-0c9e-4cc3-8b7c-c03c47105b3a',
   whatsappBotWebhook: 'https://n8n.srv1239769.hstgr.cloud/webhook/c89a7e0e-10af-4d85-89fd-8652b2d1b1ab',
-  whatsappAgentPhone: '+972 50-672-5398',
-  whatsappAgentPhoneRaw: '972506725398',
-  whatsappAgentUrl: 'https://wa.me/972506725398',
-  whatsappDirectZvika: 'https://wa.me/972552502584',
-  whatsappDirectAvigail: 'https://wa.me/972549131704',
+  whatsappAgentPhone: '+972 54-540-4183',
+  whatsappAgentPhoneRaw: '972545404183',
+  whatsappAgentUrl: 'https://wa.me/972545404183',
+  whatsappDirect: 'https://wa.me/972545404183',
+  whatsappDirectZvika: 'https://wa.me/972545404183',
+  whatsappDirectAvigail: 'https://wa.me/972545404183',
 };
 
 export const CATALOG_FRAMES: FrameItem[] = [
@@ -169,7 +170,7 @@ export const FAQ_ITEMS: FAQItem[] = [
   },
   {
     question: 'מהי בקשת הביטול והאחריות החברתית שלכם?',
-    answer: '🪻 בקשה קטנה מאיתנו: המיזם החברתי שלנו פועל בתלות במספר הנרשמים. לכן, נודה מאוד אם תקפידו לא לבטל תור (במיוחד ביום הפגישה). אם קרה משהו בלתי צפוי, אנא הודיעו לנו בוואטסאפ: 055-250-2584.',
+    answer: '🪻 בקשה קטנה מאיתנו: המיזם החברתי שלנו פועל בתלות במספר הנרשמים. לכן, נודה מאוד אם תקפידו לא לבטל תור (במיוחד ביום הפגישה). אם קרה משהו בלתי צפוי, אנא הודיעו לנו בוואטסאפ: 054-540-4183.',
     category: 'כללי',
   },
 ];

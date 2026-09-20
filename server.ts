@@ -169,7 +169,7 @@ function normalizePhoneToInternational(phoneInput: string): string {
   if (!digits) return '';
 
   // Israeli local format starting with 0:
-  // Mobile: 05X-XXXXXXX (10 digits, e.g. 0547866119 -> 972547866119)
+  // Mobile: 05X-XXXXXXX (10 digits, e.g. 0545404183 -> 972545404183)
   // Landline: 02/03/04/08/09-XXXXXXX (9 digits, e.g. 046901234 -> 97246901234)
   if (digits.startsWith('0')) {
     if (digits.length === 10 || digits.length === 9) {
@@ -232,7 +232,7 @@ app.post('/api/bot/web', async (req, res) => {
   }
 
   // Determine effective session ID:
-  // If user provided a phone number, use the international phone format (e.g. 972547866119) as session ID.
+  // If user provided a phone number, use the international phone format (e.g. 972545404183) as session ID.
   // Otherwise, use the client UUID cookie/session string passed from browser, or fallback to 'web_client_anon'.
   const rawSession = sessionId || sessionID || '';
   let effectiveSessionId = 'web_client_anon';
@@ -316,7 +316,7 @@ app.post('/api/bot/web', async (req, res) => {
 - שם: האופטיקה הטובה באמירים
 - כתובת: מצפה מנחם 86, אמירים
 - טלפון אביגיל (לתורים לבדיקת ראייה): 054-913-1704
-- וואטסאפ/טלפון צביקה (בירורים/ביטולים): 055-250-2584
+- וואטסאפ לפניות ישירות / בירורים: 054-540-4183 (972545404183)
 - מחירי מסגרות ראייה איכותיות כולל עדשות וציפויים: 150 ₪ / 250 ₪ בלבד למרשם רגיל.
 - בדיקות ראייה מבוצעות ע"י אופטומטריסט מוסמך באמירים.`;
 
@@ -333,7 +333,7 @@ app.post('/api/bot/web', async (req, res) => {
           buttons: [
             { id: 'btn_cal', title: '📅 יומן תורים דיגיטלי' },
             { id: 'btn_avigail', title: '📞 התקשר לאביגיל (054-913-1704)' },
-            { id: 'btn_zvika', title: '💬 וואטסאפ צביקה (055-250-2584)' },
+            { id: 'btn_wa', title: '💬 לחץ למעבר לוואטסאפ (054-540-4183)' },
             { id: 'btn_waze', title: '🚗 ניווט ב-Waze' }
           ],
           source: 'gemini_ai_bot',
@@ -360,7 +360,7 @@ app.post('/api/bot/web', async (req, res) => {
     fallbackButtons = [
       { id: 'btn_cal', title: '📅 מעבר ליומן הדיגיטלי' },
       { id: 'btn_avigail', title: '📞 התקשר לאביגיל (054-913-1704)' },
-      { id: 'btn_zvika', title: '💬 וואטסאפ של צביקה (055-250-2584)' },
+      { id: 'btn_wa', title: '💬 לחץ למעבר לוואטסאפ (054-540-4183)' },
     ];
   } else if (textLower.includes('מחיר') || textLower.includes('עולה') || textLower.includes('כמה') || textLower.includes('150') || textLower.includes('250')) {
     fallbackReply = 'אצלנו במיזם האופטיקה החברתית באמירים, מסגרות ראייה איכותיות כולל עדשות וציפויים עולות 150 ₪ או 250 ₪ בלבד! ללא פערי תיווך וללא דמי שכירות יקרים בקניונים.';
@@ -372,7 +372,7 @@ app.post('/api/bot/web', async (req, res) => {
   } else if (textLower.includes('מולטיפוקל')) {
     fallbackReply = 'אנו מתמחים בהתאמת משקפי מולטיפוקל ועדשות מגע מולטיפוקל מתקדמות. כולל אחריות מלאה וכיוונון במקום.';
   } else if (textLower.includes('צביקה') || textLower.includes('ביטול') || textLower.includes('וואטסאפ')) {
-    fallbackReply = 'ליצירת קשר או עדכונים לגבי תור/ביטול, ניתן לפנות לצביקה בטלפון/וואטסאפ 055-250-2584.';
+    fallbackReply = 'ליצירת קשר או וואטסאפ ישיר, ניתן לפנות למספר 054-540-4183 (https://wa.me/972545404183).';
   }
 
   return res.json({ reply: fallbackReply, buttons: fallbackButtons, source: 'optics_smart_fallback' });
@@ -383,7 +383,7 @@ app.post('/api/bot/whatsapp', async (req, res) => {
   const { message, userPhone, userName, sessionId, sessionID } = req.body;
   const webhookUrl = 'https://n8n.srv1239769.hstgr.cloud/webhook/c89a7e0e-10af-4d85-89fd-8652b2d1b1ab';
 
-  const normalizedPhone = userPhone ? normalizePhoneToInternational(userPhone) : '972552502584';
+  const normalizedPhone = userPhone ? normalizePhoneToInternational(userPhone) : '972545404183';
   const effectiveSessionId = normalizedPhone || sessionId || sessionID || 'whatsapp-session';
 
   try {
@@ -414,7 +414,7 @@ app.post('/api/bot/whatsapp', async (req, res) => {
 
   return res.json({
     success: true,
-    whatsappUrl: `https://wa.me/972552502584?text=${encodeURIComponent(message || 'שלום, אשמח לקבל פרטים על האופטיקה הטובה באמירים')}`,
+    whatsappUrl: `https://wa.me/972545404183?text=${encodeURIComponent(message || 'שלום, אשמח לקבל פרטים על האופטיקה הטובה באמירים')}`,
     source: 'whatsapp_direct_link',
   });
 });
@@ -508,11 +508,30 @@ async function exportLeadToSmartEsek(lead: {
   }
 }
 
+// Validate Israeli phone number
+function isValidIsraeliPhone(phoneInput: string): boolean {
+  if (!phoneInput) return false;
+  const digits = phoneInput.replace(/\D/g, '');
+  if (!digits) return false;
+  if (digits.startsWith('0')) {
+    return /^05\d{8}$/.test(digits) || /^07[2-9]\d{7}$/.test(digits) || /^0[23489]\d{7}$/.test(digits);
+  }
+  if (digits.startsWith('972')) {
+    const after = digits.substring(3);
+    return /^5\d{8}$/.test(after) || /^7[2-9]\d{7}$/.test(after) || /^[23489]\d{7}$/.test(after);
+  }
+  return false;
+}
+
 // Endpoint to export lead from frontend form
 app.post('/api/crm/lead', async (req, res) => {
   const { name, phone, source, campaign, message } = req.body;
   if (!phone) {
     return res.status(400).json({ success: false, error: 'מספר טלפון הוא שדה חובה' });
+  }
+
+  if (!isValidIsraeliPhone(phone)) {
+    return res.status(400).json({ success: false, error: 'מספר טלפון אינו תקין בישראל (לדוגמה: 050-1234567 או 04-1234567)' });
   }
 
   const result = await exportLeadToSmartEsek({ name, phone, source, campaign, message });
@@ -605,10 +624,11 @@ app.post('/api/ai-chat', async (req, res) => {
 - Waze: https://waze.com/ul?ll=32.936389,35.454517&navigate=yes
 - צביקה: 055-250-2584 (מענה כללי / ביטולים)
 - אביגיל: 054-913-1704 (תיאום תורים לבדיקת ראייה)
+- וואטסאפ לפניות ישירות / בירורים: 054-540-4183 (972545404183)
 - מחירי מסגרות כולל עדשות וציפויים: 150 ₪ או 250 ₪ בלבד למרשם רגיל!
 - זמני המתנה: עד 10 ימי עסקים למרשם רגיל, עד 14 ימי עסקים למולטיפוקל/מרשם מיוחד.
 - האופטיקה החברתית חוסכת עלויות יקרות של שכר דירה בקניונים ומותגים מנופחים.
-- בקשת ביטול: המיזם פועל בתלות במספר הנרשמים, אנא הקפידו לא לבטל תור ברגע האחרון, ואם קרה משהו - הודיעו לוואטסאפ של צביקה.`;
+- בקשת ביטול: המיזם פועל בתלות במספר הנרשמים, אנא הקפידו לא לבטל תור ברגע האחרון, ואם קרה משהו - הודיעו לוואטסאפ: 054-540-4183 (לחץ למעבר לוואטסאפ).`;
 
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
