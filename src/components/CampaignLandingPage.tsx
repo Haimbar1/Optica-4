@@ -60,7 +60,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   const [leadPhone, setLeadPhone] = useState('');
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [phoneTouched, setPhoneTouched] = useState(false);
-  const [leadInterest, setLeadInterest] = useState<'glasses150' | 'multifocal' | 'both'>('glasses150');
+  const [leadInterest, setLeadInterest] = useState<'glasses150' | 'multifocal' | 'both' | null>(null);
   const [leadNotes, setLeadNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -153,7 +153,9 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
         ? 'מולטיפוקל (800-1,200 ₪)'
         : leadInterest === 'both'
         ? 'גם משקפי ראייה 150 ₪ וגם מולטיפוקל'
-        : 'משקפי ראייה מלאים ב-150 ₪';
+        : leadInterest === 'glasses150'
+        ? 'משקפי ראייה מלאים ב-150 ₪'
+        : 'לא צוין';
 
     // 1. Extract UTM parameters from current URL
     const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
@@ -619,53 +621,6 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                               <span>מספר טלפון תקין בישראל</span>
                             </div>
                           ) : null}
-                        </div>
-                      </div>
-
-                      {/* Interest Selection (Radio/Chips) */}
-                      <div>
-                        <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                          באיזה מבצע אתם מעוניינים?
-                        </label>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                          <button
-                            type="button"
-                            onClick={() => setLeadInterest('glasses150')}
-                            className={`p-3 rounded-xl border text-xs font-bold text-right transition-all cursor-pointer ${
-                              leadInterest === 'glasses150'
-                                ? 'bg-blue-50 border-[#0047AB] text-[#0047AB] shadow-2xs'
-                                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
-                            }`}
-                          >
-                            <span className="block font-black text-sm text-slate-900">150 ₪</span>
-                            <span>משקפי ראייה מלאים</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => setLeadInterest('multifocal')}
-                            className={`p-3 rounded-xl border text-xs font-bold text-right transition-all cursor-pointer ${
-                              leadInterest === 'multifocal'
-                                ? 'bg-emerald-50 border-[#62B83E] text-[#38761D] shadow-2xs'
-                                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
-                            }`}
-                          >
-                            <span className="block font-black text-sm text-emerald-900">800-1,200 ₪</span>
-                            <span>משקפי מולטיפוקל</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => setLeadInterest('both')}
-                            className={`p-3 rounded-xl border text-xs font-bold text-right transition-all cursor-pointer ${
-                              leadInterest === 'both'
-                                ? 'bg-amber-50 border-amber-500 text-amber-900 shadow-2xs'
-                                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
-                            }`}
-                          >
-                            <span className="block font-black text-sm text-slate-900">גם וגם / ייעוץ</span>
-                            <span>בדיקת ראייה חינם</span>
-                          </button>
                         </div>
                       </div>
 
