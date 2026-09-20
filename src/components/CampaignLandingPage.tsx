@@ -66,7 +66,53 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const calUrl = `https://cal.com/haoptika-hatova/30min?date=${selectedDate}&layout=month_view`;
-  const calEmbedUrl = `https://cal.com/haoptika-hatova/30min?date=${selectedDate}&layout=month_view&embed=true`;
+
+  // Official Cal.com inline embed: lets us hide the event-type details panel (left column)
+  useEffect(() => {
+    if (bookingMode !== 'calendar') return;
+    const w = window as any;
+    if (!w.Cal) {
+      (function (C: any, A: string, L: string) {
+        const p = (a: any, ar: any) => { a.q.push(ar); };
+        const d = C.document;
+        C.Cal = C.Cal || function () {
+          const cal = C.Cal;
+          const ar = arguments;
+          if (!cal.loaded) {
+            cal.ns = {};
+            cal.q = cal.q || [];
+            d.head.appendChild(d.createElement('script')).src = A;
+            cal.loaded = true;
+          }
+          if (ar[0] === L) {
+            const api: any = function () { p(api, arguments); };
+            const namespace = ar[1];
+            api.q = api.q || [];
+            if (typeof namespace === 'string') {
+              cal.ns[namespace] = cal.ns[namespace] || api;
+              p(cal.ns[namespace], ar);
+              p(cal, ['initNamespace', namespace]);
+            } else p(cal, ar);
+            return;
+          }
+          p(cal, ar);
+        };
+      })(w, 'https://app.cal.com/embed/embed.js', 'init');
+      w.Cal('init', { origin: 'https://app.cal.com' });
+    }
+    const el = document.getElementById('cal-inline-embed');
+    if (el) el.innerHTML = '';
+    setIframeLoaded(false);
+    w.Cal('inline', {
+      elementOrSelector: '#cal-inline-embed',
+      calLink: 'haoptika-hatova/30min',
+      layout: 'month_view',
+      config: { layout: 'month_view', date: selectedDate },
+    });
+    w.Cal('ui', { hideEventTypeDetails: true, layout: 'month_view' });
+    const t = setTimeout(() => setIframeLoaded(true), 2500);
+    return () => clearTimeout(t);
+  }, [bookingMode, selectedDate]);
 
   const scrollToBooking = () => {
     const el = document.getElementById('booking-above-fold-card');
@@ -332,7 +378,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     }`}
                   >
                     <Phone className="w-4 h-4" />
-                    <span>📞 חזרו אליי לקביעת תור</span>
+                    <span>חזרו אליי לקביעת תור</span>
                   </button>
                 </div>
               </div>
@@ -404,14 +450,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                         </span>
                       </div>
                     )}
-                    <iframe
-                      id="cal-com-above-fold-iframe"
-                      src={calEmbedUrl}
-                      title="קביעת תור ביומן Cal.com"
-                      className="w-full h-full border-0"
-                      style={{ zoom: 0.94 }}
-                      onLoad={() => setIframeLoaded(true)}
-                    />
+                    <div id="cal-inline-embed" className="w-full h-full overflow-auto sm:[zoom:0.8]" />
                   </div>
 
                   {/* Footer actions underneath calendar */}
