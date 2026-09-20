@@ -315,7 +315,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     className={`py-2 px-3 rounded-lg text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all cursor-pointer ${
                       bookingMode === 'calendar'
                         ? 'bg-[#0047AB] text-white shadow-md border border-blue-300/40'
-                        : 'text-slate-200 hover:text-white hover:bg-white/10'
+                        : 'bg-white/20 border border-white/50 text-white hover:bg-white/30'
                     }`}
                   >
                     <Calendar className="w-4 h-4 text-amber-300" />
@@ -328,7 +328,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     className={`py-2 px-3 rounded-lg text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                       bookingMode === 'callback'
                         ? 'bg-[#62B83E] text-white shadow-md'
-                        : 'text-slate-200 hover:text-white hover:bg-white/10'
+                        : 'bg-white/20 border border-white/50 text-white hover:bg-white/30'
                     }`}
                   >
                     <Phone className="w-4 h-4" />
