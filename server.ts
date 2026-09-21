@@ -428,7 +428,8 @@ async function exportLeadToSmartEsek(lead: {
   message?: string;
 }) {
   const leadKey = process.env.SMARTESEK_LEAD_KEY || '1234512345';
-  const crmUrl = 'https://crm.smartesek.com/api/public/lead';
+  const tenantKey = process.env.SMARTESEK_TENANT_KEY || '';
+  const crmUrl = 'https://crm.smartesek.com/api/leads';
 
   const payload = {
     name: lead.name || 'פנייה מאתר האינטרנט',
@@ -450,6 +451,7 @@ async function exportLeadToSmartEsek(lead: {
       headers: {
         'Content-Type': 'application/json',
         'X-Lead-Key': leadKey,
+        'X-Tenant-Key': tenantKey,
       },
       body: JSON.stringify(payload),
     });
