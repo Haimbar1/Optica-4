@@ -1,8 +1,9 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
-import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
+// 'vite' is only needed for local dev middleware; imported dynamically below
+// so it never gets bundled into the Vercel serverless function.
 
 const app = express();
 const PORT = 3000;
@@ -694,6 +695,7 @@ app.get('/embed-demo.html', (req, res) => {
 
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
@@ -718,4 +720,12 @@ async function startServer() {
   });
 }
 
-startServer();
+// On Vercel this module is imported by api/[...slug].ts as a serverless
+// function handler — the platform routes requests to it directly, so we
+// must NOT open our own listening socket there. Locally (npm run dev /
+// npm start) VERCEL is unset, so the server starts exactly as before.
+if (!process.env.VERCEL) {
+  startServer();
+}
+
+export default app;
