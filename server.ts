@@ -21,7 +21,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(path.join(process.cwd(), 'public')));
+const rootPublicDir = path.join(process.cwd(), 'public');
+if (fs.existsSync(rootPublicDir)) {
+  app.use(express.static(rootPublicDir));
+}
 
 // In-memory store for appointments
 const appointmentsStore: any[] = [];
