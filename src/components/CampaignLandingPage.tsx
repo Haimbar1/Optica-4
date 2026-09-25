@@ -178,25 +178,18 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
     // 3. Log all sent details to browser console
     console.log('%c🚀 [SmartEsek CRM] מתחיל ייצוא ליד למערכת...', 'color: #0047AB; font-weight: bold; font-size: 13px;');
     console.log('📋 כל הפרטים שנשלחים (Payload):', leadPayload);
-    console.log('🌐 כתובת היעד:', 'https://crm.smartesek.com/api/public/lead');
-    console.log('🔑 Headers:', {
-      'Content-Type': 'application/json',
-      'X-Lead-Key': '1234512345',
-    });
+    console.log('🌐 כתובת היעד:', '/api/crm/lead (proxy לשרת שלנו, ששולח ל-SmartEsek CRM)');
     console.log('🏷️ פרמטרי UTM שחולצו:', {
       utm_source: urlParams.get('utm_source') || '(לא נמצא ב-URL, נבחר: "אתר")',
       utm_campaign: urlParams.get('utm_campaign') || '(לא נמצא ב-URL, נבחרה ברירת מחדל)',
     });
 
     try {
-      // 4. Send Lead directly to SmartEsek CRM
-      const crmUrl = 'https://crm.smartesek.com/api/public/lead';
-      const crmRes = await fetch(crmUrl, {
+      // 4. Send Lead through our own backend, which relays it to SmartEsek CRM
+      //    with the tenant key (server-side only — never exposed to the browser).
+      const crmRes = await fetch('/api/crm/lead', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Lead-Key': '1234512345',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(leadPayload),
       });
 
@@ -209,15 +202,15 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
         responseData = rawText;
       }
 
-      if (crmRes.ok) {
+      if (crmRes.ok && (responseData as any)?.success) {
         console.log('%c✅ [SmartEsek CRM SUCCESS] הליד נשלח ונקלט בהצלחה!', 'color: #10B981; font-weight: bold; font-size: 13px;');
         console.log('📥 סטטוס תגובה:', status);
         console.log('📥 תשובה שהתקבלה מה-CRM:', responseData);
         console.log('📦 כל הפרטים שנשלחו:', leadPayload);
       } else {
         const errorReason =
-          typeof responseData === 'object' && responseData?.error
-            ? responseData.error
+          typeof responseData === 'object' && (responseData as any)?.error
+            ? (responseData as any).error
             : typeof responseData === 'string' && responseData
             ? responseData
             : `HTTP ${status}`;
