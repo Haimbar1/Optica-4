@@ -441,7 +441,14 @@ async function exportLeadToSmartEsek(lead: {
     source: lead.source || 'אתר',
     campaign: lead.campaign || '',
     message: lead.message || '',
+    // The CRM's /api/leads saves a lead's opening note from `noteText` (it has no `message`
+    // field), so the customer's own text is sent under that name too — otherwise it was dropped.
+    noteText: lead.message || '',
+    authorName: 'אתר',
   };
+  if (!tenantKey) {
+    console.error('⚠️ SMARTESEK_TENANT_KEY לא מוגדר בשרת — ה-CRM ידחה את הליד (401). יש להגדיר אותו ב-Vercel → Settings → Environment Variables.');
+  }
 
   console.log('\n================== [CRM LEAD EXPORT START] ==================');
   console.log('⏰ זמן שליחה:', new Date().toLocaleString('he-IL'));
