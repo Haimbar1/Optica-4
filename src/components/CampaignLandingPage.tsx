@@ -35,7 +35,7 @@ import {
   getIsraeliPhoneValidationError,
   formatIsraeliPhone,
 } from '../utils/phoneValidation';
-import campaignGlassesImg from '../assets/images/campaign_glasses_1789850551440.jpg';
+import campaignAdHeroImg from '../assets/images/campaign_ad_hero.jpg';
 import logoImg from '../assets/images/logo_optics.svg';
 
 interface CampaignLandingPageProps {
@@ -273,7 +273,20 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
       {/* ========================================================================= */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#F2F8ED] via-white to-slate-50 pt-2 pb-6 sm:pt-3 sm:pb-8 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 space-y-2.5 sm:space-y-3">
-          
+
+          {/* 0. Message-Match Strip: same photo + offer the visitor saw in the ad,
+                so they instantly recognize they're in the right place */}
+          <div className="flex items-center gap-3 bg-white rounded-2xl border border-slate-200 shadow-2xs p-2 sm:p-2.5 max-w-2xl mx-auto">
+            <img
+              src={campaignAdHeroImg}
+              alt="משקפי ראייה במבצע 150 ₪"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shrink-0 shadow-xs"
+            />
+            <p className="text-sm sm:text-base font-black text-slate-900 font-['Rubik'] leading-snug">
+              משקפיים ב-<span className="text-[#0047AB]">150 ₪</span> — במרחק קביעת תור ביומן!
+            </p>
+          </div>
+
           {/* 1. Header Banner: Direct instruction */}
           {/* ============================================================= */}
           {/* 2. THE BOOKING BOARD (Flanked on sides on Desktop; Full width on Mobile) */}
