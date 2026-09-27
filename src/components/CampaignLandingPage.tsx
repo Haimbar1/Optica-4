@@ -276,15 +276,15 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
 
           {/* 0. Message-Match Strip: same photo + offer the visitor saw in the ad,
                 so they instantly recognize they're in the right place */}
-          <div className="flex items-center gap-3 bg-white rounded-2xl border border-slate-200 shadow-2xs p-2 sm:p-2.5 max-w-2xl mx-auto">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base font-black text-slate-900 font-['Rubik'] leading-snug text-center px-3 pt-2.5 pb-1.5">
+              משקפיים ב-<span className="text-[#0047AB]">150 ₪</span> — במרחק קביעת תור ביומן!
+            </p>
             <img
               src={campaignAdHeroImg}
               alt="משקפי ראייה במבצע 150 ₪"
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shrink-0 shadow-xs"
+              className="w-full h-auto object-cover"
             />
-            <p className="text-sm sm:text-base font-black text-slate-900 font-['Rubik'] leading-snug">
-              משקפיים ב-<span className="text-[#0047AB]">150 ₪</span> — במרחק קביעת תור ביומן!
-            </p>
           </div>
 
           {/* 1. Header Banner: Direct instruction */}
