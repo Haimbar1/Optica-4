@@ -243,6 +243,23 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
       }
     } catch {
       // Fallback is smooth
+    }
+
+    // 6. Push a custom GTM dataLayer event so a Meta Pixel / Conversions API
+    //    tag can be wired up in GTM for this "callback request" lead —
+    //    unlike the Cal.com calendar booking (sent to Meta from n8n), this
+    //    form has no other event hook for Meta today.
+    try {
+      const w = window as any;
+      const dl = w.dataLayer || (w.dataLayer = []);
+      dl.push({
+        event: 'callback_lead_submitted',
+        lead_source: utmSource,
+        lead_campaign: utmCampaign,
+        lead_interest: interestLabel,
+      });
+    } catch {
+      // Fallback is smooth
     } finally {
       setIsSubmitting(false);
       setSubmitSuccess(true);
