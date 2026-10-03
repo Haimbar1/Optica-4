@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="120" viewBox="0 0 320 120">
+  <defs>
+    <pattern id="tort" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#5a3010"/>
+      <ellipse cx="10" cy="12" rx="9" ry="6" fill="#a8641f"/>
+      <ellipse cx="30" cy="28" rx="8" ry="5" fill="#c98a3a"/>
+      <ellipse cx="28" cy="8" rx="5" ry="3" fill="#2e1606"/>
+      <ellipse cx="8" cy="32" rx="6" ry="4" fill="#2e1606"/>
+      <ellipse cx="20" cy="20" rx="4" ry="3" fill="#8a4c14"/>
+    </pattern>
+    <linearGradient id="lens" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f3e2c8" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.05"/>
+    </linearGradient>
+    <path id="l" d="M20 30 L146 30 Q154 30 152 40 L144 84 Q140 100 120 100 L52 100 Q32 100 28 84 Z"/>
+  </defs>
+  <rect x="2" y="30" width="24" height="10" rx="3" fill="url(#tort)"/>
+  <rect x="294" y="30" width="24" height="10" rx="3" fill="url(#tort)"/>
+  <use href="#l" fill="url(#lens)" stroke="url(#tort)" stroke-width="11" stroke-linejoin="round"/>
+  <use href="#l" transform="translate(320 0) scale(-1 1)" fill="url(#lens)" stroke="url(#tort)" stroke-width="11" stroke-linejoin="round"/>
+  <path d="M150 46 Q160 36 170 46" fill="none" stroke="url(#tort)" stroke-width="9" stroke-linecap="round"/>
+</svg>
