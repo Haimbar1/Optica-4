@@ -2,12 +2,15 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import { GoogleGenAI } from '@google/genai';
+import { framesRouter } from './frameStore.js';
 // 'vite' is only needed for local dev middleware; imported dynamically below
 // so it never gets bundled into the Vercel serverless function.
 
 const app = express();
 const PORT = 3000;
 
+// מסגרות להדמיה – לפני express.json הכללי, כי לראוטר יש מגבלת גודל משלו להעלאת תמונות
+app.use('/api/frames', framesRouter);
 app.use(express.json());
 
 // Enable CORS for external website embedding and API requests

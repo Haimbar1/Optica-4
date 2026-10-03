@@ -16,9 +16,10 @@ const CHIN = 152;
 const RIGHT_EAR = [127, 162];
 const LEFT_EAR = [356, 389];
 
-// כל תמונות המסגרות בנויות על viewBox של 320x120
-export const FRAME_VIEWBOX_W = 320;
-export const FRAME_VIEWBOX_H = 120;
+// גובה הציר של מסגרת נמדד ביחידות של 0–120 מגובה התמונה (כמו ב-viewBox של
+// מסגרות הדוגמה, 320x120). יחס ברירת המחדל הוא של מסגרות הדוגמה.
+const HINGE_SCALE = 120;
+export const DEFAULT_FRAME_ASPECT = 320 / 120;
 
 // רוחב תמונת המשקפיים ביחס לרוחב הפנים בגובה הרקות
 const FACE_TO_FRAME_WIDTH = 1.0;
@@ -191,12 +192,12 @@ export class PoseFilter {
 export function hingePoints(
   center: Point,
   width: number,
-  hingeY: number,
+  frame: { hingeY: number; aspect?: number },
   roll: number,
   yaw = 0,
   pitch = 0,
 ): { left: Point; right: Point } {
-  const height = width * (FRAME_VIEWBOX_H / FRAME_VIEWBOX_W);
+  const height = width / (frame.aspect ?? DEFAULT_FRAME_ASPECT);
   const d = width * 3;
   const project = (lx: number, ly: number): Point => {
     // rotateX
@@ -211,7 +212,7 @@ export function hingePoints(
     const k = yaw || pitch ? d / (d - z) : 1;
     return { x: center.x + rx * k, y: center.y + y * k };
   };
-  const ly = ((hingeY - FRAME_VIEWBOX_H / 2) / FRAME_VIEWBOX_H) * height;
+  const ly = (frame.hingeY / HINGE_SCALE - 0.5) * height;
   return { left: project(-width / 2, ly), right: project(width / 2, ly) };
 }
 

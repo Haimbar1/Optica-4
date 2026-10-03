@@ -5,6 +5,7 @@ import {
   Glasses, RefreshCw, ShieldCheck, Move, X, Loader2, ScanFace, Video,
 } from 'lucide-react';
 import { TRY_ON_FRAMES, TryOnFrame } from '../data/tryOnFrames';
+import { fetchFrames } from '../utils/framesApi';
 import {
   loadFaceLandmarker, poseFromLandmarks, hingePoints, FacePose, PoseFilter, Point,
 } from '../utils/faceTracker';
@@ -53,7 +54,7 @@ function photoTemples(placement: Placement, frame: TryOnFrame, w: number, h: num
   const hinges = hingePoints(
     { x: (placement.x / 100) * w, y: (placement.y / 100) * h },
     width,
-    frame.hingeY,
+    frame,
     (placement.rotation * Math.PI) / 180,
   );
   const toPx = (p: Point) => ({ x: (p.x / 100) * w, y: (p.y / 100) * h });
@@ -68,6 +69,8 @@ const loadImage = (src: string) =>
     const img = new Image();
     img.onload = () => resolve(img);
     img.onerror = reject;
+    // תמונות מסגרות מאחסון חיצוני – בלי זה הקנבס "מזוהם" ואי אפשר לשמור את התמונה
+    if (/^https?:/.test(src)) img.crossOrigin = 'anonymous';
     img.src = src;
   });
 
@@ -79,6 +82,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
   const [trackerStatus, setTrackerStatus] = useState<TrackerStatus>('idle');
   const [faceFound, setFaceFound] = useState(false);
   const [liveSize, setLiveSize] = useState(100);
+  const [frames, setFrames] = useState<TryOnFrame[]>(TRY_ON_FRAMES);
   const [selected, setSelected] = useState<TryOnFrame | null>(TRY_ON_FRAMES[0]);
   const [placement, setPlacement] = useState<Placement>(DEFAULT_PLACEMENT);
   const [comparing, setComparing] = useState(false);
@@ -118,6 +122,19 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
   };
 
   useEffect(() => stopCamera, []);
+
+  // מסגרות שהועלו ממסך ההגדרות מחליפות את מסגרות הדוגמה
+  useEffect(() => {
+    fetchFrames()
+      .then(({ frames: uploaded }) => {
+        if (!uploaded.length) return;
+        setFrames(uploaded);
+        setSelected((cur) => (cur && uploaded.some((f) => f.id === cur.id) ? cur : uploaded[0]));
+      })
+      .catch(() => {
+        // בלי חיבור לשרת – נשארים עם מסגרות הדוגמה
+      });
+  }, []);
 
   const startLive = async () => {
     setCameraError(null);
@@ -243,7 +260,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
       glasses.style.opacity = '1';
 
       // ידיות: מהציר של המסגרת ועד האוזן; הצד שמסתובב הרחק מהמצלמה מוסתר
-      const hinges = hingePoints(center, width, frame.hingeY, pose.roll, pose.yaw, pose.pitch);
+      const hinges = hingePoints(center, width, frame, pose.roll, pose.yaw, pose.pitch);
       const temples: [SVGLineElement | null, Point, Point, boolean][] = [
         [templeLeftRef.current, hinges.left, toScreen(pose.earLeft), pose.yaw > -HIDE_TEMPLE_YAW],
         [templeRightRef.current, hinges.right, toScreen(pose.earRight), pose.yaw < HIDE_TEMPLE_YAW],
@@ -460,7 +477,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
 
   const frameStrip = (
     <aside className="w-[84px] sm:w-44 shrink-0 max-h-[68vh] overflow-y-auto no-scrollbar space-y-2">
-      {TRY_ON_FRAMES.map((frame) => {
+      {frames.map((frame) => {
         const active = selected?.id === frame.id;
         return (
           <button
@@ -471,7 +488,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
             }`}
           >
             <div className="aspect-[8/3] flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 rounded-xl">
-              <img src={frame.image} alt={frame.name} className="w-[90%]" draggable={false} />
+              <img src={frame.image} alt={frame.name} className="max-w-[90%] max-h-[85%]" draggable={false} />
             </div>
             <div className="mt-1 text-[11px] sm:text-xs font-bold text-gray-800 leading-tight">{frame.name}</div>
             <div className="text-[10px] sm:text-[11px] text-gray-500">
