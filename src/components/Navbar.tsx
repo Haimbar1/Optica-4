@@ -8,9 +8,10 @@ interface NavbarProps {
   setActiveTab: (tab: string) => void;
   onOpenBooking: () => void;
   onOpenCampaign?: () => void;
+  onOpenTryOn?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenBooking, onOpenCampaign }) => {
+export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenBooking, onOpenCampaign, onOpenTryOn }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -134,6 +135,17 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
                 <span>🔥 מבצעי קמפיין (150 ₪ / מולטיפוקל)</span>
               </button>
             )}
+
+            {onOpenTryOn && (
+              <button
+                id="navbar-tryon-btn"
+                onClick={onOpenTryOn}
+                className="px-3.5 py-1.5 rounded-xl text-xs xl:text-sm font-bold bg-[#E8F0FE] text-[#0047AB] hover:bg-blue-100 border border-blue-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+              >
+                <Glasses className="w-4 h-4" />
+                <span>מדידת משקפיים</span>
+              </button>
+            )}
           </nav>
 
           {/* CTA Action Buttons */}
@@ -200,6 +212,15 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
               🔥 מבצע 150 ₪ ומולטיפוקל
             </button>
           )}
+          {onOpenTryOn && (
+            <button
+              id="mobile-scroll-tryon-btn"
+              onClick={onOpenTryOn}
+              className="px-3 py-1.5 rounded-xl text-xs font-black bg-[#E8F0FE] text-[#0047AB] border border-blue-200 whitespace-nowrap cursor-pointer"
+            >
+              📸 מדידת משקפיים
+            </button>
+          )}
         </div>
       </div>
 
@@ -218,6 +239,19 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
               >
                 <span>🔥 דף קמפיין: משקפיים ב-150 ₪ ומולטיפוקל ב-800-1,200 ₪</span>
                 <span className="text-xs bg-[#4C9C29] text-white px-2 py-0.5 rounded-full font-bold">מעבר</span>
+              </button>
+            )}
+            {onOpenTryOn && (
+              <button
+                id="mobile-dropdown-tryon-btn"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenTryOn();
+                }}
+                className="w-full text-right px-4 py-3 rounded-xl text-base font-black bg-[#E8F0FE] text-[#0047AB] border border-blue-200 cursor-pointer flex items-center justify-between"
+              >
+                <span>📸 מדידת משקפיים – צלמו סלפי ונסו מסגרות</span>
+                <span className="text-xs bg-[#0047AB] text-white px-2 py-0.5 rounded-full font-bold">חדש</span>
               </button>
             )}
             {navItems.map((item) => {

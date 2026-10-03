@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Navigation, Phone, ShieldCheck, Glasses, CheckCircle2, HeartHandshake, MapPin, Clock } from 'lucide-react';
+import { Calendar, Navigation, Phone, ShieldCheck, Glasses, CheckCircle2, HeartHandshake, MapPin, Clock, Camera } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/opticsData';
 import logoImg from '../assets/images/logo_optics.svg';
 
@@ -8,9 +8,10 @@ interface HeroProps {
   onOpenContact?: () => void;
   onNavigateToCatalog?: () => void;
   onOpenCampaign?: () => void;
+  onOpenTryOn?: () => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavigateToCatalog, onOpenCampaign }) => {
+export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavigateToCatalog, onOpenCampaign, onOpenTryOn }) => {
   const handleBookingClick = () => {
     if (onOpenBooking) {
       onOpenBooking();
@@ -94,6 +95,17 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
                 <Navigation className="w-5 h-5 text-[#0047AB]" />
                 <span>ניווט ב-Waze</span>
               </a>
+
+              {onOpenTryOn && (
+                <button
+                  id="hero-tryon-btn"
+                  onClick={onOpenTryOn}
+                  className="bg-[#E8F0FE] hover:bg-blue-100 border border-blue-200 text-[#0047AB] font-bold text-base px-5 py-3.5 rounded-xl transition-all flex items-center gap-2 shadow-xs cursor-pointer"
+                >
+                  <Camera className="w-5 h-5" />
+                  <span>מדידת משקפיים בסלפי</span>
+                </button>
+              )}
 
               <button
                 onClick={handleCatalogClick}

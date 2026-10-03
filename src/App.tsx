@@ -9,6 +9,28 @@ import { ChatWidget } from './components/ChatWidget';
 import { Footer } from './components/Footer';
 import { LegalModal } from './components/LegalModal';
 import { CampaignLandingPage } from './components/CampaignLandingPage';
+import { TryOnPage } from './components/TryOnPage';
+
+type Page = 'main' | 'campaign' | 'tryon';
+
+function checkIsTryOn(): boolean {
+  if (typeof window === 'undefined') return false;
+  const path = window.location.pathname.toLowerCase();
+  const search = new URLSearchParams(window.location.search);
+  const hash = window.location.hash.toLowerCase();
+
+  return (
+    path.includes('/tryon') ||
+    search.has('tryon') ||
+    search.get('page') === 'tryon' ||
+    hash === '#tryon'
+  );
+}
+
+function detectPage(): Page {
+  if (checkIsTryOn()) return 'tryon';
+  return checkIsCampaign() ? 'campaign' : 'main';
+}
 
 function checkIsCampaign(): boolean {
   if (typeof window === 'undefined') return false;
@@ -33,21 +55,13 @@ function checkIsCampaign(): boolean {
 }
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<'main' | 'campaign'>(() => 
-    checkIsCampaign() ? 'campaign' : 'main'
-  );
+  const [currentPage, setCurrentPage] = useState<Page>(detectPage);
   const [activeTab, setActiveTab] = useState('hero'); 
   const [isLegalModalOpen, setIsLegalModalOpen] = useState(false);
   const [legalModalTab, setLegalModalTab] = useState<'privacy' | 'terms'>('privacy');
 
   useEffect(() => {
-    const handleLocationChange = () => {
-      if (checkIsCampaign()) {
-        setCurrentPage('campaign');
-      } else {
-        setCurrentPage('main');
-      }
-    };
+    const handleLocationChange = () => setCurrentPage(detectPage());
 
     window.addEventListener('popstate', handleLocationChange);
     window.addEventListener('hashchange', handleLocationChange);
@@ -57,9 +71,9 @@ export default function App() {
     };
   }, []);
 
-  const navigateTo = (page: 'main' | 'campaign') => {
+  const navigateTo = (page: Page) => {
     setCurrentPage(page);
-    const newUrl = page === 'campaign' ? '?page=campaign' : window.location.pathname;
+    const newUrl = page === 'main' ? window.location.pathname : `?page=${page}`;
     window.history.pushState({ page }, '', newUrl);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -81,6 +95,21 @@ export default function App() {
     setLegalModalTab('terms');
     setIsLegalModalOpen(true);
   };
+
+  if (currentPage === 'tryon') {
+    return (
+      <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-['Assistant',sans-serif]">
+        <TryOnPage
+          onBackToMain={() => navigateTo('main')}
+          onBookAppointment={() => {
+            navigateTo('main');
+            setTimeout(() => scrollToSection('booking'), 150);
+          }}
+        />
+        <style>{`@media (max-width: 767px) { #obw-fab, .obw-fab, #obw-window, .obw-window, .obw-fab-button, [id^="obw-"] { display: none !important; } }`}</style>
+      </div>
+    );
+  }
 
   if (currentPage === 'campaign') {
     return (
@@ -108,12 +137,14 @@ export default function App() {
         setActiveTab={setActiveTab}
         onOpenBooking={() => scrollToSection('booking')}
         onOpenCampaign={() => navigateTo('campaign')}
+        onOpenTryOn={() => navigateTo('tryon')}
       />
 
       <main className="flex-1">
         <Hero
           onOpenBooking={() => scrollToSection('booking')}
           onOpenCampaign={() => navigateTo('campaign')}
+          onOpenTryOn={() => navigateTo('tryon')}
         />
 
         <AppointmentSection />

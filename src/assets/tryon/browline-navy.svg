@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="120" viewBox="0 0 320 120">
+  <defs>
+    <linearGradient id="lens" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d6e2f2" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.05"/>
+    </linearGradient>
+    <path id="l" d="M26 46 Q28 30 88 30 Q150 30 150 46 Q150 96 90 98 Q28 98 26 46 Z"/>
+    <path id="b" d="M20 48 Q22 22 88 22 Q156 22 156 46"/>
+  </defs>
+  <rect x="2" y="30" width="22" height="10" rx="3" fill="#1e2f5c"/>
+  <rect x="296" y="30" width="22" height="10" rx="3" fill="#1e2f5c"/>
+  <use href="#l" fill="url(#lens)" stroke="#a9b0ba" stroke-width="3"/>
+  <use href="#l" transform="translate(320 0) scale(-1 1)" fill="url(#lens)" stroke="#a9b0ba" stroke-width="3"/>
+  <use href="#b" fill="none" stroke="#1e2f5c" stroke-width="13" stroke-linecap="round"/>
+  <use href="#b" transform="translate(320 0) scale(-1 1)" fill="none" stroke="#1e2f5c" stroke-width="13" stroke-linecap="round"/>
+  <path d="M154 46 Q160 40 166 46" fill="none" stroke="#a9b0ba" stroke-width="4" stroke-linecap="round"/>
+</svg>
