@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import type { FaceLandmarker } from '@mediapipe/tasks-vision';
 import {
   ArrowRight, Camera, Image as ImageIcon, RotateCcw, Share2, Calendar, Eye, EyeOff,
-  Glasses, RefreshCw, ShieldCheck, Move, X,
+  Glasses, RefreshCw, ShieldCheck, Move, X, Loader2, ScanFace, Video,
 } from 'lucide-react';
 import { TRY_ON_FRAMES, TryOnFrame } from '../data/tryOnFrames';
+import { loadFaceLandmarker, poseFromLandmarks, FacePose, GLASSES_TO_EYE_SPAN } from '../utils/faceTracker';
 import logoImg from '../assets/images/logo_optics.svg';
 
 interface TryOnPageProps {
@@ -11,7 +13,7 @@ interface TryOnPageProps {
   onBookAppointment: () => void;
 }
 
-// מיקום המשקפיים באחוזים מהתמונה (מרכז, רוחב) וזווית במעלות
+// מיקום המשקפיים על תמונה באחוזים מהתמונה (מרכז, רוחב) וזווית במעלות
 interface Placement {
   x: number;
   y: number;
@@ -19,12 +21,19 @@ interface Placement {
   rotation: number;
 }
 
+type Mode = 'intro' | 'live' | 'photo';
+type TrackerStatus = 'idle' | 'loading' | 'ready' | 'failed';
+
 const DEFAULT_PLACEMENT: Placement = { x: 50, y: 42, width: 56, rotation: 0 };
 const MIN_WIDTH = 20;
 const MAX_WIDTH = 95;
 const MAX_PHOTO_SIDE = 1400;
+const SMOOTHING = 0.5;
+const MAX_YAW = 0.9;
+const MAX_PITCH = 0.35;
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+const toDeg = (rad: number) => (rad * 180) / Math.PI;
 
 const loadImage = (src: string) =>
   new Promise<HTMLImageElement>((resolve, reject) => {
@@ -35,21 +44,31 @@ const loadImage = (src: string) =>
   });
 
 export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppointment }) => {
+  const [mode, setMode] = useState<Mode>('intro');
   const [photo, setPhoto] = useState<string | null>(null);
-  const [cameraOn, setCameraOn] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [selected, setSelected] = useState<TryOnFrame | null>(null);
+  const [trackerStatus, setTrackerStatus] = useState<TrackerStatus>('idle');
+  const [faceFound, setFaceFound] = useState(false);
+  const [liveSize, setLiveSize] = useState(100);
+  const [selected, setSelected] = useState<TryOnFrame | null>(TRY_ON_FRAMES[0]);
   const [placement, setPlacement] = useState<Placement>(DEFAULT_PLACEMENT);
   const [comparing, setComparing] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const liveStageRef = useRef<HTMLDivElement>(null);
+  const liveGlassesRef = useRef<HTMLImageElement>(null);
+  const landmarkerRef = useRef<FaceLandmarker | null>(null);
+  const poseRef = useRef<FacePose | null>(null);
+  const liveSizeRef = useRef(liveSize);
+  liveSizeRef.current = liveSize;
+
   const stageRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const selfieInputRef = useRef<HTMLInputElement>(null);
 
-  // מחוות גרירה / צביטה
+  // מחוות גרירה / צביטה על תמונה
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const gesture = useRef<{
     placement: Placement;
@@ -63,12 +82,11 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
   const stopCamera = () => {
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
-    setCameraOn(false);
   };
 
   useEffect(() => stopCamera, []);
 
-  const startCamera = async () => {
+  const startLive = async () => {
     setCameraError(null);
     if (!navigator.mediaDevices?.getUserMedia) {
       // דפדפן ללא גישה ישירה למצלמה – פותחים את מצלמת הסלפי של המכשיר
@@ -77,35 +95,126 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
     }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 1280 } },
+        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 960 } },
         audio: false,
       });
       streamRef.current = stream;
-      setCameraOn(true);
+      poseRef.current = null;
+      setFaceFound(false);
       setPhoto(null);
+      setMode('live');
     } catch {
       setCameraError('לא הצלחנו לפתוח את המצלמה. אפשר לאשר גישה למצלמה בהגדרות הדפדפן, או לצלם / לבחור תמונה מהגלריה.');
+      return;
+    }
+    if (!landmarkerRef.current) {
+      setTrackerStatus('loading');
+      try {
+        landmarkerRef.current = await loadFaceLandmarker();
+        setTrackerStatus('ready');
+      } catch {
+        setTrackerStatus('failed');
+      }
     }
   };
 
+  const exitLive = () => {
+    stopCamera();
+    setMode(photo ? 'photo' : 'intro');
+  };
+
   useEffect(() => {
-    if (cameraOn && videoRef.current && streamRef.current) {
+    if (mode === 'live' && videoRef.current && streamRef.current) {
       videoRef.current.srcObject = streamRef.current;
       videoRef.current.play().catch(() => {});
     }
-  }, [cameraOn]);
+  }, [mode]);
 
+  // ---- לולאת המעקב החי: מזהים את הפנים בכל פריים ומלבישים את המשקפיים ----
+  useEffect(() => {
+    if (mode !== 'live' || trackerStatus !== 'ready') return;
+    const landmarker = landmarkerRef.current!;
+    let raf = 0;
+    let lastVideoTime = -1;
+    let found = false;
+
+    const setFound = (value: boolean) => {
+      if (found !== value) {
+        found = value;
+        setFaceFound(value);
+      }
+    };
+
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      const video = videoRef.current;
+      const stage = liveStageRef.current;
+      if (!video || !stage || video.readyState < 2 || video.currentTime === lastVideoTime) return;
+      lastVideoTime = video.currentTime;
+
+      const vw = video.videoWidth;
+      const vh = video.videoHeight;
+      const lm = landmarker.detectForVideo(video, performance.now()).faceLandmarks[0];
+      const glasses = liveGlassesRef.current;
+      if (!lm) {
+        setFound(false);
+        poseRef.current = null;
+        if (glasses) glasses.style.opacity = '0';
+        return;
+      }
+      setFound(true);
+
+      const target = poseFromLandmarks(lm, vw, vh, true);
+      target.yaw = clamp(target.yaw, -MAX_YAW, MAX_YAW);
+      target.pitch = clamp(target.pitch * 0.5, -MAX_PITCH, MAX_PITCH);
+      const prev = poseRef.current;
+      const pose: FacePose = prev
+        ? {
+            x: prev.x + (target.x - prev.x) * SMOOTHING,
+            y: prev.y + (target.y - prev.y) * SMOOTHING,
+            eyeSpan: prev.eyeSpan + (target.eyeSpan - prev.eyeSpan) * SMOOTHING,
+            roll: prev.roll + (target.roll - prev.roll) * SMOOTHING,
+            yaw: prev.yaw + (target.yaw - prev.yaw) * SMOOTHING,
+            pitch: prev.pitch + (target.pitch - prev.pitch) * SMOOTHING,
+          }
+        : target;
+      poseRef.current = pose;
+      if (!glasses) return;
+
+      // מיפוי מפיקסלים של הווידאו לתצוגה (object-cover)
+      const cw = stage.clientWidth;
+      const ch = stage.clientHeight;
+      const scale = Math.max(cw / vw, ch / vh);
+      const offX = (cw - vw * scale) / 2;
+      const offY = (ch - vh * scale) / 2;
+      const width = pose.eyeSpan * GLASSES_TO_EYE_SPAN * scale * (liveSizeRef.current / 100);
+
+      glasses.style.left = `${pose.x * scale + offX}px`;
+      glasses.style.top = `${pose.y * scale + offY}px`;
+      glasses.style.width = `${width}px`;
+      glasses.style.transform =
+        `translate(-50%, -50%) perspective(${Math.round(width * 3)}px) ` +
+        `rotate(${toDeg(pose.roll)}deg) rotateY(${toDeg(pose.yaw)}deg) rotateX(${toDeg(pose.pitch)}deg)`;
+      glasses.style.opacity = '1';
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [mode, trackerStatus]);
+
+  // ---- צילום מתוך המדידה החיה: עוברים לתמונה עם המשקפיים באותו מיקום ----
   const capture = () => {
     const video = videoRef.current;
     if (!video || !video.videoWidth) return;
-    // חותכים ליחס 3:4 כמו בתצוגה, ומשקפים כמו מראה
+    // חותכים ליחס התצוגה, ומשקפים כמו מראה
     const vw = video.videoWidth;
     const vh = video.videoHeight;
-    const ratio = 3 / 4;
+    const stage = liveStageRef.current;
+    const aspect = stage && stage.clientHeight ? stage.clientWidth / stage.clientHeight : 3 / 4;
     let cw = vw;
     let ch = vh;
-    if (vw / vh > ratio) cw = vh * ratio;
-    else ch = vw / ratio;
+    if (vw / vh > aspect) cw = vh * aspect;
+    else ch = vw / aspect;
     const sx = (vw - cw) / 2;
     const sy = (vh - ch) / 2;
     const scale = Math.min(1, 1080 / cw);
@@ -116,10 +225,21 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
     ctx.translate(canvas.width, 0);
     ctx.scale(-1, 1);
     ctx.drawImage(video, sx, sy, cw, ch, 0, 0, canvas.width, canvas.height);
+
+    const pose = poseRef.current;
+    setPlacement(
+      pose
+        ? {
+            x: clamp(((pose.x - sx) / cw) * 100, 0, 100),
+            y: clamp(((pose.y - sy) / ch) * 100, 0, 100),
+            width: clamp(((pose.eyeSpan * GLASSES_TO_EYE_SPAN * (liveSize / 100)) / cw) * 100, MIN_WIDTH, MAX_WIDTH),
+            rotation: clamp(toDeg(pose.roll), -30, 30),
+          }
+        : DEFAULT_PLACEMENT,
+    );
     setPhoto(canvas.toDataURL('image/jpeg', 0.92));
     stopCamera();
-    setPlacement(DEFAULT_PLACEMENT);
-    if (!selected) setSelected(TRY_ON_FRAMES[0]);
+    setMode('photo');
   };
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,14 +258,15 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
       stopCamera();
       setCameraError(null);
       setPlacement(DEFAULT_PLACEMENT);
-      if (!selected) setSelected(TRY_ON_FRAMES[0]);
+      setMode('photo');
     } finally {
       URL.revokeObjectURL(url);
     }
   };
 
   const chooseFrame = (frame: TryOnFrame) => {
-    setSelected((cur) => (cur?.id === frame.id ? null : frame));
+    // במדידה חיה תמיד מציגים מסגרת; על תמונה לחיצה חוזרת מסירה אותה
+    setSelected((cur) => (cur?.id === frame.id && mode === 'photo' ? null : frame));
   };
 
   // ---- גרירה באצבע אחת, הגדלה וסיבוב בשתי אצבעות ----
@@ -187,7 +308,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
       const dist = Math.hypot(b.x - a.x, b.y - a.y);
       const angle = Math.atan2(b.y - a.y, b.x - a.x);
       next.width = clamp(g.placement.width * (dist / g.dist), MIN_WIDTH, MAX_WIDTH);
-      next.rotation = clamp(g.placement.rotation + ((angle - g.angle) * 180) / Math.PI, -30, 30);
+      next.rotation = clamp(g.placement.rotation + toDeg(angle - g.angle), -30, 30);
     }
     setPlacement(next);
   };
@@ -248,18 +369,47 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
     }
   };
 
-  const retake = () => {
-    setPhoto(null);
-    setComparing(false);
-    startCamera();
-  };
-
   const hiddenInputs = (
     <>
       <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
       <input ref={selfieInputRef} type="file" accept="image/*" capture="user" onChange={handleFile} className="hidden" />
     </>
   );
+
+  const frameStrip = (
+    <aside className="w-[84px] sm:w-44 shrink-0 max-h-[68vh] overflow-y-auto no-scrollbar space-y-2">
+      {TRY_ON_FRAMES.map((frame) => {
+        const active = selected?.id === frame.id;
+        return (
+          <button
+            key={frame.id}
+            onClick={() => chooseFrame(frame)}
+            className={`w-full rounded-2xl border-2 bg-white p-1.5 sm:p-2 text-center transition-all cursor-pointer ${
+              active ? 'border-[#0047AB] ring-2 ring-blue-200' : 'border-gray-100 hover:border-blue-200'
+            }`}
+          >
+            <div className="aspect-[8/3] flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 rounded-xl">
+              <img src={frame.image} alt={frame.name} className="w-[90%]" draggable={false} />
+            </div>
+            <div className="mt-1 text-[11px] sm:text-xs font-bold text-gray-800 leading-tight">{frame.name}</div>
+            <div className="text-[10px] sm:text-[11px] text-gray-500">
+              <span className="hidden sm:inline">{frame.style} · </span>
+              {frame.price} ₪
+            </div>
+          </button>
+        );
+      })}
+    </aside>
+  );
+
+  const liveHint =
+    trackerStatus === 'loading'
+      ? 'טוען זיהוי פנים...'
+      : trackerStatus === 'failed'
+        ? 'המדידה החיה לא נתמכת במכשיר הזה – צלמו ומקמו את המשקפיים ידנית'
+        : !faceFound
+          ? 'הסתכלו למצלמה, פנים מוארות'
+          : null;
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -283,8 +433,8 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-4 sm:py-8">
         {hiddenInputs}
 
-        {/* שלב 1: פתיחה */}
-        {!photo && !cameraOn && (
+        {/* פתיחה */}
+        {mode === 'intro' && (
           <div className="max-w-md mx-auto text-center space-y-6 pt-4">
             <div className="w-20 h-20 mx-auto rounded-3xl bg-[#E8F0FE] flex items-center justify-center">
               <Glasses className="w-10 h-10 text-[#0047AB]" />
@@ -292,23 +442,23 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
             <div className="space-y-2">
               <h1 className="text-3xl font-black font-['Rubik'] text-[#1A1A1A]">איך זה נראה עליי?</h1>
               <p className="text-gray-600">
-                מצלמים סלפי, בוחרים מסגרת מהצד – והמשקפיים מופיעים לכם על הפנים. אפשר להזיז, להגדיל ולשמור.
+                מדידה חיה במצלמה: המשקפיים מופיעים לכם על הפנים וזזים איתכם – סובבו את הראש וראו מכל זווית.
               </p>
             </div>
 
             <ol className="text-right bg-white rounded-2xl border border-gray-100 p-4 space-y-2 text-sm text-gray-700 shadow-2xs">
-              <li><b className="text-[#0047AB]">1.</b> צלמו את עצמכם מול המצלמה, פנים ישרות ומוארות</li>
-              <li><b className="text-[#0047AB]">2.</b> לחצו על מסגרת מהרשימה שבצד</li>
-              <li><b className="text-[#0047AB]">3.</b> גררו את המשקפיים למקום, צבטו כדי להגדיל</li>
+              <li><b className="text-[#0047AB]">1.</b> פתחו מצלמה והסתכלו אליה, פנים ישרות ומוארות</li>
+              <li><b className="text-[#0047AB]">2.</b> לחצו על מסגרת מהרשימה שבצד – היא תופיע עליכם</li>
+              <li><b className="text-[#0047AB]">3.</b> זוזו וסובבו את הראש, ואהבתם? צלמו ושתפו</li>
             </ol>
 
             <div className="space-y-3">
               <button
-                onClick={startCamera}
+                onClick={startLive}
                 className="w-full bg-[#0047AB] hover:bg-[#003580] text-white font-black text-lg py-4 rounded-2xl shadow-md flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Camera className="w-6 h-6" />
-                <span>פתיחת מצלמה</span>
+                <Video className="w-6 h-6" />
+                <span>מדידה חיה במצלמה</span>
               </button>
               <button
                 onClick={() => fileInputRef.current?.click()}
@@ -333,50 +483,112 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
 
             <p className="flex items-center justify-center gap-1.5 text-xs text-gray-500">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>התמונה נשארת במכשיר שלכם בלבד ולא נשלחת לשום מקום</span>
+              <span>הווידאו והתמונות נשארים במכשיר שלכם בלבד ולא נשלחים לשום מקום</span>
             </p>
           </div>
         )}
 
-        {/* שלב 2: מצלמה */}
-        {cameraOn && (
-          <div className="max-w-md mx-auto space-y-4">
-            <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden bg-black shadow-lg">
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                className="absolute inset-0 w-full h-full object-cover -scale-x-100"
-              />
-              {/* קו מנחה לפנים */}
-              <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <div className="w-[62%] h-[62%] -mt-[8%] rounded-[50%] border-4 border-white/70 border-dashed" />
+        {/* מדידה חיה */}
+        {mode === 'live' && (
+          <div className="space-y-4">
+            <div className="flex gap-3 items-start">
+              <div className="flex-1 min-w-0 flex justify-center">
+                <div
+                  ref={liveStageRef}
+                  className="relative aspect-[3/4] w-full max-w-md max-h-[68vh] rounded-3xl overflow-hidden bg-black shadow-lg"
+                >
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="absolute inset-0 w-full h-full object-cover -scale-x-100"
+                  />
+                  {selected && trackerStatus === 'ready' && (
+                    <img
+                      ref={liveGlassesRef}
+                      src={selected.image}
+                      alt={selected.name}
+                      draggable={false}
+                      className="absolute top-0 left-0 opacity-0 pointer-events-none drop-shadow-md will-change-transform"
+                    />
+                  )}
+                  {trackerStatus !== 'ready' && (
+                    <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                      <div className="w-[62%] h-[62%] -mt-[8%] rounded-[50%] border-4 border-white/70 border-dashed" />
+                    </div>
+                  )}
+                  {liveHint && (
+                    <div className="absolute top-3 inset-x-3 flex justify-center pointer-events-none">
+                      <span className="flex items-center gap-1.5 bg-black/55 text-white text-xs sm:text-sm font-bold px-3 py-1.5 rounded-full text-center">
+                        {trackerStatus === 'loading' ? (
+                          <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+                        ) : (
+                          <ScanFace className="w-4 h-4 shrink-0" />
+                        )}
+                        <span>{liveHint}</span>
+                      </span>
+                    </div>
+                  )}
+                  {selected && (
+                    <div className="absolute bottom-2 right-2 bg-white/90 rounded-full px-3 py-1 text-xs font-black text-[#0047AB] shadow">
+                      {selected.name} · {selected.price} ₪
+                    </div>
+                  )}
+                  <button
+                    onClick={exitLive}
+                    aria-label="סגירת מצלמה"
+                    className="absolute top-3 left-3 bg-black/40 text-white p-2 rounded-full cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
-              <p className="absolute top-3 inset-x-0 text-center text-white text-sm font-bold drop-shadow">
-                מקמו את הפנים בתוך המסגרת
-              </p>
+              {frameStrip}
+            </div>
+
+            {trackerStatus === 'ready' && (
+              <label className="flex items-center gap-3 text-sm font-bold text-gray-700 bg-white rounded-2xl border border-gray-100 p-4 shadow-2xs">
+                <span className="w-14 shrink-0">גודל</span>
+                <input
+                  type="range"
+                  min={80}
+                  max={125}
+                  value={liveSize}
+                  onChange={(e) => setLiveSize(Number(e.target.value))}
+                  className="flex-1 accent-[#0047AB]"
+                />
+              </label>
+            )}
+
+            <div className="flex items-center justify-center gap-4">
               <button
-                onClick={stopCamera}
-                aria-label="סגירת מצלמה"
-                className="absolute top-3 left-3 bg-black/40 text-white p-2 rounded-full cursor-pointer"
+                onClick={capture}
+                aria-label="צילום"
+                className="w-20 h-20 rounded-full bg-white border-[6px] border-[#0047AB] shadow-lg active:scale-95 transition-transform cursor-pointer flex items-center justify-center"
               >
-                <X className="w-5 h-5" />
+                <Camera className="w-8 h-8 text-[#0047AB]" />
               </button>
             </div>
+            <p className="text-center text-xs text-gray-500">צלמו כדי לשמור, לשתף ולהשוות מסגרות על אותה תמונה</p>
+
             <button
-              onClick={capture}
-              aria-label="צילום"
-              className="mx-auto block w-20 h-20 rounded-full bg-white border-[6px] border-[#0047AB] shadow-lg active:scale-95 transition-transform cursor-pointer"
-            />
+              onClick={() => {
+                stopCamera();
+                onBookAppointment();
+              }}
+              className="w-full bg-[#0047AB] hover:bg-[#003580] text-white font-black py-3.5 rounded-xl shadow-md flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Calendar className="w-5 h-5" />
+              <span>אהבתי! קביעת תור למדידה בחנות</span>
+            </button>
           </div>
         )}
 
-        {/* שלב 3: התאמת משקפיים */}
-        {photo && (
+        {/* תמונה: התאמה ידנית, שמירה ושיתוף */}
+        {mode === 'photo' && photo && (
           <div className="space-y-4">
             <div className="flex gap-3 items-start">
-              {/* התמונה */}
               <div className="flex-1 min-w-0 flex justify-center">
                 <div
                   ref={stageRef}
@@ -418,31 +630,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
                   )}
                 </div>
               </div>
-
-              {/* רשימת המסגרות בצד */}
-              <aside className="w-[84px] sm:w-44 shrink-0 max-h-[68vh] overflow-y-auto no-scrollbar space-y-2">
-                {TRY_ON_FRAMES.map((frame) => {
-                  const active = selected?.id === frame.id;
-                  return (
-                    <button
-                      key={frame.id}
-                      onClick={() => chooseFrame(frame)}
-                      className={`w-full rounded-2xl border-2 bg-white p-1.5 sm:p-2 text-center transition-all cursor-pointer ${
-                        active ? 'border-[#0047AB] ring-2 ring-blue-200' : 'border-gray-100 hover:border-blue-200'
-                      }`}
-                    >
-                      <div className="aspect-[8/3] flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 rounded-xl">
-                        <img src={frame.image} alt={frame.name} className="w-[90%]" draggable={false} />
-                      </div>
-                      <div className="mt-1 text-[11px] sm:text-xs font-bold text-gray-800 leading-tight">{frame.name}</div>
-                      <div className="text-[10px] sm:text-[11px] text-gray-500">
-                        <span className="hidden sm:inline">{frame.style} · </span>
-                        {frame.price} ₪
-                      </div>
-                    </button>
-                  );
-                })}
-              </aside>
+              {frameStrip}
             </div>
 
             {/* כיוונון */}
@@ -499,11 +687,11 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
             {/* פעולות */}
             <div className="grid grid-cols-2 gap-2">
               <button
-                onClick={retake}
+                onClick={startLive}
                 className="bg-white border border-gray-200 text-gray-800 font-bold text-sm py-3 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <RefreshCw className="w-4 h-4 text-[#0047AB]" />
-                <span>צילום חדש</span>
+                <span>חזרה למדידה חיה</span>
               </button>
               <button
                 onClick={saveImage}
