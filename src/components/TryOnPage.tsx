@@ -5,7 +5,9 @@ import {
   Glasses, RefreshCw, ShieldCheck, Move, X, Loader2, ScanFace, Video,
 } from 'lucide-react';
 import { TRY_ON_FRAMES, TryOnFrame } from '../data/tryOnFrames';
-import { loadFaceLandmarker, poseFromLandmarks, FacePose, GLASSES_TO_EYE_SPAN } from '../utils/faceTracker';
+import {
+  loadFaceLandmarker, poseFromLandmarks, hingePoints, FacePose, PoseFilter, Point,
+} from '../utils/faceTracker';
 import logoImg from '../assets/images/logo_optics.svg';
 
 interface TryOnPageProps {
@@ -13,12 +15,19 @@ interface TryOnPageProps {
   onBookAppointment: () => void;
 }
 
-// מיקום המשקפיים על תמונה באחוזים מהתמונה (מרכז, רוחב) וזווית במעלות
+// מיקום המשקפיים על תמונה באחוזים מהתמונה (מרכז, רוחב) וזווית במעלות.
+// ears – נקודות האוזניים באחוזים (מצילום חי בלבד); null = הידית מוסתרת מאחורי הראש.
 interface Placement {
   x: number;
   y: number;
   width: number;
   rotation: number;
+  ears?: { left: Point | null; right: Point | null };
+}
+
+interface Segment {
+  from: Point;
+  to: Point;
 }
 
 type Mode = 'intro' | 'live' | 'photo';
@@ -28,12 +37,31 @@ const DEFAULT_PLACEMENT: Placement = { x: 50, y: 42, width: 56, rotation: 0 };
 const MIN_WIDTH = 20;
 const MAX_WIDTH = 95;
 const MAX_PHOTO_SIDE = 1400;
-const SMOOTHING = 0.5;
 const MAX_YAW = 0.9;
 const MAX_PITCH = 0.35;
+// מעבר לזווית הזו הידית בצד הרחוק מוסתרת מאחורי הראש
+const HIDE_TEMPLE_YAW = 0.3;
+const TEMPLE_THICKNESS = 0.028;
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 const toDeg = (rad: number) => (rad * 180) / Math.PI;
+
+// ידיות בתמונה סטטית, בפיקסלים של התמונה
+function photoTemples(placement: Placement, frame: TryOnFrame, w: number, h: number): Segment[] {
+  if (!placement.ears) return [];
+  const width = (placement.width / 100) * w;
+  const hinges = hingePoints(
+    { x: (placement.x / 100) * w, y: (placement.y / 100) * h },
+    width,
+    frame.hingeY,
+    (placement.rotation * Math.PI) / 180,
+  );
+  const toPx = (p: Point) => ({ x: (p.x / 100) * w, y: (p.y / 100) * h });
+  const out: Segment[] = [];
+  if (placement.ears.left) out.push({ from: hinges.left, to: toPx(placement.ears.left) });
+  if (placement.ears.right) out.push({ from: hinges.right, to: toPx(placement.ears.right) });
+  return out;
+}
 
 const loadImage = (src: string) =>
   new Promise<HTMLImageElement>((resolve, reject) => {
@@ -46,6 +74,7 @@ const loadImage = (src: string) =>
 export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppointment }) => {
   const [mode, setMode] = useState<Mode>('intro');
   const [photo, setPhoto] = useState<string | null>(null);
+  const [photoSize, setPhotoSize] = useState({ w: 1, h: 1 });
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [trackerStatus, setTrackerStatus] = useState<TrackerStatus>('idle');
   const [faceFound, setFaceFound] = useState(false);
@@ -59,10 +88,14 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
   const streamRef = useRef<MediaStream | null>(null);
   const liveStageRef = useRef<HTMLDivElement>(null);
   const liveGlassesRef = useRef<HTMLImageElement>(null);
+  const templeLeftRef = useRef<SVGLineElement>(null);
+  const templeRightRef = useRef<SVGLineElement>(null);
   const landmarkerRef = useRef<FaceLandmarker | null>(null);
   const poseRef = useRef<FacePose | null>(null);
   const liveSizeRef = useRef(liveSize);
   liveSizeRef.current = liveSize;
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
 
   const stageRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -95,7 +128,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
     }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 960 } },
+        video: { facingMode: 'user', width: { ideal: 960 }, height: { ideal: 720 } },
         audio: false,
       });
       streamRef.current = stream;
@@ -134,9 +167,19 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
   useEffect(() => {
     if (mode !== 'live' || trackerStatus !== 'ready') return;
     const landmarker = landmarkerRef.current!;
-    let raf = 0;
+    const video = videoRef.current;
+    if (!video) return;
+    let stopped = false;
+    let handle = 0;
     let lastVideoTime = -1;
     let found = false;
+    let filter = new PoseFilter();
+
+    // requestVideoFrameCallback רץ ברגע שמגיע פריים חדש מהמצלמה – פחות השהיה מ-requestAnimationFrame
+    const hasVfc = 'requestVideoFrameCallback' in video;
+    const schedule = () => {
+      handle = hasVfc ? video.requestVideoFrameCallback(tick) : requestAnimationFrame(tick);
+    };
 
     const setFound = (value: boolean) => {
       if (found !== value) {
@@ -145,41 +188,41 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
       }
     };
 
+    const hide = () => {
+      for (const el of [liveGlassesRef.current, templeLeftRef.current, templeRightRef.current]) {
+        if (el) el.style.opacity = '0';
+      }
+    };
+
     const tick = () => {
-      raf = requestAnimationFrame(tick);
-      const video = videoRef.current;
+      if (stopped) return;
+      schedule();
       const stage = liveStageRef.current;
-      if (!video || !stage || video.readyState < 2 || video.currentTime === lastVideoTime) return;
+      if (!stage || video.readyState < 2 || video.currentTime === lastVideoTime) return;
       lastVideoTime = video.currentTime;
 
       const vw = video.videoWidth;
       const vh = video.videoHeight;
-      const lm = landmarker.detectForVideo(video, performance.now()).faceLandmarks[0];
-      const glasses = liveGlassesRef.current;
+      const now = performance.now();
+      const lm = landmarker.detectForVideo(video, now).faceLandmarks[0];
       if (!lm) {
         setFound(false);
         poseRef.current = null;
-        if (glasses) glasses.style.opacity = '0';
+        filter = new PoseFilter();
+        hide();
         return;
       }
       setFound(true);
 
-      const target = poseFromLandmarks(lm, vw, vh, true);
-      target.yaw = clamp(target.yaw, -MAX_YAW, MAX_YAW);
-      target.pitch = clamp(target.pitch * 0.5, -MAX_PITCH, MAX_PITCH);
-      const prev = poseRef.current;
-      const pose: FacePose = prev
-        ? {
-            x: prev.x + (target.x - prev.x) * SMOOTHING,
-            y: prev.y + (target.y - prev.y) * SMOOTHING,
-            eyeSpan: prev.eyeSpan + (target.eyeSpan - prev.eyeSpan) * SMOOTHING,
-            roll: prev.roll + (target.roll - prev.roll) * SMOOTHING,
-            yaw: prev.yaw + (target.yaw - prev.yaw) * SMOOTHING,
-            pitch: prev.pitch + (target.pitch - prev.pitch) * SMOOTHING,
-          }
-        : target;
+      const raw = poseFromLandmarks(lm, vw, vh, true);
+      raw.yaw = clamp(raw.yaw, -MAX_YAW, MAX_YAW);
+      raw.pitch = clamp(raw.pitch * 0.5, -MAX_PITCH, MAX_PITCH);
+      const pose = filter.apply(raw, vw, now);
       poseRef.current = pose;
-      if (!glasses) return;
+
+      const glasses = liveGlassesRef.current;
+      const frame = selectedRef.current;
+      if (!glasses || !frame) return;
 
       // מיפוי מפיקסלים של הווידאו לתצוגה (object-cover)
       const cw = stage.clientWidth;
@@ -187,19 +230,42 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
       const scale = Math.max(cw / vw, ch / vh);
       const offX = (cw - vw * scale) / 2;
       const offY = (ch - vh * scale) / 2;
-      const width = pose.eyeSpan * GLASSES_TO_EYE_SPAN * scale * (liveSizeRef.current / 100);
+      const toScreen = (p: Point) => ({ x: p.x * scale + offX, y: p.y * scale + offY });
+      const center = toScreen(pose);
+      const width = pose.frameWidth * scale * (liveSizeRef.current / 100);
 
-      glasses.style.left = `${pose.x * scale + offX}px`;
-      glasses.style.top = `${pose.y * scale + offY}px`;
+      glasses.style.left = `${center.x}px`;
+      glasses.style.top = `${center.y}px`;
       glasses.style.width = `${width}px`;
       glasses.style.transform =
         `translate(-50%, -50%) perspective(${Math.round(width * 3)}px) ` +
         `rotate(${toDeg(pose.roll)}deg) rotateY(${toDeg(pose.yaw)}deg) rotateX(${toDeg(pose.pitch)}deg)`;
       glasses.style.opacity = '1';
+
+      // ידיות: מהציר של המסגרת ועד האוזן; הצד שמסתובב הרחק מהמצלמה מוסתר
+      const hinges = hingePoints(center, width, frame.hingeY, pose.roll, pose.yaw, pose.pitch);
+      const temples: [SVGLineElement | null, Point, Point, boolean][] = [
+        [templeLeftRef.current, hinges.left, toScreen(pose.earLeft), pose.yaw > -HIDE_TEMPLE_YAW],
+        [templeRightRef.current, hinges.right, toScreen(pose.earRight), pose.yaw < HIDE_TEMPLE_YAW],
+      ];
+      for (const [line, from, to, visible] of temples) {
+        if (!line) continue;
+        line.setAttribute('x1', `${from.x}`);
+        line.setAttribute('y1', `${from.y}`);
+        line.setAttribute('x2', `${to.x}`);
+        line.setAttribute('y2', `${to.y}`);
+        line.style.stroke = frame.templeColor;
+        line.style.strokeWidth = `${Math.max(2, width * TEMPLE_THICKNESS)}px`;
+        line.style.opacity = visible ? '1' : '0';
+      }
     };
 
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    schedule();
+    return () => {
+      stopped = true;
+      if (hasVfc) video.cancelVideoFrameCallback(handle);
+      else cancelAnimationFrame(handle);
+    };
   }, [mode, trackerStatus]);
 
   // ---- צילום מתוך המדידה החיה: עוברים לתמונה עם המשקפיים באותו מיקום ----
@@ -227,16 +293,22 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
     ctx.drawImage(video, sx, sy, cw, ch, 0, 0, canvas.width, canvas.height);
 
     const pose = poseRef.current;
+    const pct = (p: Point) => ({ x: ((p.x - sx) / cw) * 100, y: ((p.y - sy) / ch) * 100 });
     setPlacement(
       pose
         ? {
-            x: clamp(((pose.x - sx) / cw) * 100, 0, 100),
-            y: clamp(((pose.y - sy) / ch) * 100, 0, 100),
-            width: clamp(((pose.eyeSpan * GLASSES_TO_EYE_SPAN * (liveSize / 100)) / cw) * 100, MIN_WIDTH, MAX_WIDTH),
+            x: clamp(pct(pose).x, 0, 100),
+            y: clamp(pct(pose).y, 0, 100),
+            width: clamp(((pose.frameWidth * (liveSize / 100)) / cw) * 100, MIN_WIDTH, MAX_WIDTH),
             rotation: clamp(toDeg(pose.roll), -30, 30),
+            ears: {
+              left: pose.yaw > -HIDE_TEMPLE_YAW ? pct(pose.earLeft) : null,
+              right: pose.yaw < HIDE_TEMPLE_YAW ? pct(pose.earRight) : null,
+            },
           }
         : DEFAULT_PLACEMENT,
     );
+    setPhotoSize({ w: canvas.width, h: canvas.height });
     setPhoto(canvas.toDataURL('image/jpeg', 0.92));
     stopCamera();
     setMode('photo');
@@ -254,6 +326,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
       canvas.width = Math.round(img.naturalWidth * scale);
       canvas.height = Math.round(img.naturalHeight * scale);
       canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      setPhotoSize({ w: canvas.width, h: canvas.height });
       setPhoto(canvas.toDataURL('image/jpeg', 0.92));
       stopCamera();
       setCameraError(null);
@@ -334,6 +407,15 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
 
       const gw = (placement.width / 100) * W;
       const gh = gw * (glasses.naturalHeight / glasses.naturalWidth);
+      ctx.strokeStyle = selected.templeColor;
+      ctx.lineWidth = Math.max(2, gw * TEMPLE_THICKNESS);
+      ctx.lineCap = 'round';
+      for (const t of photoTemples(placement, selected, W, H)) {
+        ctx.beginPath();
+        ctx.moveTo(t.from.x, t.from.y);
+        ctx.lineTo(t.to.x, t.to.y);
+        ctx.stroke();
+      }
       ctx.save();
       ctx.translate((placement.x / 100) * W, (placement.y / 100) * H);
       ctx.rotate((placement.rotation * Math.PI) / 180);
@@ -505,13 +587,19 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
                     className="absolute inset-0 w-full h-full object-cover -scale-x-100"
                   />
                   {selected && trackerStatus === 'ready' && (
-                    <img
-                      ref={liveGlassesRef}
-                      src={selected.image}
-                      alt={selected.name}
-                      draggable={false}
-                      className="absolute top-0 left-0 opacity-0 pointer-events-none drop-shadow-md will-change-transform"
-                    />
+                    <>
+                      <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                        <line ref={templeLeftRef} strokeLinecap="round" opacity={0} />
+                        <line ref={templeRightRef} strokeLinecap="round" opacity={0} />
+                      </svg>
+                      <img
+                        ref={liveGlassesRef}
+                        src={selected.image}
+                        alt={selected.name}
+                        draggable={false}
+                        className="absolute top-0 left-0 opacity-0 pointer-events-none will-change-transform"
+                      />
+                    </>
                   )}
                   {trackerStatus !== 'ready' && (
                     <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
@@ -604,6 +692,25 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
                     draggable={false}
                     className="block max-w-full max-h-[68vh] w-auto h-auto"
                   />
+                  {selected && !comparing && (
+                    <svg
+                      viewBox={`0 0 ${photoSize.w} ${photoSize.h}`}
+                      className="absolute inset-0 w-full h-full pointer-events-none"
+                    >
+                      {photoTemples(placement, selected, photoSize.w, photoSize.h).map((t, i) => (
+                        <line
+                          key={i}
+                          x1={t.from.x}
+                          y1={t.from.y}
+                          x2={t.to.x}
+                          y2={t.to.y}
+                          stroke={selected.templeColor}
+                          strokeWidth={Math.max(2, (placement.width / 100) * photoSize.w * TEMPLE_THICKNESS)}
+                          strokeLinecap="round"
+                        />
+                      ))}
+                    </svg>
+                  )}
                   {selected && !comparing && (
                     <img
                       src={selected.image}

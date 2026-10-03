@@ -8,11 +8,11 @@
       <stop offset="0" stop-color="#f5d9e0" stop-opacity="0.25"/>
       <stop offset="1" stop-color="#ffffff" stop-opacity="0.05"/>
     </linearGradient>
-    <path id="l" d="M12 26 Q62 22 140 32 Q156 36 152 58 Q146 98 92 98 Q42 96 30 68 Q22 48 12 26 Z"/>
+    <path id="l" d="M4 27 Q60 22 140 32 Q156 36 152 58 Q146 98 92 98 Q42 96 30 68 Q20 48 4 27 Z"/>
   </defs>
   <use href="#l" fill="url(#lens)" stroke="url(#frame)" stroke-width="9" stroke-linejoin="round"/>
   <use href="#l" transform="translate(320 0) scale(-1 1)" fill="url(#lens)" stroke="url(#frame)" stroke-width="9" stroke-linejoin="round"/>
   <path d="M152 48 Q160 40 168 48" fill="none" stroke="url(#frame)" stroke-width="7" stroke-linecap="round"/>
-  <circle cx="22" cy="30" r="3" fill="#f4e3b1"/>
-  <circle cx="298" cy="30" r="3" fill="#f4e3b1"/>
+  <circle cx="16" cy="30" r="3" fill="#f4e3b1"/>
+  <circle cx="304" cy="30" r="3" fill="#f4e3b1"/>
 </svg>
