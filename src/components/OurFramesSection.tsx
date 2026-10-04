@@ -38,8 +38,18 @@ export const OurFramesSection: React.FC<OurFramesSectionProps> = ({ onTryOn }) =
               key={frame.id}
               className="group bg-[#FBFBFB] border-2 border-gray-100 hover:border-[#0047AB] rounded-2xl p-4 flex flex-col gap-3 transition-colors"
             >
-              <div className="aspect-[8/3] flex items-center justify-center">
-                <img src={frame.image} alt={frame.name} loading="lazy" className="max-w-full max-h-full" />
+              <div className="relative aspect-[8/3] flex items-center justify-center">
+                <img
+                  src={frame.image}
+                  alt={frame.name}
+                  loading="lazy"
+                  className={`max-w-full max-h-full ${frame.inStock === false ? 'opacity-50' : ''}`}
+                />
+                {frame.inStock === false && (
+                  <span className="absolute top-0 right-0 bg-amber-100 text-amber-800 text-[11px] font-bold px-2 py-0.5 rounded-full">
+                    אזל מהמלאי כרגע
+                  </span>
+                )}
               </div>
               <div className="flex-1">
                 <div className="font-bold text-gray-900 leading-tight">{frame.name}</div>
@@ -47,6 +57,7 @@ export const OurFramesSection: React.FC<OurFramesSectionProps> = ({ onTryOn }) =
                   {frame.style ? `${frame.style} · ` : ''}
                   <span className="font-bold text-[#0047AB]">{frame.price} ₪</span>
                 </div>
+                {frame.description && <p className="mt-1 text-xs text-gray-600 leading-snug">{frame.description}</p>}
               </div>
               <button
                 onClick={() => onTryOn(frame.id)}
