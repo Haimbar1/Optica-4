@@ -434,8 +434,9 @@ async function exportLeadToSmartEsek(lead: {
   campaign?: string;
   message?: string;
 }) {
-  const leadKey = process.env.SMARTESEK_LEAD_KEY || '1234512345';
-  const tenantKey = process.env.SMARTESEK_TENANT_KEY || '';
+  // מפתח ה-API של העסק ב-CRM (X-Tenant-Key) – רק הוא מזהה את העסק ב-/api/leads.
+  // Vercel קודם, ואם אין שם – מ"מזהים וחיבורים" בפורטל (אתר).
+  const tenantKey = await siteSecret('SMARTESEK_TENANT_KEY');
   const crmUrl = 'https://crm.smartesek.com/api/leads';
 
   const payload = {
@@ -450,13 +451,12 @@ async function exportLeadToSmartEsek(lead: {
     authorName: 'אתר',
   };
   if (!tenantKey) {
-    console.error('⚠️ SMARTESEK_TENANT_KEY לא מוגדר בשרת — ה-CRM ידחה את הליד (401). יש להגדיר אותו ב-Vercel → Settings → Environment Variables.');
+    console.error('⚠️ SMARTESEK_TENANT_KEY לא מוגדר — ה-CRM ידחה את הליד (401). יש להזין אותו בפורטל: אתר ← מזהים וחיבורים.');
   }
 
   console.log('\n================== [CRM LEAD EXPORT START] ==================');
   console.log('⏰ זמן שליחה:', new Date().toLocaleString('he-IL'));
   console.log('🌐 כתובת יעד (URL):', crmUrl);
-  console.log('🔑 Headers:', { 'Content-Type': 'application/json', 'X-Lead-Key': leadKey });
   console.log('📦 פרטים שנשלחו (Payload):', JSON.stringify(payload, null, 2));
 
   try {
@@ -464,7 +464,6 @@ async function exportLeadToSmartEsek(lead: {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Lead-Key': leadKey,
         'X-Tenant-Key': tenantKey,
       },
       body: JSON.stringify(payload),
