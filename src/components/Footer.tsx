@@ -125,6 +125,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) =>
               <FileText className="w-3.5 h-3.5" />
               <span>תנאי שימוש ושירות</span>
             </button>
+            <span className="text-slate-700">|</span>
+            <a href="?page=settings" className="text-slate-600 hover:text-slate-400 transition-colors">
+              ניהול
+            </a>
           </div>
         </div>
       </div>

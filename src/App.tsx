@@ -10,8 +10,9 @@ import { Footer } from './components/Footer';
 import { LegalModal } from './components/LegalModal';
 import { CampaignLandingPage } from './components/CampaignLandingPage';
 import { TryOnPage } from './components/TryOnPage';
+import { SettingsPage } from './components/SettingsPage';
 
-type Page = 'main' | 'campaign' | 'tryon';
+type Page = 'main' | 'campaign' | 'tryon' | 'settings';
 
 function checkIsTryOn(): boolean {
   if (typeof window === 'undefined') return false;
@@ -27,7 +28,14 @@ function checkIsTryOn(): boolean {
   );
 }
 
+function checkIsSettings(): boolean {
+  if (typeof window === 'undefined') return false;
+  const search = new URLSearchParams(window.location.search);
+  return search.get('page') === 'settings' || window.location.hash.toLowerCase() === '#settings';
+}
+
 function detectPage(): Page {
+  if (checkIsSettings()) return 'settings';
   if (checkIsTryOn()) return 'tryon';
   return checkIsCampaign() ? 'campaign' : 'main';
 }
@@ -95,6 +103,15 @@ export default function App() {
     setLegalModalTab('terms');
     setIsLegalModalOpen(true);
   };
+
+  if (currentPage === 'settings') {
+    return (
+      <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-['Assistant',sans-serif]">
+        <SettingsPage onBackToMain={() => navigateTo('main')} onOpenTryOn={() => navigateTo('tryon')} />
+        <style>{`#obw-fab, .obw-fab, #obw-window, .obw-window, .obw-fab-button, [id^="obw-"] { display: none !important; }`}</style>
+      </div>
+    );
+  }
 
   if (currentPage === 'tryon') {
     return (

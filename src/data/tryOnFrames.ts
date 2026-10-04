@@ -7,17 +7,19 @@ import tortoise from '../assets/tryon/tortoise.svg';
 import browlineNavy from '../assets/tryon/browline-navy.svg';
 import kidsTeal from '../assets/tryon/kids-teal.svg';
 
-// מסגרת להדמיה: התמונה חייבת להיות חזית המשקפיים על רקע שקוף (PNG/SVG)
-// ביחס 320x120, חתוכה צמוד לקצוות המסגרת, כשהעדשות ממורכזות לגובה.
-// hingeY – גובה הציר (חיבור הידית) בתמונה, ביחידות של 0–120.
+// מסגרת להדמיה: התמונה חייבת להיות חזית המשקפיים על רקע שקוף (PNG/SVG),
+// חתוכה צמוד לקצוות המסגרת, כשהעדשות ממורכזות לגובה.
+// aspect – יחס רוחב/גובה של התמונה (ברירת מחדל 320/120 של מסגרות הדוגמה).
+// hingeY – גובה הציר (חיבור הידית) בתמונה, ביחידות של 0–120 מגובה התמונה.
 // templeColor – צבע הידיות שמצוירות מהציר עד האוזן.
-// בהמשך הרשימה הזו תגיע ממסך ההגדרות (העלאת תמונות של מסגרות אמיתיות מהחנות).
+// מסגרות אמיתיות מועלות ממסך ההגדרות (?page=settings); כשיש כאלה, הן מחליפות את מסגרות הדוגמה.
 export interface TryOnFrame {
   id: string;
   name: string;
   style: string;
   price: number;
   image: string;
+  aspect?: number;
   hingeY: number;
   templeColor: string;
 }
