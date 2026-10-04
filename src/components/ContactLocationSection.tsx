@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BUSINESS_INFO } from '../data/opticsData';
 import { MapPin, Navigation, Phone, Clock, ExternalLink, Glasses, Footprints, Car, DoorOpen, ZoomIn, X } from 'lucide-react';
 
-const arrivalGuideImg = 'https://i.ibb.co/hJJ4XpH0/image.png';
+import arrivalGuideImg from '../assets/images/arrival_guide.webp';
 
 export const ContactLocationSection: React.FC = () => {
   const [showFullGuideModal, setShowFullGuideModal] = useState(false);
