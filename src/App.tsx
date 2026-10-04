@@ -10,6 +10,7 @@ import { Footer } from './components/Footer';
 import { LegalModal } from './components/LegalModal';
 import { CampaignLandingPage } from './components/CampaignLandingPage';
 import { TryOnPage } from './components/TryOnPage';
+import { OurFramesSection } from './components/OurFramesSection';
 
 type Page = 'main' | 'campaign' | 'tryon';
 
@@ -70,6 +71,13 @@ export default function App() {
       window.removeEventListener('hashchange', handleLocationChange);
     };
   }, []);
+
+  // דף המדידה עם מסגרת מסוימת שנבחרה מראש (?page=tryon&frame=<id>) – מהסקשן "המסגרות שלנו" ומהקישורים של הבוט
+  const openTryOnWithFrame = (frameId: string) => {
+    setCurrentPage('tryon');
+    window.history.pushState({ page: 'tryon' }, '', `?page=tryon&frame=${encodeURIComponent(frameId)}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const navigateTo = (page: Page) => {
     setCurrentPage(page);
@@ -148,6 +156,7 @@ export default function App() {
         />
 
         <AppointmentSection />
+        <OurFramesSection onTryOn={openTryOnWithFrame} />
         <AboutSocialOptics />
         <FaqSection />
         <ContactLocationSection />

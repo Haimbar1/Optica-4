@@ -129,7 +129,10 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
       .then(({ frames: uploaded }) => {
         if (!uploaded.length) return;
         setFrames(uploaded);
-        setSelected((cur) => (cur && uploaded.some((f) => f.id === cur.id) ? cur : uploaded[0]));
+        // ?frame=<id> – נכנסו מכרטיס של מסגרת באתר או מקישור שהבוט שלח
+        const wanted = new URLSearchParams(window.location.search).get('frame');
+        const fromLink = uploaded.find((f) => f.id === wanted);
+        setSelected((cur) => fromLink || (cur && uploaded.some((f) => f.id === cur.id) ? cur : uploaded[0]));
       })
       .catch(() => {
         // בלי חיבור לשרת – נשארים עם מסגרות הדוגמה
