@@ -2,15 +2,15 @@
 // that is managed for it lives there, per business: the try-on frames (uploaded / hidden / deleted
 // in the portal's site page, stored in the portal's database) and the keys in "מזהים וחיבורים".
 //
-//   PORTAL_URL        the portal (default https://portal.smartesek.com)
-//   PORTAL_TENANT_ID  this site's business in the portal (default 1 = האופטיקה הטובה, the portal's
-//                     original business)
-//   SSO_SHARED_SECRET the platform's shared secret — only needed to read keys from the vault
+// Which business this site is in the portal is fixed here in the code (an explicit id, not looked
+// up by the site's address, and not a Vercel setting). The only thing in Vercel is
+// SSO_SHARED_SECRET, the platform's shared secret that unlocks the vault itself.
 import express from 'express';
 import crypto from 'crypto';
 
-const PORTAL_URL = (process.env.PORTAL_URL || 'https://portal.smartesek.com').replace(/\/+$/, '');
-const TENANT_ID = Number(process.env.PORTAL_TENANT_ID || 1);
+const PORTAL_URL = 'https://portal.smartesek.com';
+// האופטיקה הטובה – העסק המקורי בפורטל (/tenants/1 בכתובת של ריבוע "אתר")
+const TENANT_ID = 1;
 const FRAME_ID_PATTERN = /^[a-z0-9]{6,32}$/;
 
 // ---- Try-on frames: read from the portal and served from this site's own origin, so the
