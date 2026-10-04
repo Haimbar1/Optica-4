@@ -2,16 +2,16 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import { GoogleGenAI } from '@google/genai';
-import { framesRouter } from './frameStore.js';
+import { framesRouter, siteSecret } from './portal.js';
 // 'vite' is only needed for local dev middleware; imported dynamically below
 // so it never gets bundled into the Vercel serverless function.
 
 const app = express();
 const PORT = 3000;
 
-// מסגרות להדמיה – לפני express.json הכללי, כי לראוטר יש מגבלת גודל משלו להעלאת תמונות
-app.use('/api/frames', framesRouter);
 app.use(express.json());
+// מסגרות להדמיה – מנוהלות בפורטל (מודול "אתר") ומוגשות מכאן
+app.use('/api/frames', framesRouter);
 
 // Enable CORS for external website embedding and API requests
 app.use((req, res, next) => {
@@ -313,7 +313,7 @@ app.post('/api/bot/web', async (req, res) => {
   }
 
   // Try Gemini AI if available
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = await siteSecret('GEMINI_API_KEY');
   if (apiKey) {
     try {
       const ai = new GoogleGenAI({ apiKey });
@@ -628,7 +628,7 @@ app.get('/api/appointments', (req, res) => {
 app.post('/api/ai-chat', async (req, res) => {
   const { message, history } = req.body;
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = await siteSecret('GEMINI_API_KEY');
   if (apiKey) {
     try {
       const ai = new GoogleGenAI({ apiKey });
