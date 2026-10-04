@@ -4,6 +4,8 @@ import type { TryOnFrame } from '../data/tryOnFrames';
 export interface UploadedFrame extends TryOnFrame {
   aspect: number;
   description?: string;
+  // false = עדיין מוצגת באתר, עם סימון שאזלה מהמלאי
+  inStock?: boolean;
 }
 
 export async function fetchFrames(): Promise<{ frames: UploadedFrame[] }> {
