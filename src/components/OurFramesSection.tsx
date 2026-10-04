@@ -26,7 +26,7 @@ export const OurFramesSection: React.FC<OurFramesSectionProps> = ({ onTryOn }) =
             <Glasses className="w-4 h-4" />
             <span>מהחנות שלנו</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-gray-900 font-['Rubik']">המסגרות שלנו</h2>
+          <h2 className="text-3xl sm:text-4xl font-black text-gray-900 font-['Rubik']">דגימה מהמסגרות שלנו</h2>
           <p className="text-gray-600">
             אהבתם מסגרת? לחצו "מדידה" וראו איך היא נראית עליכם במצלמה – ואז בואו למדוד בחנות.
           </p>
