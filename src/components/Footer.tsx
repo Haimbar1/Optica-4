@@ -126,7 +126,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) =>
               <span>תנאי שימוש ושירות</span>
             </button>
             <span className="text-slate-700">|</span>
-            <a href="?page=settings" className="text-slate-600 hover:text-slate-400 transition-colors">
+            <a href="https://portal.smartesek.com" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-slate-400 transition-colors">
               ניהול
             </a>
           </div>

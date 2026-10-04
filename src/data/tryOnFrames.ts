@@ -12,7 +12,7 @@ import kidsTeal from '../assets/tryon/kids-teal.svg';
 // aspect – יחס רוחב/גובה של התמונה (ברירת מחדל 320/120 של מסגרות הדוגמה).
 // hingeY – גובה הציר (חיבור הידית) בתמונה, ביחידות של 0–120 מגובה התמונה.
 // templeColor – צבע הידיות שמצוירות מהציר עד האוזן.
-// מסגרות אמיתיות מועלות ממסך ההגדרות (?page=settings); כשיש כאלה, הן מחליפות את מסגרות הדוגמה.
+// מסגרות אמיתיות מועלות בפורטל (portal.smartesek.com ← אתר); כשיש כאלה, הן מחליפות את מסגרות הדוגמה.
 export interface TryOnFrame {
   id: string;
   name: string;
