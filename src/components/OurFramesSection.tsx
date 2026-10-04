@@ -47,6 +47,7 @@ export const OurFramesSection: React.FC<OurFramesSectionProps> = ({ onTryOn }) =
                   {frame.style ? `${frame.style} · ` : ''}
                   <span className="font-bold text-[#0047AB]">{frame.price} ₪</span>
                 </div>
+                {frame.description && <p className="mt-1 text-xs text-gray-600 leading-snug">{frame.description}</p>}
               </div>
               <button
                 onClick={() => onTryOn(frame.id)}
