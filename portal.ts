@@ -25,7 +25,7 @@ framesRouter.get('/', async (req, res) => {
     const data: any = await r.json();
     const frames = (Array.isArray(data?.frames) ? data.frames : [])
       .filter((f: any) => FRAME_ID_PATTERN.test(String(f?.id)))
-      .map((f: any) => ({ ...f, image: `/api/frames/${f.id}/image` }));
+      .map((f: any) => ({ ...f, image: `/api/frames/${f.id}/image?v=${Number(f.imageVersion) || 1}` }));
     // בלי קאש: הסתרה או הוספה בפורטל מופיעה באתר מיד
     res.set('Cache-Control', 'no-store');
     res.json({ frames });
@@ -39,12 +39,15 @@ framesRouter.get('/', async (req, res) => {
 framesRouter.get('/:id/image', async (req, res) => {
   if (!FRAME_ID_PATTERN.test(req.params.id)) return res.sendStatus(404);
   try {
-    const r = await fetch(`${PORTAL_URL}/api/public/site/frames/${req.params.id}/image`, {
+    // ?v= is the image version: it changes when the image is replaced in the portal, so a versioned
+    // link can be cached for good; an unversioned one only briefly
+    const version = /^\d{1,6}$/.test(String(req.query.v || '')) ? String(req.query.v) : '';
+    const r = await fetch(`${PORTAL_URL}/api/public/site/frames/${req.params.id}/image${version ? `?v=${version}` : ''}`, {
       signal: AbortSignal.timeout(8000),
     });
     if (!r.ok) return res.sendStatus(r.status === 404 ? 404 : 502);
     res.set('Content-Type', 'image/png');
-    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    res.set('Cache-Control', version ? 'public, max-age=31536000, immutable' : 'public, max-age=600');
     res.send(Buffer.from(await r.arrayBuffer()));
   } catch {
     res.sendStatus(502);
