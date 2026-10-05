@@ -15,7 +15,7 @@ export const AboutSocialOptics: React.FC = () => {
             למה לשלם אלפי שקלים על משקפיים?
           </h2>
           <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
-            הרעיון מאחורי "האופטיקה הטובה" פשוט: איכות וסטייל ללא פשרות, במחירים שפויים והוגנים לכולם.
+            הרעיון מאחורי "האופטיקה החברתית" פשוט: איכות וסטייל ללא פשרות, במחירים שפויים והוגנים לכולם.
           </p>
         </div>
 
@@ -60,7 +60,7 @@ export const AboutSocialOptics: React.FC = () => {
           {/* HaOptika HaTova Social Model Card */}
           <div className="bg-white border-2 border-[#0047AB] rounded-3xl p-6 sm:p-8 space-y-4 relative overflow-hidden shadow-md">
             <div className="absolute top-0 left-0 bg-[#0047AB] text-white text-xs font-black px-3 py-1 rounded-br-2xl">
-              המודל של האופטיקה הטובה
+              המודל של האופטיקה החברתית
             </div>
 
             <div className="flex items-center gap-3 pt-2">

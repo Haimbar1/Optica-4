@@ -35,6 +35,7 @@ import {
   getIsraeliPhoneValidationError,
   formatIsraeliPhone,
 } from '../utils/phoneValidation';
+import { getCalUrlParams, withCalUrlParams } from '../utils/calParams';
 import campaignAdHeroImg from '../assets/images/campaign_ad_hero.jpg';
 import logoImg from '../assets/images/logo_optics.svg';
 
@@ -65,7 +66,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const calUrl = `https://cal.com/haoptika-hatova/30min?date=${selectedDate}&layout=month_view`;
+  const calUrl = withCalUrlParams(`https://cal.com/haoptika-hatova/30min?date=${selectedDate}&layout=month_view`);
 
   // Official Cal.com inline embed: lets us hide the event-type details panel (left column)
   useEffect(() => {
@@ -107,7 +108,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
       elementOrSelector: '#cal-inline-embed',
       calLink: 'haoptika-hatova/30min',
       layout: 'month_view',
-      config: { layout: 'month_view', date: selectedDate },
+      config: { ...getCalUrlParams(), layout: 'month_view', date: selectedDate },
     });
     w.Cal('ui', { hideEventTypeDetails: true, layout: 'month_view' });
     const t = setTimeout(() => setIframeLoaded(true), 2500);
@@ -1210,9 +1211,9 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
         <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-4 text-center sm:text-right">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <img src={logoImg} alt="האופטיקה הטובה" className="w-8 h-8 rounded-lg object-contain" />
+              <img src={logoImg} alt="האופטיקה החברתית" className="w-8 h-8 rounded-lg object-contain" />
               <div>
-                <span className="font-bold text-white block">האופטיקה הטובה - אופטיקה חברתית</span>
+                <span className="font-bold text-white block">האופטיקה החברתית - אמירים</span>
                 <span className="text-[11px] text-slate-500">מצפה מנחם 86, אמירים • 15 ק"מ מכרמיאל</span>
               </div>
             </div>
@@ -1240,7 +1241,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
           </div>
 
           <div className="border-t border-slate-800 pt-4 flex flex-col sm:flex-row items-center justify-between text-slate-500 text-[11px]">
-            <p>© {new Date().getFullYear()} האופטיקה הטובה. כל הזכויות שמורות.</p>
+            <p>© {new Date().getFullYear()} האופטיקה החברתית. כל הזכויות שמורות.</p>
             <p className="text-emerald-400/80">🔒 המידע האישי, תוצאות הבדיקות והרכישות שמורים במערכת מאובטחת.</p>
           </div>
         </div>

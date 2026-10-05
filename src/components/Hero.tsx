@@ -196,7 +196,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
               <div className="relative rounded-2xl overflow-hidden border-2 border-white shadow-xl bg-white">
                 <img
                   src="https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=1000&q=80"
-                  alt="האופטיקה הטובה אמירים"
+                  alt="האופטיקה החברתית אמירים"
                   className="w-full h-72 sm:h-80 object-cover"
                 />
 
@@ -204,7 +204,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
                   <div className="flex items-center gap-2 mb-1.5">
                     <img
                       src={logoImg}
-                      alt="האופטיקה הטובה"
+                      alt="האופטיקה החברתית"
                       className="w-8 h-8 rounded-lg object-cover border border-white/40 shadow-sm"
                     />
                     <div className="bg-[#0047AB] text-white text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full w-max">

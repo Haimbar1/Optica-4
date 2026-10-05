@@ -18,11 +18,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) =>
             <div className="flex items-center gap-2.5">
               <img
                 src={logoImg}
-                alt="האופטיקה הטובה"
+                alt="האופטיקה החברתית"
                 className="w-10 h-10 rounded-xl object-cover border border-emerald-800"
               />
               <span className="font-extrabold text-lg text-white font-['Rubik']">
-                האופטיקה הטובה
+                האופטיקה החברתית
               </span>
             </div>
             <p className="text-slate-400 leading-relaxed">
@@ -101,7 +101,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) =>
         </div>
 
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-slate-500 gap-4">
-          <p>© {new Date().getFullYear()} האופטיקה הטובה - מצפה מנחם 86, אמירים. כל הזכויות שמורות.</p>
+          <p>© {new Date().getFullYear()} האופטיקה החברתית - מצפה מנחם 86, אמירים. כל הזכויות שמורות.</p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
             <a href="#catalog" className="hover:text-slate-300 transition-colors">קטלוג משקפיים</a>
             <a href="#booking" className="hover:text-slate-300 transition-colors">בדיקת ראייה</a>

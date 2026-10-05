@@ -16,8 +16,8 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ isCampaignPage = false }
   // 1. Sync bot widget config and welcome message
   useEffect(() => {
     const targetTitle = isCampaignPage
-      ? 'האופטיקה הטובה - קביעת תור'
-      : 'האופטיקה הטובה אמירים';
+      ? 'האופטיקה החברתית - קביעת תור'
+      : 'האופטיקה החברתית אמירים';
     const targetWelcome = isCampaignPage ? CAMPAIGN_WELCOME : MAIN_WELCOME;
 
     // Update global config object

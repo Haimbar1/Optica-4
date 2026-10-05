@@ -8,7 +8,7 @@
   var userConfig = window.OpticsBotConfig || {};
   var botId = userConfig.botId || (currentScript ? currentScript.getAttribute('data-bot-id') : null) || 'bot_generic_252';
   var webhookUrl = userConfig.webhookUrl || (currentScript ? currentScript.getAttribute('data-webhook-url') : null) || 'https://n8n.srv1239769.hstgr.cloud/webhook/65325d34-0c9e-4cc3-8b7c-c03c47105b3a';
-  var botTitle = userConfig.title || (currentScript ? currentScript.getAttribute('data-title') : null) || 'האופטיקה הטובה - מושב אמירים';
+  var botTitle = userConfig.title || (currentScript ? currentScript.getAttribute('data-title') : null) || 'האופטיקה החברתית - מושב אמירים';
   var botSubtitle = userConfig.subtitle || (currentScript ? currentScript.getAttribute('data-subtitle') : null) || '';
   var whatsappNumber = userConfig.whatsappNumber || (currentScript ? currentScript.getAttribute('data-whatsapp') : null) || '972545404183';
   var themeColor = userConfig.themeColor || (currentScript ? currentScript.getAttribute('data-theme-color') : null) || '#0047AB';
@@ -21,7 +21,7 @@
   var parseTitleAndSubtitle = function(rawTitle, rawSub) {
     var main = (rawTitle || '').trim();
 
-    if (!main) main = 'האופטיקה הטובה';
+    if (!main) main = 'האופטיקה החברתית';
 
     // Keep the full configured bot name, including "אמירים" if it is
     // actually part of the configured name.

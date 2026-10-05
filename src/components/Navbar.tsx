@@ -24,6 +24,11 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
   const handleNavClick = (id: string) => {
     setActiveTab(id);
     setMobileMenuOpen(false);
+    // "תיאום תור" goes to the page with the embedded calendar
+    if (id === 'booking') {
+      onOpenBooking();
+      return;
+    }
     const elem = document.getElementById(id);
     if (elem) {
       elem.scrollIntoView({ behavior: 'smooth' });
@@ -83,13 +88,13 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
           >
             <img
               src={logoImg}
-              alt="האופטיקה הטובה"
+              alt="האופטיקה החברתית"
               className="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:scale-105 transition-transform border border-emerald-200"
             />
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-black text-2xl tracking-tight text-[#0047AB] font-['Rubik']">
-                  האופטיקה הטובה
+                  האופטיקה החברתית
                 </span>
               </div>
               <span className="text-[11px] font-bold text-gray-500 tracking-wide block">

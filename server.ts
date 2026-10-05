@@ -221,7 +221,7 @@ function extractAndNormalizePhone(text: string): string | null {
 
 // API Routes
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', store: 'האופטיקה הטובה - אמירים' });
+  res.json({ status: 'ok', store: 'האופטיקה החברתית - אמירים' });
 });
 
 // Proxy to n8n Web Bot webhook
@@ -317,10 +317,10 @@ app.post('/api/bot/web', async (req, res) => {
   if (apiKey) {
     try {
       const ai = new GoogleGenAI({ apiKey });
-      const systemInstruction = `אתה נציג השירות והבוט הדיגיטלי של "האופטיקה הטובה" באמירים (מיזם אופטיקה חברתית).
+      const systemInstruction = `אתה נציג השירות והבוט הדיגיטלי של "האופטיקה החברתית" באמירים (מיזם אופטיקה חברתית).
 ענה בתשובה קצרה, אדיבה, תכליתית ובעברית.
 פרטי העסק:
-- שם: האופטיקה הטובה באמירים
+- שם: האופטיקה החברתית באמירים
 - כתובת: מצפה מנחם 86, אמירים
 - טלפון אביגיל (לתורים לבדיקת ראייה): 054-913-1704
 - וואטסאפ לפניות ישירות / בירורים: 054-540-4183 (972545404183)
@@ -353,7 +353,7 @@ app.post('/api/bot/web', async (req, res) => {
 
   // Smart fallback response if n8n is offline or returned non-json
   const textLower = (message || buttonId || '').toLowerCase();
-  let fallbackReply = 'שלום! שמי האסיסטנט של "האופטיקה הטובה" באמירים. במה אוכל לעזור לך? (בדיקת ראייה, מחירי מסגרות, הגעה בוויז או תיאום תור)';
+  let fallbackReply = 'שלום! שמי האסיסטנט של "האופטיקה החברתית" באמירים. במה אוכל לעזור לך? (בדיקת ראייה, מחירי מסגרות, הגעה בוויז או תיאום תור)';
   let fallbackButtons: Array<{ id: string; title: string }> = [
     { id: 'btn_1', title: '👁️ לקבוע בדיקת ראייה' },
     { id: 'btn_2', title: '👓 משקפיים ומסגרות' },
@@ -421,7 +421,7 @@ app.post('/api/bot/whatsapp', async (req, res) => {
 
   return res.json({
     success: true,
-    whatsappUrl: `https://wa.me/972545404183?text=${encodeURIComponent(message || 'שלום, אשמח לקבל פרטים על האופטיקה הטובה באמירים')}`,
+    whatsappUrl: `https://wa.me/972545404183?text=${encodeURIComponent(message || 'שלום, אשמח לקבל פרטים על האופטיקה החברתית באמירים')}`,
     source: 'whatsapp_direct_link',
   });
 });
@@ -597,7 +597,7 @@ app.post('/api/appointments', async (req, res) => {
         recipient_email: recipientEmail,
         appointment: newAppointment,
         email_subject: `בקשת תור חדשה לבדיקת ראייה - ${fullName}`,
-        email_body: `תור חדש נרשם באתר האופטיקה הטובה:\n- שם: ${fullName}\n- טלפון (בינלאומי): ${normalizedPhone}\n- מייל: ${email || 'לא צויין'}\n- סוג שירות: ${appointmentType}\n- תאריך מבוקש: ${preferredDate}\n- שעה מבוקשת: ${preferredTime}\n- הערות: ${notes || 'ללא'}`
+        email_body: `תור חדש נרשם באתר האופטיקה החברתית:\n- שם: ${fullName}\n- טלפון (בינלאומי): ${normalizedPhone}\n- מייל: ${email || 'לא צויין'}\n- סוג שירות: ${appointmentType}\n- תאריך מבוקש: ${preferredDate}\n- שעה מבוקשת: ${preferredTime}\n- הערות: ${notes || 'ללא'}`
       }),
     }).catch((err) => console.error('Webhook error:', err));
   } catch (e) {}
@@ -631,10 +631,10 @@ app.post('/api/ai-chat', async (req, res) => {
   if (apiKey) {
     try {
       const ai = new GoogleGenAI({ apiKey });
-      const systemInstruction = `אתה נציג שירות הלקוחות הדיגיטלי של "האופטיקה הטובה" באמירים (מיזם אופטיקה חברתית).
+      const systemInstruction = `אתה נציג שירות הלקוחות הדיגיטלי של "האופטיקה החברתית" באמירים (מיזם אופטיקה חברתית).
 ענה תמיד בעברית אדיבה, מקצועית, שירותית וברורה.
 פרטי העסק החשובים:
-- שם העסק: האופטיקה הטובה
+- שם העסק: האופטיקה החברתית
 - כתובת: מצפה מנחם 86, אמירים
 - Waze: https://waze.com/ul?ll=32.936389,35.454517&navigate=yes
 - צביקה: 055-250-2584 (מענה כללי / ביטולים)
@@ -662,7 +662,7 @@ app.post('/api/ai-chat', async (req, res) => {
 
   // Fallback
   res.json({
-    reply: 'אנו באופטיקה הטובה נשמח לעזור! ניתן ליצור קשר עם אביגיל לתורים ב-054-913-1704 או צביקה ב-055-250-2584.',
+    reply: 'אנו באופטיקה החברתית נשמח לעזור! ניתן ליצור קשר עם אביגיל לתורים ב-054-913-1704 או צביקה ב-055-250-2584.',
   });
 });
 

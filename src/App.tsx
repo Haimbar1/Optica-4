@@ -72,19 +72,36 @@ export default function App() {
     };
   }, []);
 
+  // The page's URL with every other parameter kept (utm_campaign, utm_source, fbclid ...),
+  // so a booking made after moving between pages still says where the visitor came from.
+  const urlFor = (page: Page, frameId?: string) => {
+    const params = new URLSearchParams(window.location.search);
+    ['page', 'p', 'lp', '150', 'tryon', 'frame'].forEach((k) => params.delete(k));
+    // "?campaign=<name>" also opens the campaign page - keep the name as utm_campaign instead
+    const campaign = params.get('campaign');
+    params.delete('campaign');
+    if (campaign && !params.has('utm_campaign')) params.set('utm_campaign', campaign);
+    const qs = params.toString();
+    const own = page === 'main' ? '' : `page=${page}${frameId ? `&frame=${encodeURIComponent(frameId)}` : ''}`;
+    const search = [own, qs].filter(Boolean).join('&');
+    return search ? `${window.location.pathname}?${search}` : window.location.pathname;
+  };
+
   // דף המדידה עם מסגרת מסוימת שנבחרה מראש (?page=tryon&frame=<id>) – מהסקשן "המסגרות שלנו" ומהקישורים של הבוט
   const openTryOnWithFrame = (frameId: string) => {
     setCurrentPage('tryon');
-    window.history.pushState({ page: 'tryon' }, '', `?page=tryon&frame=${encodeURIComponent(frameId)}`);
+    window.history.pushState({ page: 'tryon' }, '', urlFor('tryon', frameId));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateTo = (page: Page) => {
     setCurrentPage(page);
-    const newUrl = page === 'main' ? window.location.pathname : `?page=${page}`;
-    window.history.pushState({ page }, '', newUrl);
+    window.history.pushState({ page }, '', urlFor(page));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // כל כפתור "קביעת תור" באתר מוביל לדף עם היומן המוטמע
+  const openBooking = () => navigateTo('campaign');
 
   const scrollToSection = (sectionId: string) => {
     setActiveTab(sectionId);
@@ -109,10 +126,7 @@ export default function App() {
       <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-['Assistant',sans-serif]">
         <TryOnPage
           onBackToMain={() => navigateTo('main')}
-          onBookAppointment={() => {
-            navigateTo('main');
-            setTimeout(() => scrollToSection('booking'), 150);
-          }}
+          onBookAppointment={openBooking}
         />
         <style>{`@media (max-width: 767px) { #obw-fab, .obw-fab, #obw-window, .obw-window, .obw-fab-button, [id^="obw-"] { display: none !important; } }`}</style>
       </div>
@@ -143,19 +157,19 @@ export default function App() {
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        onOpenBooking={() => scrollToSection('booking')}
+        onOpenBooking={openBooking}
         onOpenCampaign={() => navigateTo('campaign')}
         onOpenTryOn={() => navigateTo('tryon')}
       />
 
       <main className="flex-1">
         <Hero
-          onOpenBooking={() => scrollToSection('booking')}
+          onOpenBooking={openBooking}
           onOpenCampaign={() => navigateTo('campaign')}
           onOpenTryOn={() => navigateTo('tryon')}
         />
 
-        <AppointmentSection />
+        <AppointmentSection onOpenBooking={openBooking} />
         <OurFramesSection onTryOn={openTryOnWithFrame} />
         <AboutSocialOptics />
         <FaqSection />

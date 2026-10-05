@@ -2,7 +2,12 @@ import React from 'react';
 import { BUSINESS_INFO } from '../data/opticsData';
 import { Calendar, Clock, Phone, HeartHandshake, MessageCircle } from 'lucide-react';
 
-export const AppointmentSection: React.FC = () => {
+interface AppointmentSectionProps {
+  onOpenBooking: () => void;
+}
+
+// The booking button leads to the page with the embedded calendar (keeping the URL's parameters)
+export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBooking }) => {
   return (
     <section id="booking" className="py-16 bg-white border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
@@ -44,15 +49,14 @@ export const AppointmentSection: React.FC = () => {
             </div>
 
             <div className="md:col-span-4 flex flex-col justify-center">
-              <a
-                href={BUSINESS_INFO.calComUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={onOpenBooking}
                 className="w-full bg-white hover:bg-gray-100 text-[#0047AB] font-black text-sm sm:text-base py-4 px-5 rounded-2xl shadow-md transition-all text-center flex items-center justify-center gap-2 group cursor-pointer"
               >
-                <span>קביעת תור לבדיקת ראייה באופטיקה הטובה אמירים</span>
+                <span>קביעת תור לבדיקת ראייה באופטיקה החברתית אמירים</span>
                 <Calendar className="w-5 h-5 group-hover:scale-110 transition-transform shrink-0" />
-              </a>
+              </button>
             </div>
           </div>
         </div>

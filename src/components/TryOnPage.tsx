@@ -448,7 +448,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
       ctx.fillStyle = 'rgba(0,0,0,0.45)';
       ctx.fillRect(0, H - fontSize * 2, W, fontSize * 2);
       ctx.fillStyle = '#fff';
-      ctx.fillText(`${selected.name} · ${selected.price} ₪ · האופטיקה הטובה, אמירים`, W / 2, H - fontSize * 0.7);
+      ctx.fillText(`${selected.name} · ${selected.price} ₪ · האופטיקה החברתית, אמירים`, W / 2, H - fontSize * 0.7);
 
       const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, 'image/jpeg', 0.92));
       if (!blob) return;
@@ -527,7 +527,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
           </button>
           <div className="flex items-center gap-2">
             <span className="font-black text-lg text-[#0047AB] font-['Rubik']">מדידת משקפיים</span>
-            <img src={logoImg} alt="האופטיקה הטובה" className="w-9 h-9 rounded-lg border border-emerald-200" />
+            <img src={logoImg} alt="האופטיקה החברתית" className="w-9 h-9 rounded-lg border border-emerald-200" />
           </div>
         </div>
       </header>

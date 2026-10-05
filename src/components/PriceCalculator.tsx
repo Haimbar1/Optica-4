@@ -185,7 +185,7 @@ export const PriceCalculator: React.FC<PriceCalculatorProps> = ({ onOpenBookingW
           <div className="lg:col-span-5 bg-[#0047AB] text-white rounded-3xl p-6 sm:p-8 shadow-md border border-blue-800 space-y-5">
             <div className="flex items-center justify-between border-b border-white/20 pb-4">
               <span className="text-xs font-extrabold text-blue-100">סיכום אומדן עלות</span>
-              <span className="text-xs text-blue-200">האופטיקה הטובה אמירים</span>
+              <span className="text-xs text-blue-200">האופטיקה החברתית אמירים</span>
             </div>
 
             <div className="space-y-1">

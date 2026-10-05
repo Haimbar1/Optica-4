@@ -1,7 +1,7 @@
 import { FAQItem, FrameItem } from '../types';
 
 export const BUSINESS_INFO = {
-  name: 'האופטיקה הטובה',
+  name: 'האופטיקה החברתית',
   subtitle: 'מיזם אופטיקה חברתית באמירים',
   address: 'מצפה מנחם 86, אמירים',
   wazeUrl: 'https://waze.com/ul?ll=32.936389,35.454517&navigate=yes',
