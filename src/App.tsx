@@ -45,6 +45,7 @@ function checkIsCampaign(): boolean {
     path.includes('/150') ||
     path.includes('/promo') ||
     search.has('campaign') ||
+    search.has('campiagn') || // misspelling used in live ad links
     search.has('lp') ||
     search.has('150') ||
     search.get('page') === 'campaign' ||
@@ -78,8 +79,9 @@ export default function App() {
     const params = new URLSearchParams(window.location.search);
     ['page', 'p', 'lp', '150', 'tryon', 'frame'].forEach((k) => params.delete(k));
     // "?campaign=<name>" also opens the campaign page - keep the name as utm_campaign instead
-    const campaign = params.get('campaign');
+    const campaign = params.get('campaign') || params.get('campiagn');
     params.delete('campaign');
+    params.delete('campiagn');
     if (campaign && !params.has('utm_campaign')) params.set('utm_campaign', campaign);
     const qs = params.toString();
     const own = page === 'main' ? '' : `page=${page}${frameId ? `&frame=${encodeURIComponent(frameId)}` : ''}`;

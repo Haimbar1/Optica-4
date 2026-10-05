@@ -7,8 +7,9 @@ export function getCalUrlParams(): Record<string, string> {
   new URLSearchParams(window.location.search).forEach((value, key) => {
     if (value) params[key] = value;
   });
-  // "?campaign=..." is also accepted as the campaign name
-  if (!params.utm_campaign && params.campaign) params.utm_campaign = params.campaign;
+  // "?campaign=..." (and the misspelled "?campiagn=..." in live ad links) is also accepted as the campaign name
+  const campaign = params.campaign || params.campiagn;
+  if (!params.utm_campaign && campaign) params.utm_campaign = campaign;
   return params;
 }
 

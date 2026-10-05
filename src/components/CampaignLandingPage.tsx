@@ -161,7 +161,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
     // 1. Extract UTM parameters from current URL
     const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
     const utmSource = urlParams.get('utm_source') || urlParams.get('source') || 'אתר';
-    const utmCampaign = urlParams.get('utm_campaign') || urlParams.get('campaign') || 'קמפיין משקפיים 150 ומולטיפוקל';
+    const utmCampaign = urlParams.get('utm_campaign') || urlParams.get('campaign') || urlParams.get('campiagn') || 'קמפיין משקפיים 150 ומולטיפוקל';
 
     // 2. Build CRM Lead Payload matching SmartEsek specifications with clean Israeli phone
     const customerName = leadName.trim() || 'לקוח מדף נחיתה';
@@ -182,7 +182,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
     console.log('🌐 כתובת היעד:', '/api/crm/lead (proxy לשרת שלנו, ששולח ל-SmartEsek CRM)');
     console.log('🏷️ פרמטרי UTM שחולצו:', {
       utm_source: urlParams.get('utm_source') || urlParams.get('source') || '(לא נמצא ב-URL, נבחר: "אתר")',
-      utm_campaign: urlParams.get('utm_campaign') || urlParams.get('campaign') || '(לא נמצא ב-URL, נבחרה ברירת מחדל)',
+      utm_campaign: urlParams.get('utm_campaign') || urlParams.get('campaign') || urlParams.get('campiagn') || '(לא נמצא ב-URL, נבחרה ברירת מחדל)',
     });
 
     try {
