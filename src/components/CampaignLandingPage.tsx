@@ -1254,16 +1254,20 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   לאתר הראשי
                 </button>
               )}
-              {onOpenPrivacy && (
-                <button onClick={onOpenPrivacy} className="hover:text-blue-400 transition-colors cursor-pointer">
-                  מדיניות פרטיות ואבטחת מידע
-                </button>
-              )}
-              {onOpenTerms && (
-                <button onClick={onOpenTerms} className="hover:text-blue-400 transition-colors cursor-pointer">
-                  תנאי שימוש
-                </button>
-              )}
+              <a
+                href="/privacy"
+                onClick={(e) => { if (onOpenPrivacy) { e.preventDefault(); onOpenPrivacy(); } }}
+                className="hover:text-blue-400 transition-colors cursor-pointer"
+              >
+                מדיניות פרטיות ואבטחת מידע
+              </a>
+              <a
+                href="/terms"
+                onClick={(e) => { if (onOpenTerms) { e.preventDefault(); onOpenTerms(); } }}
+                className="hover:text-blue-400 transition-colors cursor-pointer"
+              >
+                תנאי שימוש
+              </a>
               <a href={BUSINESS_INFO.wazeUrl} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400">
                 ניווט ב-Waze
               </a>

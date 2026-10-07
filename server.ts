@@ -26,7 +26,8 @@ app.use((req, res, next) => {
 
 const rootPublicDir = path.join(process.cwd(), 'public');
 if (fs.existsSync(rootPublicDir)) {
-  app.use(express.static(rootPublicDir));
+  // extensions: /privacy and /terms serve privacy.html / terms.html (like Vercel's cleanUrls)
+  app.use(express.static(rootPublicDir, { extensions: ['html'] }));
 }
 
 // In-memory store for appointments

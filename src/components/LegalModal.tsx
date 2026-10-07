@@ -122,8 +122,19 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                 </p>
                 <ul className="list-disc list-inside text-sm text-slate-600 space-y-1 pr-2">
                   <li>הפרטים נשמרים במאגר מידע מאובטח ומוגן בסיסמאות ובהצפנה.</li>
-                  <li><strong>איסור מוחלט על העברת מידע:</strong> אנו מתחייבים לעולם לא למכור, להשכיר, להעביר או לחלוק את פרטיכם האישיים עם אף גורם צד שלישי או חברות פרסום.</li>
+                  <li><strong>לא מוכרים מידע:</strong> איננו מוכרים, משכירים או סוחרים בפרטיכם האישיים. הם מועברים רק לספקי שירות שמפעילים עבורנו את קביעת התורים, מערכת הלקוחות והצ'אט, ורק במידה הנדרשת.</li>
                 </ul>
+              </div>
+
+              {/* Cookies & Meta Pixel */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 font-bold text-slate-900 text-base sm:text-lg">
+                  <Eye className="w-5 h-5 text-[#0047AB]" />
+                  <h4>עוגיות, פיקסל של Meta וכלי מדידה</h4>
+                </div>
+                <p className="text-slate-600 text-sm sm:text-base">
+                  האתר משתמש ב-Google Tag Manager, ב-Google Analytics ובפיקסל של Meta (פייסבוק ואינסטגרם), שעשויים להציב עוגיות ולאסוף מידע על הביקור ועל פעולות כמו שליחת טופס, כדי למדוד את הקמפיינים שלנו. ניתן לחסום עוגיות בהגדרות הדפדפן.
+                </p>
               </div>
 
               {/* Section 2: Exam & Prescription Security */}
@@ -185,6 +196,11 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                     {BUSINESS_INFO.phoneZvika}
                   </a>{' '}
                   או במייל <a href="mailto:info@good-optics.co.il" className="text-[#0047AB] font-bold hover:underline">info@good-optics.co.il</a>.
+                </p>
+                <p className="mt-2">
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#0047AB] font-bold hover:underline">
+                    למדיניות הפרטיות המלאה
+                  </a>
                 </p>
               </div>
             </div>

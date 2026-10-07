@@ -108,23 +108,26 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) =>
             <a href="#about" className="hover:text-slate-300 transition-colors">אודות</a>
             <a href="#faq" className="hover:text-slate-300 transition-colors">שאלות נפוצות</a>
             <span className="text-slate-700">|</span>
-            <button
+            {/* Real /privacy and /terms URLs (Facebook's review looks for them); a click opens the pop-up instead */}
+            <a
               id="footer-privacy-policy-link"
-              onClick={onOpenPrivacy}
+              href="/privacy"
+              onClick={(e) => { if (onOpenPrivacy) { e.preventDefault(); onOpenPrivacy(); } }}
               className="text-slate-400 hover:text-blue-400 font-bold underline transition-colors inline-flex items-center gap-1 cursor-pointer"
             >
               <Lock className="w-3.5 h-3.5" />
               <span>מדיניות פרטיות ואבטחת מידע</span>
-            </button>
+            </a>
             <span className="text-slate-700">|</span>
-            <button
+            <a
               id="footer-terms-link"
-              onClick={onOpenTerms}
+              href="/terms"
+              onClick={(e) => { if (onOpenTerms) { e.preventDefault(); onOpenTerms(); } }}
               className="text-slate-400 hover:text-blue-400 font-bold underline transition-colors inline-flex items-center gap-1 cursor-pointer"
             >
               <FileText className="w-3.5 h-3.5" />
               <span>תנאי שימוש ושירות</span>
-            </button>
+            </a>
             <span className="text-slate-700">|</span>
             <a href="https://portal.smartesek.com" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-slate-400 transition-colors">
               ניהול
