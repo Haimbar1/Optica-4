@@ -433,6 +433,7 @@ async function exportLeadToSmartEsek(lead: {
   source?: string;
   campaign?: string;
   message?: string;
+  couponCode?: string; // חבר מביא חבר — the CRM links the lead to the code's owner
 }) {
   // מפתח ה-API של העסק ב-CRM (X-Tenant-Key) – רק הוא מזהה את העסק ב-/api/leads.
   // Vercel קודם, ואם אין שם – מ"מזהים וחיבורים" בפורטל (אתר).
@@ -449,6 +450,7 @@ async function exportLeadToSmartEsek(lead: {
     // field), so the customer's own text is sent under that name too — otherwise it was dropped.
     noteText: lead.message || '',
     authorName: 'אתר',
+    ...(typeof lead.couponCode === 'string' && lead.couponCode.trim() ? { couponCode: lead.couponCode.trim().slice(0, 20) } : {}),
   };
   if (!tenantKey) {
     console.error('⚠️ SMARTESEK_TENANT_KEY לא מוגדר — ה-CRM ידחה את הליד (401). יש להזין אותו בפורטל: אתר ← מזהים וחיבורים.');
@@ -540,7 +542,7 @@ function isValidIsraeliPhone(phoneInput: string): boolean {
 
 // Endpoint to export lead from frontend form
 app.post('/api/crm/lead', async (req, res) => {
-  const { name, phone, source, campaign, message } = req.body;
+  const { name, phone, source, campaign, message, couponCode } = req.body;
   if (!phone) {
     return res.status(400).json({ success: false, error: 'מספר טלפון הוא שדה חובה' });
   }
@@ -549,7 +551,7 @@ app.post('/api/crm/lead', async (req, res) => {
     return res.status(400).json({ success: false, error: 'מספר טלפון אינו תקין בישראל (לדוגמה: 050-1234567 או 04-1234567)' });
   }
 
-  const result = await exportLeadToSmartEsek({ name, phone, source, campaign, message });
+  const result = await exportLeadToSmartEsek({ name, phone, source, campaign, message, couponCode });
   return res.json(result);
 });
 

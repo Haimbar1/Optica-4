@@ -63,6 +63,12 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   const [phoneTouched, setPhoneTouched] = useState(false);
   const [leadInterest, setLeadInterest] = useState<'glasses150' | 'multifocal' | 'both' | null>(null);
   const [leadNotes, setLeadNotes] = useState('');
+  // חבר מביא חבר: the friend's coupon code — filled from the link (?coupon= / ?code=) when it has one
+  const [leadCoupon, setLeadCoupon] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    const p = new URLSearchParams(window.location.search);
+    return (p.get('coupon') || p.get('code') || '').trim().slice(0, 20);
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
@@ -166,7 +172,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
     // 2. Build CRM Lead Payload matching SmartEsek specifications with clean Israeli phone
     const customerName = leadName.trim() || 'לקוח מדף נחיתה';
     const customerPhone = formatIsraeliPhone(leadPhone.trim());
-    const customerMessage = `מבצע: ${interestLabel}${leadNotes.trim() ? ` | הערה: ${leadNotes.trim()}` : ''}`;
+    const couponCode = leadCoupon.trim();
+    const customerMessage = `מבצע: ${interestLabel}${leadNotes.trim() ? ` | הערה: ${leadNotes.trim()}` : ''}${couponCode ? ` | קוד קופון: ${couponCode}` : ''}`;
 
     const leadPayload = {
       name: customerName,
@@ -174,6 +181,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
       source: utmSource,
       campaign: utmCampaign,
       message: customerMessage,
+      // The CRM links the lead to the customer who owns this code (חבר מביא חבר)
+      ...(couponCode ? { couponCode } : {}),
     };
 
     // 3. Log all sent details to browser console
@@ -662,6 +671,27 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                           onChange={(e) => setLeadNotes(e.target.value)}
                           placeholder="לדוגמה: יום חמישי אחה״צ, מספר קיים..."
                           className="w-full bg-slate-50 border border-slate-300 rounded-xl py-2 px-3 text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:border-[#0047AB] text-right"
+                        />
+                      </div>
+
+                      {/* Optional coupon code (חבר מביא חבר) */}
+                      <div>
+                        <label htmlFor="lead-coupon-input" className="block text-xs font-bold text-slate-800 mb-1">
+                          קוד קופון (אם קיבלתם מחבר/ה)
+                        </label>
+                        <input
+                          type="text"
+                          id="lead-coupon-input"
+                          name="coupon"
+                          autoComplete="off"
+                          autoCapitalize="characters"
+                          spellCheck={false}
+                          maxLength={20}
+                          value={leadCoupon}
+                          onChange={(e) => setLeadCoupon(e.target.value)}
+                          placeholder="לדוגמה: TV4K7P"
+                          dir="ltr"
+                          className="w-full bg-slate-50 border border-slate-300 rounded-xl py-2 px-3 text-xs sm:text-sm text-slate-900 font-mono uppercase placeholder:font-sans placeholder:normal-case focus:bg-white focus:outline-hidden focus:border-[#0047AB] text-right"
                         />
                       </div>
 
