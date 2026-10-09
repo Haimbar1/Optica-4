@@ -2340,7 +2340,7 @@
       messages.push({
         id: 'b_err_' + Date.now(),
         sender: 'bot',
-        text: 'מצטערים, חלה שגיאה בתקשורת עם הבוט. ניתן ליצור קשר בטלפון: 054-913-1704 או בוואטסאפ.',
+        text: 'מצטערים, חלה שגיאה בתקשורת עם הבוט. ניתן לקבוע תור ישירות ביומן באתר או לפנות אלינו בוואטסאפ: 054-540-4183.',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       });
       renderMessages();

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BUSINESS_INFO } from '../data/opticsData';
+import { bookingPageHref } from '../utils/calParams';
 import { Glasses, MapPin, Phone, Navigation, HeartHandshake, Clock, ShieldCheck, Lock, FileText } from 'lucide-react';
 import logoImg from '../assets/images/logo_optics.svg';
 
@@ -67,7 +68,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) =>
           <div className="space-y-2">
             <h4 className="font-bold text-white text-sm">📞 טלפונים לשירותכם</h4>
             <p className="text-slate-300">
-              תורים לבדיקת ראייה (אביגיל): <a href={`tel:${BUSINESS_INFO.phoneAvigail}`} className="text-[#60A5FA] font-bold hover:underline">{BUSINESS_INFO.phoneAvigail}</a>
+              תורים לבדיקת ראייה: <a href={bookingPageHref()} className="text-[#60A5FA] font-bold hover:underline">קביעה ישר ביומן ←</a>
             </p>
             <p className="text-slate-300">
               פניות כלליות וביטולים (צביקה): <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#60A5FA] font-bold hover:underline">{BUSINESS_INFO.phoneZvika}</a>

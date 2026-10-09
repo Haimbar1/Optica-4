@@ -133,7 +133,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
     if (fab) {
       (fab as HTMLElement).click();
     } else {
-      window.open(BUSINESS_INFO.whatsappDirectAvigail, '_blank');
+      window.open(BUSINESS_INFO.whatsappDirect, '_blank');
     }
   };
 
@@ -510,13 +510,10 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                         <span>ניווט ב-Waze</span>
                       </a>
                       <span className="text-slate-300">|</span>
-                      <a
-                        href={`tel:${BUSINESS_INFO.phoneAvigail}`}
-                        className="inline-flex items-center gap-1 text-slate-700 hover:text-slate-900 font-bold"
-                      >
-                        <Phone className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>מתאמת תורים (אביגיל): {BUSINESS_INFO.phoneAvigail}</span>
-                      </a>
+                      <span className="inline-flex items-center gap-1 text-slate-700 font-bold">
+                        <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>את התור קובעים ישר ביומן</span>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -736,7 +733,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
             </div>
           </div>
 
-          {/* Desktop Left Side Column: Offer 2 + Avigail Phone + 2 Trust Badges */}
+          {/* Desktop Left Side Column: Offer 2 + Booking Card + 2 Trust Badges */}
           <aside className="hidden xl:w-[260px] 2xl:w-[280px] xl:shrink-0 space-y-2.5">
             {/* Offer 2: Multifocal 800 - 1,200 NIS */}
             <div className="bg-emerald-50/95 border-2 border-[#62B83E] rounded-2xl p-3 shadow-xs relative flex flex-col gap-2">
@@ -758,22 +755,23 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               </div>
             </div>
 
-            {/* Personal Care / Avigail Direct Call Card */}
+            {/* Booking help card: back to the embedded calendar */}
             <div className="bg-white border border-slate-200 rounded-2xl p-3 shadow-2xs space-y-2 text-xs text-slate-700">
               <div className="flex items-center gap-1.5 font-bold text-slate-900">
-                <Phone className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>מענה אישי לתיאום תור:</span>
+                <Calendar className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>קביעת תור ישר ביומן:</span>
               </div>
               <p className="text-[11px] text-slate-600 leading-tight">
-                רוצים עזרה בקביעת שעה או לברר זמינות מיוחדת?
+                בוחרים יום ושעה שנוחים לכם – והתור נקבע מיד.
               </p>
-              <a
-                href={`tel:${BUSINESS_INFO.phoneAvigail}`}
-                className="w-full text-center py-2 px-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 rounded-xl font-black text-xs transition-colors flex items-center justify-center gap-1.5"
+              <button
+                type="button"
+                onClick={scrollToBooking}
+                className="w-full text-center py-2 px-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 rounded-xl font-black text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <Phone className="w-3.5 h-3.5 text-emerald-700" />
-                <span>אביגיל: {BUSINESS_INFO.phoneAvigail}</span>
-              </a>
+                <Calendar className="w-3.5 h-3.5 text-emerald-700" />
+                <span>ליומן התורים</span>
+              </button>
             </div>
 
             {/* Trust Badges: Group 2 */}
@@ -857,13 +855,14 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               </span>
             </div>
 
-            <a
-              href={`tel:${BUSINESS_INFO.phoneAvigail}`}
-              className="inline-flex items-center gap-1 text-[#0047AB] hover:underline font-bold"
+            <button
+              type="button"
+              onClick={scrollToBooking}
+              className="inline-flex items-center gap-1 text-[#0047AB] hover:underline font-bold cursor-pointer"
             >
-              <Phone className="w-3.5 h-3.5 text-emerald-600" />
-              <span>תיאום תורים (אביגיל): {BUSINESS_INFO.phoneAvigail}</span>
-            </a>
+              <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+              <span>תיאום תורים: ישר ביומן</span>
+            </button>
           </div>
 
           {/* 4 Trust Badges */}
@@ -1082,13 +1081,14 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     <span>לחצו לניווט ישיר ב-Waze</span>
                   </a>
 
-                  <a
-                    href={`tel:${BUSINESS_INFO.phoneAvigail}`}
-                    className="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white font-bold px-4 py-3.5 rounded-2xl transition-colors text-sm"
+                  <button
+                    type="button"
+                    onClick={scrollToBooking}
+                    className="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white font-bold px-4 py-3.5 rounded-2xl transition-colors text-sm cursor-pointer"
                   >
-                    <Phone className="w-4 h-4 text-emerald-300" />
-                    <span>חיוג לאביגיל (מתאמת תורים): {BUSINESS_INFO.phoneAvigail}</span>
-                  </a>
+                    <Calendar className="w-4 h-4 text-emerald-300" />
+                    <span>לקביעת תור ישר ביומן</span>
+                  </button>
 
                   <a
                     href="https://wa.me/972545404183?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A0%D7%99%20%D7%A4%D7%95%D7%A0%D7%94%20%D7%9E%D7%93%D7%A3%20%D7%94%D7%9E%D7%91%D7%A6%D7%A2%20%D7%91%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7%D7%94%20%D7%94%D7%98%D7%95%D7%91%D7%94"
@@ -1169,7 +1169,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               },
               {
                 q: 'איך עובדת השארת הפרטים לקביעת תור?',
-                a: 'פשוט משאירים שם וטלפון בטופס שלמעלה בראש הדף. אביגיל (מתאמת התורים) או צביקה יחזרו אליכם בהקדם ויתאמו עבורכם שעה שנוחה לכם, מבלי שתצטרכו להסתבך עם לוח שנה.',
+                a: 'פשוט משאירים שם וטלפון בטופס שלמעלה בראש הדף. צוות האופטיקה יחזור אליכם בהקדם ויתאמו עבורכם שעה שנוחה לכם, מבלי שתצטרכו להסתבך עם לוח שנה.',
               },
               {
                 q: 'האם אפשר להביא מרשם מוכן מבדיקה קודמת?',

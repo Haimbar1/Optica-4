@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BUSINESS_INFO } from '../data/opticsData';
+import { bookingPageHref } from '../utils/calParams';
 import { MapPin, Navigation, Phone, Clock, ExternalLink, Glasses, Footprints, Car, DoorOpen, ZoomIn, X } from 'lucide-react';
 
 import arrivalGuideImg from '../assets/images/arrival_guide.webp';
@@ -97,9 +98,9 @@ export const ContactLocationSection: React.FC = () => {
 
                 <div className="grid grid-cols-1 gap-2.5 text-xs">
                   <div className="bg-[#FBFBFB] p-3 rounded-xl border border-gray-200 flex items-center justify-between">
-                    <span className="font-extrabold text-[#0047AB]">אביגיל (תורים):</span>
-                    <a href={`tel:${BUSINESS_INFO.phoneAvigail}`} className="font-bold text-gray-900 hover:underline">
-                      {BUSINESS_INFO.phoneAvigail}
+                    <span className="font-extrabold text-[#0047AB]">תורים לבדיקת ראייה:</span>
+                    <a href={bookingPageHref()} className="font-bold text-gray-900 hover:underline">
+                      קביעה ישר ביומן ←
                     </a>
                   </div>
 

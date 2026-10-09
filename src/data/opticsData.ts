@@ -12,8 +12,6 @@ export const BUSINESS_INFO = {
   ],
   phoneZvika: '055-250-2584',
   phoneZvikaRaw: '0552502584',
-  phoneAvigail: '054-913-1704',
-  phoneAvigailRaw: '972549131704',
   webBotWebhook: 'https://n8n.srv1239769.hstgr.cloud/webhook/65325d34-0c9e-4cc3-8b7c-c03c47105b3a',
   whatsappBotWebhook: 'https://n8n.srv1239769.hstgr.cloud/webhook/c89a7e0e-10af-4d85-89fd-8652b2d1b1ab',
   whatsappAgentPhone: '+972 54-540-4183',
@@ -21,7 +19,6 @@ export const BUSINESS_INFO = {
   whatsappAgentUrl: 'https://wa.me/972545404183',
   whatsappDirect: 'https://wa.me/972545404183',
   whatsappDirectZvika: 'https://wa.me/972545404183',
-  whatsappDirectAvigail: 'https://wa.me/972545404183',
 };
 
 export const CATALOG_FRAMES: FrameItem[] = [
@@ -134,7 +131,7 @@ export const CATALOG_FRAMES: FrameItem[] = [
 export const FAQ_ITEMS: FAQItem[] = [
   {
     question: 'האם יש צורך בתיאום מראש לבדיקת ראייה (קביעת תור)?',
-    answer: 'כן, אנו ממליצים לתאם מראש כדי להבטיח לכם בדיקה יסודית ללא המתנה מיותרת אצל האופטומטריסט המקצועי שלנו. כמו כן, כאשר אין נרשמים אנחנו שומרים את הזכות לבטל ימי בדיקות, ולכן יש צורך לוודא איתנו מראש. ניתן לתאם תור בקלות דרך האתר או אצל אביגיל בטלפון 054-913-1704.',
+    answer: 'כן, אנו ממליצים לתאם מראש כדי להבטיח לכם בדיקה יסודית ללא המתנה מיותרת אצל האופטומטריסט המקצועי שלנו. כמו כן, כאשר אין נרשמים אנחנו שומרים את הזכות לבטל ימי בדיקות, ולכן יש צורך לוודא איתנו מראש. את התור קובעים בקלות ישירות ביומן באתר – בוחרים יום ושעה שנוחים לכם.',
     category: 'בדיקות',
   },
   {
