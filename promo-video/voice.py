@@ -35,6 +35,6 @@ w = wave.open('vo.wav', 'wb'); w.setnchannels(1); w.setsampwidth(2); w.setframer
 w.writeframes((np.clip(tl, -1, 1) * 32767).astype('<i2').tobytes()); w.close()
 subprocess.run(['python3', sys.argv[2], 'cfg_timed.json', 'music.wav'], check=True)   # music/SFX follow the new timing
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', 'vo.wav', '-i', 'music.wav', '-filter_complex',
-                '[0:a]aresample=44100,highpass=f=70,acompressor=threshold=0.1:ratio=3:attack=5:release=80,loudnorm=I=-15:TP=-1.5:LRA=7,asplit=2[v][sc];'
+                '[0:a]aresample=44100,highpass=f=70,acompressor=threshold=0.1:ratio=3:attack=5:release=80,loudnorm=I=-15:TP=-1.5:LRA=7,aresample=44100,apad=whole_dur=%s,asplit=2[v][sc];'
                 '[1:a]volume=-13dB[m];[m][sc]sidechaincompress=threshold=0.02:ratio=5:attack=15:release=350[md];'
-                '[v][md]amix=inputs=2:normalize=0,alimiter=limit=0.9[out]', '-map', '[out]', '-ac', '2', '-ar', '44100', sys.argv[3]], check=True)
+                '[v][md]amix=inputs=2:normalize=0:duration=longest,alimiter=limit=0.9,atrim=0:%s[out]' % (END, END), '-map', '[out]', '-ac', '2', '-ar', '44100', sys.argv[3]], check=True)
