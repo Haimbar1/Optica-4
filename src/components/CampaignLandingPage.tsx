@@ -157,7 +157,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
 
     const interestLabel =
       leadInterest === 'multifocal'
-        ? 'מולטיפוקל (יפניות 800 ₪ / גרמניות 1,200 ₪)'
+        ? 'עדשות מולטיפוקל (יפניות 800 ₪ / גרמניות 1,200 ₪)'
         : leadInterest === 'both'
         ? 'גם משקפי ראייה 150 ₪ וגם מולטיפוקל'
         : leadInterest === 'glasses150'
@@ -744,7 +744,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                 <span className="bg-[#4C9C29] text-white text-[10px] font-black px-2 py-0.5 rounded-md">במקום 4,000 ₪!</span>
               </div>
               <div>
-                <span className="text-[11px] font-black text-[#38761D] uppercase block">משקפי מולטיפוקל פרימיום</span>
+                <span className="text-[11px] font-black text-[#38761D] uppercase block">עדשות מולטיפוקל · מחיר לזוג</span>
                 <div className="flex flex-wrap items-baseline gap-1 my-0.5">
                   <span className="text-2xl font-black text-emerald-950 font-['Rubik']">800 ₪</span>
                   <span className="text-[11px] font-bold text-emerald-800">יפניות</span>
@@ -827,7 +827,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               </div>
               <div className="text-right flex-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-black text-[#38761D] uppercase">משקפי מולטיפוקל פרימיום</span>
+                  <span className="text-[11px] font-black text-[#38761D] uppercase">עדשות מולטיפוקל · מחיר לזוג</span>
                   <span className="bg-[#4C9C29] text-white text-[10px] font-black px-2 py-0.5 rounded-md">במקום 4,000 ₪!</span>
                 </div>
                 <div className="flex flex-wrap items-baseline gap-1 my-0.5">
@@ -994,6 +994,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     <span className="text-xs font-black text-emerald-800">עדשות גרמניות</span>
                     <span className="text-3xl sm:text-5xl font-black text-emerald-950 font-['Rubik']">1,200 ₪</span>
                   </div>
+                  <span className="w-full text-xs font-bold text-slate-600 -mt-1">* המחיר לזוג עדשות מולטיפוקל, המסגרת בנפרד</span>
                   <div className="flex flex-col">
                     <span className="text-xs font-bold text-slate-500 line-through">במקום 4,000 ₪ ברשתות!</span>
                     <span className="text-xs font-black text-emerald-700">חיסכון של עד 3,000 ₪</span>
@@ -1171,8 +1172,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
           <div className="space-y-3">
             {[
               {
-                q: 'כמה עולים אצלכם משקפי מולטיפוקל ומה זה כולל?',
-                a: 'משקפי מולטיפוקל מלאים (מסגרת איכותית + עדשות מולטיפוקל מתקדמות עם שדה ראייה רחב + בדיקת התאמה מקיפה ואחריות) עולים אצלנו 800 ₪ עם עדשות יפניות או 1,200 ₪ עם עדשות גרמניות, במקום 3,500-4,500 ₪ שגובים ברשתות!',
+                q: 'כמה עולות אצלכם עדשות מולטיפוקל ומה זה כולל?',
+                a: 'זוג עדשות מולטיפוקל מתקדמות עם שדה ראייה רחב (כולל בדיקת התאמה מקיפה ואחריות) עולה אצלנו 800 ₪ עם עדשות יפניות או 1,200 ₪ עם עדשות גרמניות. המסגרת בנפרד, לבחירתכם, במקום 3,500-4,500 ₪ שגובים ברשתות!',
               },
               {
                 q: 'האם המחיר של 150 ₪ באמת כולל גם מסגרת וגם עדשות?',
@@ -1229,7 +1230,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               מוכנים לראות צלול במחיר הגון?
             </h4>
             <p className="text-xs sm:text-sm text-blue-100">
-              משקפי ראייה ב-150 ₪ או מולטיפוקל ב-800 ₪ (יפניות) או 1,200 ₪ (גרמניות) במקום 4,000 ₪. השאירו פרטים בראש הדף או צרו קשר ישיר.
+              משקפי ראייה ב-150 ₪ או עדשות מולטיפוקל ב-800 ₪ (יפניות) או 1,200 ₪ (גרמניות) במקום 4,000 ₪. השאירו פרטים בראש הדף או צרו קשר ישיר.
             </p>
           </div>
 
