@@ -13,6 +13,15 @@ export function getCalUrlParams(): Record<string, string> {
   return params;
 }
 
+// Link to the site's booking page (the embedded Cal.com calendar), keeping the visit's other parameters.
+export function bookingPageHref(): string {
+  if (typeof window === 'undefined') return '/?page=campaign';
+  const params = new URLSearchParams(window.location.search);
+  ['page', 'p', 'tryon', 'frame'].forEach((k) => params.delete(k));
+  const qs = params.toString();
+  return `/?page=campaign${qs ? `&${qs}` : ''}`;
+}
+
 export function withCalUrlParams(url: string): string {
   const u = new URL(url);
   Object.entries(getCalUrlParams()).forEach(([k, v]) => u.searchParams.set(k, v));

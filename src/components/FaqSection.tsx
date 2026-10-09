@@ -99,7 +99,7 @@ export const FaqSection: React.FC = () => {
         <div className="mt-10 p-5 bg-[#E8F0FE] border border-blue-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-right">
           <div>
             <h4 className="font-extrabold text-sm text-[#0047AB]">לא מצאתם תשובה לשאלה שלכם?</h4>
-            <p className="text-xs text-gray-700 mt-0.5">צביקה ואביגיל זמינים לשאלות נוספות בוואטסאפ ובטלפון</p>
+            <p className="text-xs text-gray-700 mt-0.5">צביקה זמין לשאלות נוספות בוואטסאפ ובטלפון</p>
           </div>
           <a
             href={BUSINESS_INFO.whatsappDirectZvika}

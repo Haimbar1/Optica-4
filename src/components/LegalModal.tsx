@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, ShieldCheck, Lock, FileText, CheckCircle2, Eye, ShoppingBag, UserCheck, Phone } from 'lucide-react';
+import { bookingPageHref } from '../utils/calParams';
 import { BUSINESS_INFO } from '../data/opticsData';
 
 interface LegalModalProps {
@@ -227,7 +228,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                   בדיקות הראייה וההגעה לחנות מתקיימות בימים ד' ו-ה' (12:00-18:00) וביום ו' (10:00-14:00) <strong>בתיאום מראש בלבד</strong> כדי להבטיח יחס אישי והימנעות מעומסים.
                 </p>
                 <ul className="list-disc list-inside text-sm text-slate-600 space-y-1 pr-2">
-                  <li>תיאום בדיקות ראייה (אביגיל, מתאמת תורים): <a href={`tel:${BUSINESS_INFO.phoneAvigail}`} className="text-[#0047AB] font-bold">{BUSINESS_INFO.phoneAvigail}</a></li>
+                  <li>תיאום בדיקות ראייה: ישירות ביומן התורים באתר – <a href={bookingPageHref()} className="text-[#0047AB] font-bold">לקביעת תור</a></li>
                   <li>בירורים ושינוי מועד מול צביקה: <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#0047AB] font-bold">{BUSINESS_INFO.phoneZvika}</a></li>
                 </ul>
               </div>

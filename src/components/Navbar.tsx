@@ -67,13 +67,14 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
               <span>ניווט ב-Waze</span>
             </a>
             <span className="text-white/30">|</span>
-            <a
-              href={`tel:${BUSINESS_INFO.phoneAvigail}`}
-              className="flex items-center gap-1 hover:text-blue-100 transition-colors font-bold"
+            <button
+              type="button"
+              onClick={onOpenBooking}
+              className="flex items-center gap-1 hover:text-blue-100 transition-colors font-bold cursor-pointer"
             >
-              <Phone className="w-3.5 h-3.5 text-emerald-300" />
-              <span>אביגיל (תורים): {BUSINESS_INFO.phoneAvigail}</span>
-            </a>
+              <Calendar className="w-3.5 h-3.5 text-emerald-300" />
+              <span>קביעת תור ישר ביומן</span>
+            </button>
           </div>
         </div>
       </div>

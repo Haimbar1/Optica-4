@@ -72,7 +72,7 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
               מעדיפים ליצור קשר טלפוני או בוואטסאפ?
             </h3>
             <p className="text-gray-600 text-sm max-w-xl mx-auto leading-relaxed">
-              ניתן לקבוע תור גם בטלפון או ב-WhatsApp מול אביגיל או צביקה. הבדיקה מבוצעת ע"י אופטומטריסט מוסמך במצפה מנחם 86, אמירים.
+              הכי מהיר לקבוע תור ישירות ביומן. לשאלות ובירורים – צביקה בטלפון או ב-WhatsApp. הבדיקה מבוצעת ע"י אופטומטריסט מוסמך במצפה מנחם 86, אמירים.
             </p>
           </div>
 
@@ -101,29 +101,30 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
 
           {/* Team Contact Cards */}
           <div className="grid sm:grid-cols-2 gap-6">
-            {/* Avigail Card */}
+            {/* Booking Calendar Card */}
             <div className="bg-[#FBFBFB] rounded-2xl p-5 border border-gray-200 space-y-3 shadow-2xs">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-[#0047AB] text-white flex items-center justify-center font-bold text-xl shadow-xs">
-                  א
+                <div className="w-12 h-12 rounded-full bg-[#0047AB] text-white flex items-center justify-center shadow-xs">
+                  <Calendar className="w-6 h-6" />
                 </div>
                 <div>
-                  <h5 className="font-extrabold text-base text-gray-900">אביגיל</h5>
-                  <p className="text-xs text-[#0047AB] font-bold">אחראית תורים לבדיקות ראייה</p>
+                  <h5 className="font-extrabold text-base text-gray-900">יומן התורים</h5>
+                  <p className="text-xs text-[#0047AB] font-bold">בוחרים יום ושעה לבדיקת ראייה – בלחיצה</p>
                 </div>
               </div>
 
               <div className="pt-2 flex flex-col gap-2 text-xs">
-                <a
-                  href={`tel:${BUSINESS_INFO.phoneAvigail}`}
-                  className="flex items-center gap-2 bg-white hover:bg-gray-100 p-2.5 rounded-xl border border-gray-200 font-bold text-gray-800 transition-colors cursor-pointer"
+                <button
+                  type="button"
+                  onClick={onOpenBooking}
+                  className="flex items-center justify-center gap-2 bg-[#0047AB] hover:bg-[#003a8c] text-white p-2.5 rounded-xl font-bold transition-colors cursor-pointer"
                 >
-                  <Phone className="w-4 h-4 text-[#0047AB]" />
-                  <span>{BUSINESS_INFO.phoneAvigail}</span>
-                </a>
+                  <Calendar className="w-4 h-4" />
+                  <span>לקביעת תור ישר ביומן</span>
+                </button>
 
                 <a
-                  href={BUSINESS_INFO.whatsappDirectAvigail}
+                  href={BUSINESS_INFO.whatsappDirect}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1DA851] text-white p-2.5 rounded-xl font-bold transition-colors cursor-pointer"

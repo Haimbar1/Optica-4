@@ -177,7 +177,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
 
               <div className="pt-2 border-t border-gray-200/80 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-700">
                 <p className="font-medium">
-                  תורים (אביגיל): <a href={`tel:${BUSINESS_INFO.phoneAvigail}`} className="text-[#0047AB] font-extrabold hover:underline">{BUSINESS_INFO.phoneAvigail}</a> | צביקה: <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#0047AB] font-extrabold hover:underline">{BUSINESS_INFO.phoneZvika}</a>
+                  תורים: <button type="button" onClick={onOpenBooking} className="text-[#0047AB] font-extrabold hover:underline cursor-pointer">ישר ביומן</button> | צביקה: <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#0047AB] font-extrabold hover:underline">{BUSINESS_INFO.phoneZvika}</a>
                 </p>
                 <a
                   href={BUSINESS_INFO.wazeUrl}
