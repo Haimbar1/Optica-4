@@ -157,7 +157,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
 
     const interestLabel =
       leadInterest === 'multifocal'
-        ? 'מולטיפוקל (800-1,200 ₪)'
+        ? 'מולטיפוקל (יפניות 800 ₪ / גרמניות 1,200 ₪)'
         : leadInterest === 'both'
         ? 'גם משקפי ראייה 150 ₪ וגם מולטיפוקל'
         : leadInterest === 'glasses150'
@@ -735,7 +735,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
 
           {/* Desktop Left Side Column: Offer 2 + Booking Card + 2 Trust Badges */}
           <aside className="hidden xl:w-[260px] 2xl:w-[280px] xl:shrink-0 space-y-2.5">
-            {/* Offer 2: Multifocal 800 - 1,200 NIS */}
+            {/* Offer 2: Multifocal: Japanese 800 / German 1,200 NIS */}
             <div className="bg-emerald-50/95 border-2 border-[#62B83E] rounded-2xl p-3 shadow-xs relative flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <div className="w-8 h-8 rounded-lg bg-[#4C9C29] text-white flex items-center justify-center shrink-0 shadow-xs">
@@ -745,8 +745,12 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               </div>
               <div>
                 <span className="text-[11px] font-black text-[#38761D] uppercase block">משקפי מולטיפוקל פרימיום</span>
-                <div className="flex items-baseline gap-1 my-0.5">
-                  <span className="text-2xl font-black text-emerald-950 font-['Rubik']">800 - 1,200 ₪</span>
+                <div className="flex flex-wrap items-baseline gap-1 my-0.5">
+                  <span className="text-2xl font-black text-emerald-950 font-['Rubik']">800 ₪</span>
+                  <span className="text-[11px] font-bold text-emerald-800">יפניות</span>
+                  <span className="text-slate-300 mx-0.5">|</span>
+                  <span className="text-2xl font-black text-emerald-950 font-['Rubik']">1,200 ₪</span>
+                  <span className="text-[11px] font-bold text-emerald-800">גרמניות</span>
                 </div>
                 <span className="text-[11px] text-slate-500 line-through block mb-1">4,000 ₪ ברשתות</span>
                 <p className="text-[11px] text-slate-600 leading-tight">
@@ -816,7 +820,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               </div>
             </div>
 
-            {/* Offer 2: Multifocal 800 - 1,200 NIS */}
+            {/* Offer 2: Multifocal: Japanese 800 / German 1,200 NIS */}
             <div className="bg-emerald-50/90 border-2 border-[#62B83E] rounded-2xl p-3 shadow-xs relative flex items-center gap-3">
               <div className="w-11 h-11 rounded-xl bg-[#4C9C29] text-white flex items-center justify-center shrink-0 shadow-xs">
                 <Layers className="w-5 h-5" />
@@ -826,8 +830,12 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   <span className="text-[11px] font-black text-[#38761D] uppercase">משקפי מולטיפוקל פרימיום</span>
                   <span className="bg-[#4C9C29] text-white text-[10px] font-black px-2 py-0.5 rounded-md">במקום 4,000 ₪!</span>
                 </div>
-                <div className="flex items-baseline gap-1 my-0.5">
-                  <span className="text-2xl font-black text-emerald-950 font-['Rubik']">800 - 1,200 ₪</span>
+                <div className="flex flex-wrap items-baseline gap-1 my-0.5">
+                  <span className="text-2xl font-black text-emerald-950 font-['Rubik']">800 ₪</span>
+                  <span className="text-[11px] font-bold text-emerald-800">יפניות</span>
+                  <span className="text-slate-300 mx-0.5">|</span>
+                  <span className="text-2xl font-black text-emerald-950 font-['Rubik']">1,200 ₪</span>
+                  <span className="text-[11px] font-bold text-emerald-800">גרמניות</span>
                   <span className="text-[11px] text-slate-500 line-through mr-1">4,000 ₪ ברשתות</span>
                 </div>
                 <p className="text-[11px] text-slate-600 leading-tight">
@@ -969,7 +977,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               </div>
             </div>
 
-            {/* CARD 2: MULTIFOCAL 800 - 1,200 ₪ (CRITICAL REQUIREMENT) */}
+            {/* CARD 2: MULTIFOCAL: JAPANESE 800 / GERMAN 1,200 ₪ (CRITICAL REQUIREMENT) */}
             <div className="bg-emerald-50/50 border-2 border-[#62B83E] rounded-3xl p-6 sm:p-8 space-y-5 hover:border-[#4C9C29] transition-colors shadow-sm relative">
               <div className="inline-flex items-center gap-1.5 bg-[#4C9C29] text-white text-xs font-black px-3 py-1 rounded-full">
                 <Layers className="w-4 h-4" />
@@ -977,8 +985,15 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               </div>
 
               <div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl sm:text-5xl font-black text-emerald-950 font-['Rubik']">800 - 1,200 ₪</span>
+                <div className="flex flex-wrap items-end gap-x-5 gap-y-2">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-black text-emerald-800">עדשות יפניות</span>
+                    <span className="text-3xl sm:text-5xl font-black text-emerald-950 font-['Rubik']">800 ₪</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-black text-emerald-800">עדשות גרמניות</span>
+                    <span className="text-3xl sm:text-5xl font-black text-emerald-950 font-['Rubik']">1,200 ₪</span>
+                  </div>
                   <div className="flex flex-col">
                     <span className="text-xs font-bold text-slate-500 line-through">במקום 4,000 ₪ ברשתות!</span>
                     <span className="text-xs font-black text-emerald-700">חיסכון של עד 3,000 ₪</span>
@@ -1157,7 +1172,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
             {[
               {
                 q: 'כמה עולים אצלכם משקפי מולטיפוקל ומה זה כולל?',
-                a: 'משקפי מולטיפוקל מלאים (מסגרת איכותית + עדשות מולטיפוקל מתקדמות עם שדה ראייה רחב + בדיקת התאמה מקיפה ואחריות) עולים אצלנו 800 עד 1,200 ₪ בלבד (תלוי בסוג העדשה והציפויים), במקום 3,500-4,500 ₪ שגובים ברשתות!',
+                a: 'משקפי מולטיפוקל מלאים (מסגרת איכותית + עדשות מולטיפוקל מתקדמות עם שדה ראייה רחב + בדיקת התאמה מקיפה ואחריות) עולים אצלנו 800 ₪ עם עדשות יפניות או 1,200 ₪ עם עדשות גרמניות, במקום 3,500-4,500 ₪ שגובים ברשתות!',
               },
               {
                 q: 'האם המחיר של 150 ₪ באמת כולל גם מסגרת וגם עדשות?',
@@ -1214,7 +1229,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               מוכנים לראות צלול במחיר הגון?
             </h4>
             <p className="text-xs sm:text-sm text-blue-100">
-              משקפי ראייה ב-150 ₪ או מולטיפוקל ב-800-1,200 ₪ במקום 4,000 ₪. השאירו פרטים בראש הדף או צרו קשר ישיר.
+              משקפי ראייה ב-150 ₪ או מולטיפוקל ב-800 ₪ (יפניות) או 1,200 ₪ (גרמניות) במקום 4,000 ₪. השאירו פרטים בראש הדף או צרו קשר ישיר.
             </p>
           </div>
 
