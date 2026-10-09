@@ -243,7 +243,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
                 }}
                 className="w-full text-right px-4 py-3 rounded-xl text-base font-black bg-gradient-to-r from-[#EDF7E5] to-[#D8EECA] text-[#2C6A15] border border-[#B7E2A0] transition-colors cursor-pointer flex items-center justify-between"
               >
-                <span>🔥 דף קמפיין: משקפיים ב-150 ₪ ומולטיפוקל: יפניות 800 ₪ / גרמניות 1,200 ₪</span>
+                <span>🔥 דף קמפיין: משקפיים ב-150 ₪ ועדשות מולטיפוקל: יפניות 800 ₪ / גרמניות 1,200 ₪</span>
                 <span className="text-xs bg-[#4C9C29] text-white px-2 py-0.5 rounded-full font-bold">מעבר</span>
               </button>
             )}
