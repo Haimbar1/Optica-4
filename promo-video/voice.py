@@ -2,8 +2,8 @@
 # usage: GEMINI_API_KEY=... python3 voice.py cfg.json music.py out_audio.wav
 import json, sys, os, base64, urllib.request, subprocess, wave, hashlib, numpy as np
 cfg = json.load(open(sys.argv[1])); KEY = os.environ['GEMINI_API_KEY']
-MODEL = os.environ.get('TTS_MODEL', 'gemini-2.5-flash-preview-tts'); VOICE = os.environ.get('TTS_VOICE', 'Charon')
-STYLE = "קרא בעברית, כקריין פרסומת מקצועי: קול חם ובטוח, קצב מהיר ואנרגטי, בלי הפסקות ארוכות: "
+MODEL = os.environ.get('TTS_MODEL', 'gemini-2.5-flash-preview-tts'); VOICE = os.environ.get('TTS_VOICE', 'Vindemiatrix')
+STYLE = os.environ.get("TTS_STYLE", "קראי בעברית, כקריינית פרסומת: קול נשי עדין וחם, מחייך, בקצב שוטף וזורם (לא איטי), בלי הפסקות: ")
 SR = 24000; END = cfg['T']['end']; GAP = 0.18
 def tts(text):
     h = hashlib.md5((MODEL + VOICE + STYLE + text).encode()).hexdigest()[:10]; f = f'vo_{h}.wav'
