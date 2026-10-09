@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:R;font-weight:400;src:url(rubik-hebrew-400-normal.woff2),url(rubik-latin-400-normal.woff2)}
+@font-face{font-family:R;font-weight:500;src:url(rubik-hebrew-500-normal.woff2),url(rubik-latin-500-normal.woff2)}
+@font-face{font-family:R;font-weight:700;src:url(rubik-hebrew-700-normal.woff2),url(rubik-latin-700-normal.woff2)}
+@font-face{font-family:R;font-weight:800;src:url(rubik-hebrew-800-normal.woff2),url(rubik-latin-800-normal.woff2)}
+@font-face{font-family:R;font-weight:900;src:url(rubik-hebrew-900-normal.woff2),url(rubik-latin-900-normal.woff2)}
+:root{--navy:#0A1E3C;--blue:#0047AB;--green:#8CC63F;--gold:#F6B93B;--cream:#F3F6E8}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--navy);font-family:R,sans-serif;color:#fff}
+.abs{position:absolute}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden}
+#bg{left:-60px;top:-60px;width:1200px;height:2040px;background:url(glasses.jpg) center/cover;transform-origin:50% 60%}
+#shade{inset:0;background:linear-gradient(180deg,rgba(10,30,60,.78) 0%,rgba(10,30,60,.55) 40%,rgba(10,30,60,.85) 78%,rgba(10,30,60,.97) 100%)}
+#vig{inset:0;background:radial-gradient(ellipse at 50% 45%,transparent 45%,rgba(0,0,0,.55) 100%)}
+/* corner diagonal accents */
+.corner{width:1600px;height:46px;transform-origin:center}
+/* logo rings */
+#rings{left:540px;top:760px;width:0;height:0}
+.ring{position:absolute;left:0;top:0;border-radius:50%;transform:translate(-50%,-50%)}
+#brand{left:0;width:1080px;top:640px;text-align:center;color:#111;font-weight:500;font-size:96px;line-height:1.12}
+#minilogo{right:56px;top:70px;width:170px;height:170px}
+#minilogo .ring{left:85px;top:85px}
+#minilogo .t{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#111;font-size:27px;font-weight:500;line-height:1.1}
+/* ribbons */
+.ribbon{left:-100px;width:1280px;text-align:center;font-weight:800;padding:26px 0;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.ribbon span{display:inline-block}
+.gold{background:linear-gradient(90deg,#E9A520,#F8C95A,#E9A520);color:var(--navy)}
+.green{background:linear-gradient(90deg,#6FAE2C,#9BD050,#6FAE2C);color:#0A2410}
+.blue{background:linear-gradient(90deg,#00398A,#0B5CD0,#00398A);color:#fff}
+.white{background:#fff;color:var(--navy)}
+.h1{font-weight:900;text-align:center;width:1080px;left:0;text-shadow:0 6px 24px rgba(0,0,0,.45)}
+.sub{font-weight:500;text-align:center;width:1080px;left:0;color:#E6EEF8}
+#p150{left:0;width:1080px;top:760px;text-align:center;font-weight:900;font-size:420px;line-height:1;color:#fff;text-shadow:0 14px 50px rgba(0,0,0,.5)}
+#p150 small{font-size:190px;color:var(--gold);margin-right:10px}
+.card{width:440px;height:560px;border-radius:34px;background:#fff;color:var(--navy);overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.45);text-align:center}
+.card .top{height:190px;display:flex;flex-direction:column;justify-content:center;font-weight:800;font-size:54px;line-height:1.1;clip-path:polygon(0 0,100% 0,100% 78%,0 100%)}
+.card .flag{font-size:30px;font-weight:500;opacity:.9;margin-top:6px}
+.card .lbl{margin-top:40px;font-size:40px;font-weight:500;color:#475569}
+.card .pr{font-size:128px;font-weight:900;line-height:1.05;color:var(--blue)}
+.card .note{font-size:34px;font-weight:500;color:#475569;margin-top:6px}
+.card .pr small{font-size:76px;color:var(--gold)}
+#gift{left:540px;top:1060px;width:0;height:0}
+#gbody{position:absolute;left:-170px;top:-140px;width:340px;height:280px;background:linear-gradient(135deg,#0B5CD0,#00398A);border-radius:18px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+#gbody:before{content:"";position:absolute;left:145px;top:0;width:50px;height:100%;background:linear-gradient(90deg,#E9A520,#F8C95A,#E9A520)}
+#glid{position:absolute;left:-195px;top:-215px;width:390px;height:90px;background:linear-gradient(135deg,#1167E0,#0047AB);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);transform-origin:20% 100%}
+#glid:before{content:"";position:absolute;left:170px;top:0;width:50px;height:100%;background:linear-gradient(90deg,#E9A520,#F8C95A,#E9A520)}
+#bow{position:absolute;left:105px;top:-78px;width:180px;height:100px}
+#bow i{position:absolute;top:10px;width:90px;height:76px;border:22px solid #F6B93B;border-radius:50% 50% 50% 50%}
+#flash{left:540px;top:900px;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,rgba(255,250,220,1) 0%,rgba(255,220,120,.6) 35%,rgba(255,220,120,0) 70%);transform:translate(-50%,-50%)}
+#confetti{left:0;top:0}
+#giftTxt{left:0;width:1080px;top:520px;text-align:center}
+#cta{left:140px;width:800px;top:1180px;height:170px;border-radius:85px;background:linear-gradient(90deg,#6FAE2C,#9BD050);color:#0A2410;font-weight:900;font-size:70px;display:flex;align-items:center;justify-content:center;box-shadow:0 20px 50px rgba(111,174,44,.5)}
+#contact{left:0;width:1080px;top:1390px;text-align:center;font-size:46px;font-weight:500;line-height:1.5}
+#cap{left:60px;width:960px;bottom:120px;text-align:center}
+#cap span{display:inline-block;background:rgba(0,0,0,.62);border-radius:18px;padding:14px 30px;font-size:44px;font-weight:500;line-height:1.35;color:#fff}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bg" class="abs"></div>
+  <div id="shade" class="abs"></div>
+  <div id="vig" class="abs"></div>
+  <div id="c1" class="abs corner gold"></div>
+  <div id="c2" class="abs corner green"></div>
+
+  <!-- scene 1: logo -->
+  <div id="rings" class="abs"></div>
+  <div id="brand" class="abs"><div>האופטיקה</div><div>החברתית</div></div>
+  <div id="r1" class="abs ribbon gold" style="top:1180px;font-size:68px"><span>עסק חברתי · מחירים הוגנים</span></div>
+
+  <div id="minilogo" class="abs"><div class="t"><div>האופטיקה</div><div>החברתית</div></div></div>
+
+  <!-- scene 2 -->
+  <div id="s2h" class="abs h1" style="top:400px;font-size:84px">למה אצלנו זול יותר?</div>
+  <div id="st1" class="abs ribbon white" style="top:640px;font-size:66px"><span>בלי שלט של רשת</span></div>
+  <div id="st2" class="abs ribbon blue" style="top:860px;font-size:66px"><span>בלי שכירות בקניון</span></div>
+  <div id="st3" class="abs ribbon gold" style="top:1080px;font-size:76px"><span>מתח רווחים נמוך</span></div>
+
+  <!-- scene 3 -->
+  <div id="s3h" class="abs h1" style="top:430px;font-size:92px">משקפי ראייה</div>
+  <div id="r3" class="abs ribbon green" style="top:600px;font-size:66px"><span>כולל עדשות!</span></div>
+  <div id="p150" class="abs"><span id="n150">150</span><small>₪</small></div>
+  <div id="s3s" class="abs sub" style="top:1240px;font-size:52px">מסגרת + עדשות · בלבד</div>
+  <div id="s3f" class="abs sub" style="top:1330px;font-size:30px;opacity:.75">*במרשם רגיל</div>
+
+  <!-- scene 4 -->
+  <div id="s4h" class="abs h1" style="top:380px;font-size:96px">משקפי מולטיפוקל</div>
+  <div id="r4" class="abs ribbon blue" style="top:540px;font-size:54px"><span>מסגרת + עדשות מולטיפוקל</span></div>
+  <div id="cardA" class="abs card" style="right:70px;top:760px">
+    <div class="top" style="background:linear-gradient(135deg,#0B5CD0,#00398A);color:#fff">עדשות יפניות</div>
+    <div class="lbl">רק</div>
+    <div class="pr">800<small>₪</small></div>
+    <div class="note">מסגרת + עדשות</div>
+  </div>
+  <div id="cardB" class="abs card" style="left:70px;top:760px">
+    <div class="top" style="background:linear-gradient(135deg,#E9A520,#F8C95A);color:#0A1E3C">עדשות גרמניות</div>
+    <div class="lbl">רק</div>
+    <div class="pr">1,500<small>₪</small></div>
+    <div class="note">מסגרת + עדשות</div>
+  </div>
+
+  <!-- scene 5 -->
+  <div id="s5h" class="abs h1" style="top:520px;font-size:84px">ויש גם מתנה...</div>
+  <div id="flash" class="abs"></div>
+  <div id="gift" class="abs"><div id="gbody"></div><div id="glid"><div id="bow"><i style="left:-4px;transform:rotate(-25deg)"></i><i style="left:94px;transform:rotate(25deg)"></i></div></div></div>
+  <canvas id="confetti" class="abs" width="1080" height="1920"></canvas>
+  <div id="giftTxt" class="abs">
+    <div class="ribbon gold abs" id="r5" style="top:0;font-size:60px"><span>🎁 מתנה מאיתנו</span></div>
+    <div class="h1 abs" id="g2" style="top:170px;font-size:104px">בדיקת ראייה<br>חינם!</div>
+    <div class="sub abs" id="g3" style="top:430px;font-size:40px">ע"י אופטומטריסט מוסמך</div>
+  </div>
+  <div id="cta" class="abs">קבעו תור לבדיקה ←</div>
+  <div id="contact" class="abs"><div>📞 054-913-1704</div><div style="font-size:40px;color:#CFE0F5">מצפה מנחם 86, אמירים</div></div>
+
+  <div id="cap" class="abs"><span id="capt"></span></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const P=(t,a,b)=>clamp((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3);
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const back=x=>{const c1=1.7,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const elastic=x=>x===0?0:x===1?1:Math.pow(2,-10*x)*Math.sin((x*10-.75)*(2*Math.PI)/3)+1;
+// visibility window with fade in/out
+const win=(t,a,b,f=.3)=>Math.min(P(t,a,a+f),1-P(t,b-f,b));
+
+const RC=['#E1EDC8','#D2E5B2','#BCDA92','#A6CF73','#90C55A'];
+const RR=[370,320,264,208,152];
+RC.forEach((c,i)=>{const d=document.createElement('div');d.className='ring';d.style.background=c;$('rings').appendChild(d);
+  const m=document.createElement('div');m.className='ring';m.style.background=c;const s=RR[i]*170/370;m.style.width=m.style.height=s+'px';$('minilogo').insertBefore(m,$('minilogo').firstChild)});
+// minilogo: rings were inserted reversed — fix order (largest first)
+(()=>{const ml=$('minilogo');const rs=[...ml.querySelectorAll('.ring')].sort((a,b)=>parseFloat(b.style.width)-parseFloat(a.style.width));rs.forEach(r=>ml.insertBefore(r,ml.querySelector('.t')))})();
+
+// timings (seconds) — set by window.T from the voice-over, defaults below
+window.T=window.T||{s2:3.6,s3:7.4,s4:11.2,s5:15.4,end:20};
+window.CAPS=window.CAPS||[];
+
+// confetti particles (deterministic)
+let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646};
+const COLS=['#F6B93B','#8CC63F','#0B5CD0','#FFFFFF','#E94B6A','#4FC3F7'];
+const parts=[...Array(220)].map(()=>{const a=-Math.PI/2+(rnd()-.5)*Math.PI*1.5;const v=900+rnd()*1500;
+  return{vx:Math.cos(a)*v,vy:Math.sin(a)*v,c:COLS[Math.floor(rnd()*COLS.length)],w:12+rnd()*16,h:8+rnd()*10,r:rnd()*6,vr:(rnd()-.5)*18,ph:rnd()*6,delay:rnd()*.12,circ:rnd()<.25}});
+const ctx=$('confetti').getContext('2d');
+
+function ribbonIn(el,t,a,b,dir=1,rot=-6){
+  const k=win(t,a,b,.35), e=eo(P(t,a,a+.55));
+  el.style.opacity=k>0?1:0;
+  el.style.transform=`translateX(${dir*(1-e)*1400}px) rotate(${rot}deg)`;
+  if(t>b-.35){el.style.transform=`translateX(${-dir*eio(P(t,b-.35,b))*1400}px) rotate(${rot}deg)`}
+}
+function fadeUp(el,t,a,b,dist=60){const k=win(t,a,b,.4);el.style.opacity=k;el.style.transform=`translateY(${(1-eo(P(t,a,a+.6)))*dist}px)`}
+
+window.render=function(t){
+  const T=window.T;
+  // background ken burns + scene tint
+  $('bg').style.transform=`scale(${1.08+0.12*t/T.end}) translate(${-20*t/T.end}px,${-30*t/T.end}px)`;
+  const lift=win(t,T.s3,T.s4,.6); // show photo more in 150 scene
+  $('shade').style.opacity=1-0.25*lift;
+  // corner accents (diagonal bars, always moving slightly)
+  $('c1').style.transform=`translate(${-260+Math.sin(t*.6)*20}px,${-40}px) rotate(-14deg)`;
+  $('c1').style.top='60px';
+  $('c2').style.transform=`translate(${-180+Math.cos(t*.6)*20}px,0) rotate(-14deg)`;$('c2').style.top='1990px';
+  $('c1').style.opacity=$('c2').style.opacity=.9*P(t,.3,1.2);
+  $('c1').style.height='34px';$('c2').style.height='34px';
+
+  // scene 1: rings pop in sequentially
+  const s1out=P(t,T.s2-.5,T.s2);
+  [...$('rings').children].forEach((r,i)=>{const p=back(P(t,.05+i*.12,.6+i*.12));const s=RR[i]*2*p*(1-.3*eio(s1out));
+    r.style.width=r.style.height=Math.max(0,s)+'px';r.style.opacity=1-s1out});
+  const bk=eo(P(t,.7,1.3));$('brand').style.opacity=bk*(1-s1out);
+  $('brand').style.transform=`scale(${.85+.15*bk}) translateY(${s1out*-40}px)`;
+  ribbonIn($('r1'),t,1.3,T.s2,1,-6);
+
+  // minilogo after intro
+  const ml=back(P(t,T.s2-.2,T.s2+.4));$('minilogo').style.transform=`scale(${ml})`;$('minilogo').style.opacity=P(t,T.s2-.2,T.s2+.1);
+
+  // scene 2
+  fadeUp($('s2h'),t,T.s2,T.s3);
+  ribbonIn($('st1'),t,T.s2+.25,T.s3,1,-6);
+  ribbonIn($('st2'),t,T.s2+.9,T.s3,-1,-6);
+  ribbonIn($('st3'),t,T.s2+1.6,T.s3,1,-6);
+  const pulse=1+.04*Math.sin(P(t,T.s2+2.2,T.s3)*Math.PI*3)*(t>T.s2+2.2?1:0);
+  $('st3').querySelector('span').style.transform=`scale(${pulse})`;
+
+  // scene 3
+  fadeUp($('s3h'),t,T.s3,T.s4);
+  ribbonIn($('r3'),t,T.s3+.3,T.s4,-1,-5);
+  const pk=P(t,T.s3+.5,T.s3+1.1);
+  $('p150').style.opacity=win(t,T.s3+.5,T.s4,.25);
+  $('p150').style.transform=`scale(${.3+.7*elastic(pk)}) rotate(${(1-eo(pk))*-8}deg)`;
+  $('n150').textContent=Math.round(150*eo(P(t,T.s3+.5,T.s3+1.0)));
+  fadeUp($('s3s'),t,T.s3+1.1,T.s4);fadeUp($('s3f'),t,T.s3+1.3,T.s4,30);$('s3f').style.opacity*=.75;
+
+  // scene 4
+  fadeUp($('s4h'),t,T.s4,T.s5);
+  ribbonIn($('r4'),t,T.s4+.3,T.s5,1,-5);
+  const ca=back(P(t,T.s4+.8,T.s4+1.4)), cb=back(P(t,T.s4+2.2,T.s4+2.8));
+  const o4=1-P(t,T.s5-.35,T.s5);
+  $('cardA').style.opacity=P(t,T.s4+.8,T.s4+1.0)*o4;$('cardA').style.transform=`translate(${(1-ca)*500}px,${(1-ca)*-200}px) rotate(${3-3*ca+ -2}deg) scale(${.9+.1*ca})`;
+  $('cardB').style.opacity=P(t,T.s4+2.2,T.s4+2.4)*o4;$('cardB').style.transform=`translate(${(1-cb)*-500}px,${(1-cb)*200}px) rotate(${-3+3*cb+2}deg) scale(${.9+.1*cb})`;
+
+  // scene 5: gift drops, shakes, bursts
+  const g0=T.s5, gb=g0+1.25; // burst time
+  const drop=P(t,g0,g0+.5);
+  const shake=t>g0+.55&&t<gb?Math.sin((t-g0)*42)*6*P(t,g0+.55,gb):0;
+  const gscale=t<gb?1+.06*P(t,g0+.6,gb):1;
+  const gout=P(t,gb,gb+.5);
+  $('gift').style.opacity=t<g0?0:1-gout;
+  $('gift').style.transform=`translateY(${(1-back(drop))*-900+gout*120}px) rotate(${shake}deg) scale(${gscale*(1-.4*gout)})`;
+  const lid=eo(P(t,gb-.05,gb+.4));
+  $('glid').style.transform=`translate(${lid*-160}px,${lid*-420}px) rotate(${lid*-50}deg)`;
+  const fl=P(t,gb,gb+.6);$('flash').style.opacity=t>=gb?Math.sin(fl*Math.PI):0;
+  const fs=40+fl*1500;$('flash').style.width=$('flash').style.height=fs+'px';
+  // confetti
+  ctx.clearRect(0,0,1080,1920);
+  if(t>=gb){const dt0=t-gb;
+    for(const p of parts){const dt=dt0-p.delay;if(dt<0)continue;
+      const drag=1.6;const f=(1-Math.exp(-drag*dt))/drag;
+      const x=540+p.vx*f+Math.sin(dt*3+p.ph)*30*dt;const y=900+p.vy*f+380*dt*dt*0.9;
+      if(y>2000)continue;ctx.save();ctx.translate(x,y);ctx.rotate(p.r+p.vr*dt);
+      ctx.globalAlpha=clamp(1.2-dt/4);ctx.fillStyle=p.c;
+      const flip=Math.abs(Math.cos(dt*8+p.ph));
+      if(p.circ){ctx.beginPath();ctx.arc(0,0,p.h*.7,0,7);ctx.fill()}else ctx.fillRect(-p.w/2,-p.h*flip/2,p.w,p.h*flip);ctx.restore()}}
+  const s5h=win(t,g0+.1,gb+.15,.3);$('s5h').style.opacity=s5h;$('s5h').style.transform=`scale(${.9+.1*eo(P(t,g0+.1,g0+.5))})`;
+  // reveal texts
+  ribbonIn($('r5'),t,gb+.1,T.end+1,1,-6);
+  const g2=back(P(t,gb+.25,gb+.8));$('g2').style.opacity=P(t,gb+.25,gb+.4);$('g2').style.transform=`scale(${.4+.6*g2})`;
+  fadeUp($('g3'),t,gb+.6,T.end+1,30);
+  const cta=back(P(t,gb+.9,gb+1.4));$('cta').style.opacity=P(t,gb+.9,gb+1.0);
+  const bp=t>gb+1.6?1+.045*Math.sin((t-gb-1.6)*6):1;
+  $('cta').style.transform=`scale(${cta*bp}) rotate(-3deg)`;
+  fadeUp($('contact'),t,gb+1.3,T.end+1,40);
+  // final fade
+  $('stage').style.opacity=1-P(t,T.end-.25,T.end);
+
+  // captions
+  const c=window.CAPS.find(c=>t>=c.a&&t<c.b);
+  $('cap').style.opacity=c?1:0;if(c)$('capt').textContent=c.text;
+};
+window.render(0);
+</script>
+</body>
+</html>
