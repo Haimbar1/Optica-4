@@ -63,7 +63,7 @@ for k in ('s2','s3','s4','s5'): whoosh(T[k])
 pn=int(0.5*SR); pt=np.arange(pn)/SR
 add(np.sin(2*np.pi*(60+140*np.exp(-pt*25))*pt)*np.exp(-pt*8)*0.22, T['s3']+0.55)
 # gift: riser, pop, sparkles
-gb=T['s5']+1.25
+gb=T['s5']+1.0
 rn=int(1.0*SR); rt=np.arange(rn)/SR
 riser=np.convolve(rng.standard_normal(rn),np.ones(4)/4,'same')*(rt/rt[-1])**2*0.06+np.sin(2*np.pi*(300+900*(rt/rt[-1])**2)*rt)*(rt/rt[-1])**2*0.03
 add(riser,gb-1.0)
