@@ -478,37 +478,43 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
     </>
   );
 
-  // המסגרות מחולקות לשני צדי התמונה, ובמסך רחב בכמה עמודות לכל צד – כך שרוב הזמן אין צורך לגלול
+  // המסגרות מחולקות לשני צדי התמונה, ובמסך רחב בכמה עמודות לכל צד – כך שרוב הזמן אין צורך לגלול.
+  // במובייל אין מקום משני הצדדים, אז החצי של הצד הימני עובר לשורות מתחת לתמונה
   const FRAME_ROWS = 6;
   const sideCount = Math.ceil(frames.length / 2);
   const sideCols = Math.min(3, Math.max(1, Math.ceil(sideCount / FRAME_ROWS)));
-  const renderFrameSide = (list: TryOnFrame[]) => (
+  const renderFrameButton = (frame: TryOnFrame) => {
+    const active = selected?.id === frame.id;
+    return (
+      <button
+        key={frame.id}
+        onClick={() => chooseFrame(frame)}
+        className={`w-full rounded-2xl border-2 bg-white p-1 sm:p-1.5 text-center transition-all cursor-pointer ${
+          active ? 'border-[#0047AB] ring-2 ring-blue-200' : 'border-gray-100 hover:border-blue-200'
+        }`}
+      >
+        <div className="aspect-[8/3] flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 rounded-xl">
+          <img src={frame.image} alt={frame.name} className="max-w-[90%] max-h-[85%]" draggable={false} />
+        </div>
+        <div className="mt-1 text-[10px] sm:text-xs font-bold text-gray-800 leading-tight truncate">{frame.name}</div>
+        <div className="text-[10px] sm:text-[11px] text-gray-500">{frame.price} ₪</div>
+      </button>
+    );
+  };
+  const renderFrameSide = (list: TryOnFrame[], className = 'grid') => (
     <aside
       style={{ '--cols': sideCols } as React.CSSProperties}
-      className="w-[64px] sm:w-28 lg:w-auto shrink-0 max-h-[68vh] overflow-y-auto no-scrollbar grid grid-cols-1 lg:[grid-template-columns:repeat(var(--cols),7rem)] gap-2 content-start"
+      className={`${className} w-[64px] sm:w-28 lg:w-auto shrink-0 max-h-[68vh] overflow-y-auto no-scrollbar grid-cols-1 lg:[grid-template-columns:repeat(var(--cols),7rem)] gap-2 content-start`}
     >
-      {list.map((frame) => {
-        const active = selected?.id === frame.id;
-        return (
-          <button
-            key={frame.id}
-            onClick={() => chooseFrame(frame)}
-            className={`w-full rounded-2xl border-2 bg-white p-1 sm:p-1.5 text-center transition-all cursor-pointer ${
-              active ? 'border-[#0047AB] ring-2 ring-blue-200' : 'border-gray-100 hover:border-blue-200'
-            }`}
-          >
-            <div className="aspect-[8/3] flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 rounded-xl">
-              <img src={frame.image} alt={frame.name} className="max-w-[90%] max-h-[85%]" draggable={false} />
-            </div>
-            <div className="mt-1 text-[10px] sm:text-xs font-bold text-gray-800 leading-tight truncate">{frame.name}</div>
-            <div className="text-[10px] sm:text-[11px] text-gray-500">{frame.price} ₪</div>
-          </button>
-        );
-      })}
+      {list.map(renderFrameButton)}
     </aside>
   );
-  const frameSideA = renderFrameSide(frames.slice(0, sideCount));
+  const sideAFrames = frames.slice(0, sideCount);
+  const frameSideA = renderFrameSide(sideAFrames, 'hidden sm:grid');
   const frameSideB = renderFrameSide(frames.slice(sideCount));
+  const frameRowsMobile = (
+    <div className="sm:hidden grid grid-cols-4 gap-2">{sideAFrames.map(renderFrameButton)}</div>
+  );
 
   const liveHint =
     trackerStatus === 'loading'
@@ -661,6 +667,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
               </div>
               {frameSideB}
             </div>
+            {frameRowsMobile}
 
             {trackerStatus === 'ready' && (
               <label className="flex items-center gap-3 text-sm font-bold text-gray-700 bg-white rounded-2xl border border-gray-100 p-4 shadow-2xs">
@@ -767,6 +774,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
               </div>
               {frameSideB}
             </div>
+            {frameRowsMobile}
 
             {/* כיוונון */}
             {selected && (
