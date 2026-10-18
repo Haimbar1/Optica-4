@@ -74,6 +74,8 @@ const loadImage = (src: string) =>
     img.src = src;
   });
 
+const MOBILE_QUERY = '(max-width: 639px)';
+
 export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppointment }) => {
   const [mode, setMode] = useState<Mode>('intro');
   const [photo, setPhoto] = useState<string | null>(null);
@@ -87,10 +89,15 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
   const [placement, setPlacement] = useState<Placement>(DEFAULT_PLACEMENT);
   const [comparing, setComparing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia(MOBILE_QUERY).matches);
+  const [stageHeight, setStageHeight] = useState(0);
+  const [tileHeight, setTileHeight] = useState(0);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const liveStageRef = useRef<HTMLDivElement>(null);
+  const imageWrapRef = useRef<HTMLDivElement>(null);
+  const mobileSideRef = useRef<HTMLElement>(null);
   const liveGlassesRef = useRef<HTMLImageElement>(null);
   const templeLeftRef = useRef<SVGLineElement>(null);
   const templeRightRef = useRef<SVGLineElement>(null);
@@ -479,10 +486,34 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
   );
 
   // המסגרות מחולקות לשני צדי התמונה, ובמסך רחב בכמה עמודות לכל צד – כך שרוב הזמן אין צורך לגלול.
-  // במובייל אין מקום משני הצדדים, אז החצי של הצד הימני עובר לשורות מתחת לתמונה
+  // במובייל אין מקום משני הצדדים: לצד התמונה נכנסות רק המסגרות שנכנסות בגובה שלה, והשאר בשורות מתחתיה
   const FRAME_ROWS = 6;
+  const FRAME_GAP = 8;
   const sideCount = Math.ceil(frames.length / 2);
   const sideCols = Math.min(3, Math.max(1, Math.ceil(sideCount / FRAME_ROWS)));
+  const mobileSideCount =
+    stageHeight && tileHeight ? Math.max(1, Math.floor((stageHeight + FRAME_GAP) / (tileHeight + FRAME_GAP))) : 4;
+
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_QUERY);
+    const onChange = () => setIsMobile(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const measure = () => {
+      setStageHeight(imageWrapRef.current?.offsetHeight ?? 0);
+      const tile = mobileSideRef.current?.firstElementChild as HTMLElement | null;
+      if (tile) setTileHeight(tile.offsetHeight);
+    };
+    const ro = new ResizeObserver(measure);
+    [imageWrapRef.current, mobileSideRef.current].forEach((el) => el && ro.observe(el));
+    measure();
+    return () => ro.disconnect();
+  }, [isMobile, mode, photo]);
+
   const renderFrameButton = (frame: TryOnFrame) => {
     const active = selected?.id === frame.id;
     return (
@@ -501,19 +532,21 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
       </button>
     );
   };
-  const renderFrameSide = (list: TryOnFrame[], className = 'grid') => (
+  const renderFrameSide = (list: TryOnFrame[], ref?: React.Ref<HTMLElement>) => (
     <aside
+      ref={ref}
       style={{ '--cols': sideCols } as React.CSSProperties}
-      className={`${className} w-[64px] sm:w-28 lg:w-auto shrink-0 max-h-[68vh] overflow-y-auto no-scrollbar grid-cols-1 lg:[grid-template-columns:repeat(var(--cols),7rem)] gap-2 content-start`}
+      className="grid w-[64px] sm:w-28 lg:w-auto shrink-0 sm:max-h-[68vh] sm:overflow-y-auto no-scrollbar grid-cols-1 lg:[grid-template-columns:repeat(var(--cols),7rem)] gap-2 content-start"
     >
       {list.map(renderFrameButton)}
     </aside>
   );
-  const sideAFrames = frames.slice(0, sideCount);
-  const frameSideA = renderFrameSide(sideAFrames, 'hidden sm:grid');
-  const frameSideB = renderFrameSide(frames.slice(sideCount));
-  const frameRowsMobile = (
-    <div className="sm:hidden grid grid-cols-4 gap-2">{sideAFrames.map(renderFrameButton)}</div>
+  const frameSideA = isMobile ? null : renderFrameSide(frames.slice(0, sideCount));
+  const frameSideB = isMobile
+    ? renderFrameSide(frames.slice(0, mobileSideCount), mobileSideRef)
+    : renderFrameSide(frames.slice(sideCount));
+  const frameRowsMobile = isMobile && frames.length > mobileSideCount && (
+    <div className="grid grid-cols-5 gap-2">{frames.slice(mobileSideCount).map(renderFrameButton)}</div>
   );
 
   const liveHint =
@@ -607,7 +640,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
           <div className="space-y-4">
             <div className="flex gap-2 sm:gap-3 items-start">
               {frameSideA}
-              <div className="flex-1 min-w-0 flex justify-center">
+              <div className="flex-1 min-w-0 flex justify-center" ref={imageWrapRef}>
                 <div
                   ref={liveStageRef}
                   className="relative aspect-[3/4] w-full max-w-md max-h-[68vh] rounded-3xl overflow-hidden bg-black shadow-lg"
@@ -712,7 +745,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
           <div className="space-y-4">
             <div className="flex gap-2 sm:gap-3 items-start">
               {frameSideA}
-              <div className="flex-1 min-w-0 flex justify-center">
+              <div className="flex-1 min-w-0 flex justify-center" ref={imageWrapRef}>
                 <div
                   ref={stageRef}
                   className="relative inline-block rounded-3xl overflow-hidden shadow-lg bg-black select-none touch-none"
