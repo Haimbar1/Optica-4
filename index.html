@@ -83,6 +83,7 @@
         const p = new URLSearchParams(location.search);
         const w = document.createElement('elevenlabs-convai');
         w.setAttribute('agent-id', 'agent_1701m55s0mmefjra3s8rxw37eq1j');
+        w.setAttribute('action-text', 'בוט קולי');
         w.setAttribute('dynamic-variables', JSON.stringify({
           customer_name: p.get('name') || 'לקוח יקר',
           customer_phone: p.get('phone') || ''
