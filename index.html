@@ -83,12 +83,57 @@
         const p = new URLSearchParams(location.search);
         const w = document.createElement('elevenlabs-convai');
         w.setAttribute('agent-id', 'agent_1701m55s0mmefjra3s8rxw37eq1j');
-        w.setAttribute('action-text', 'בוט קולי');
+        var START_CALL = 'התחל שיחה';
+        w.setAttribute('text-contents', JSON.stringify({
+          main_label: 'בוט קולי',
+          start_call: START_CALL,
+          end_call: 'סיום',
+          connecting_status: 'מתחבר...',
+          listening_status: 'מקשיב',
+          speaking_status: 'דברו כדי להפריע'
+        }));
         w.setAttribute('dynamic-variables', JSON.stringify({
           customer_name: p.get('name') || 'לקוח יקר',
           customer_phone: p.get('phone') || ''
         }));
         document.getElementById('bot').appendChild(w);
+
+        // הבוט מתחיל לדבר בלחיצה הראשונה בדף, פעם אחת לכל ביקור.
+        // דפדפנים לא מאפשרים קול ומיקרופון לפני שהמבקר לחץ על משהו, לכן לא בטעינת הדף.
+        var FLAG = 'voiceBotAutoStarted';
+        try { if (sessionStorage.getItem(FLAG)) return; } catch (e) {}
+
+        function findStartButton(root) {
+          if (!root) return null;
+          var buttons = root.querySelectorAll('button[aria-label="' + START_CALL + '"]');
+          for (var i = 0; i < buttons.length; i++) {
+            if (!buttons[i].disabled && buttons[i].getClientRects().length) return buttons[i];
+          }
+          var all = root.querySelectorAll('*');
+          for (var j = 0; j < all.length; j++) {
+            var found = all[j].shadowRoot && findStartButton(all[j].shadowRoot);
+            if (found) return found;
+          }
+          return null;
+        }
+
+        function autoStart(e) {
+          // לחיצה בתוך הווידג'ט עצמו מטופלת על ידו
+          if (e.composedPath && e.composedPath().indexOf(w) !== -1) return stop();
+          var btn = findStartButton(w.shadowRoot);
+          if (!btn) return; // הווידג'ט עוד לא נטען - ננסה בלחיצה הבאה
+          stop();
+          btn.click();
+        }
+
+        function stop() {
+          try { sessionStorage.setItem(FLAG, '1'); } catch (e) {}
+          document.removeEventListener('click', autoStart, true);
+          document.removeEventListener('keydown', autoStart, true);
+        }
+
+        document.addEventListener('click', autoStart, true);
+        document.addEventListener('keydown', autoStart, true);
       })();
     </script>
     <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
