@@ -478,30 +478,42 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
     </>
   );
 
-  const frameStrip = (
-    <aside className="w-[84px] sm:w-44 shrink-0 max-h-[68vh] overflow-y-auto no-scrollbar space-y-2">
-      {frames.map((frame) => {
-        const active = selected?.id === frame.id;
-        return (
-          <button
-            key={frame.id}
-            onClick={() => chooseFrame(frame)}
-            className={`w-full rounded-2xl border-2 bg-white p-1.5 sm:p-2 text-center transition-all cursor-pointer ${
-              active ? 'border-[#0047AB] ring-2 ring-blue-200' : 'border-gray-100 hover:border-blue-200'
-            }`}
-          >
-            <div className="aspect-[8/3] flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 rounded-xl">
-              <img src={frame.image} alt={frame.name} className="max-w-[90%] max-h-[85%]" draggable={false} />
-            </div>
-            <div className="mt-1 text-[11px] sm:text-xs font-bold text-gray-800 leading-tight">{frame.name}</div>
-            <div className="text-[10px] sm:text-[11px] text-gray-500">
-              <span className="hidden sm:inline">{frame.style} · </span>
-              {frame.price} ₪
-            </div>
-          </button>
-        );
-      })}
+  // המסגרות מחולקות לשני צדי התמונה, ובמסך רחב בכמה עמודות לכל צד – כך שרוב הזמן אין צורך לגלול.
+  // במובייל אין מקום משני הצדדים, אז החצי של הצד הימני עובר לשורות מתחת לתמונה
+  const FRAME_ROWS = 6;
+  const sideCount = Math.ceil(frames.length / 2);
+  const sideCols = Math.min(3, Math.max(1, Math.ceil(sideCount / FRAME_ROWS)));
+  const renderFrameButton = (frame: TryOnFrame) => {
+    const active = selected?.id === frame.id;
+    return (
+      <button
+        key={frame.id}
+        onClick={() => chooseFrame(frame)}
+        className={`w-full rounded-2xl border-2 bg-white p-1 sm:p-1.5 text-center transition-all cursor-pointer ${
+          active ? 'border-[#0047AB] ring-2 ring-blue-200' : 'border-gray-100 hover:border-blue-200'
+        }`}
+      >
+        <div className="aspect-[8/3] flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 rounded-xl">
+          <img src={frame.image} alt={frame.name} className="max-w-[90%] max-h-[85%]" draggable={false} />
+        </div>
+        <div className="mt-1 text-[10px] sm:text-xs font-bold text-gray-800 leading-tight truncate">{frame.name}</div>
+        <div className="text-[10px] sm:text-[11px] text-gray-500">{frame.price} ₪</div>
+      </button>
+    );
+  };
+  const renderFrameSide = (list: TryOnFrame[], className = 'grid') => (
+    <aside
+      style={{ '--cols': sideCols } as React.CSSProperties}
+      className={`${className} w-[64px] sm:w-28 lg:w-auto shrink-0 max-h-[68vh] overflow-y-auto no-scrollbar grid-cols-1 lg:[grid-template-columns:repeat(var(--cols),7rem)] gap-2 content-start`}
+    >
+      {list.map(renderFrameButton)}
     </aside>
+  );
+  const sideAFrames = frames.slice(0, sideCount);
+  const frameSideA = renderFrameSide(sideAFrames, 'hidden sm:grid');
+  const frameSideB = renderFrameSide(frames.slice(sideCount));
+  const frameRowsMobile = (
+    <div className="sm:hidden grid grid-cols-4 gap-2">{sideAFrames.map(renderFrameButton)}</div>
   );
 
   const liveHint =
@@ -532,7 +544,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
         </div>
       </header>
 
-      <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-4 sm:py-8">
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-4 sm:py-8">
         {hiddenInputs}
 
         {/* פתיחה */}
@@ -593,7 +605,8 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
         {/* מדידה חיה */}
         {mode === 'live' && (
           <div className="space-y-4">
-            <div className="flex gap-3 items-start">
+            <div className="flex gap-2 sm:gap-3 items-start">
+              {frameSideA}
               <div className="flex-1 min-w-0 flex justify-center">
                 <div
                   ref={liveStageRef}
@@ -652,8 +665,9 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
                   </button>
                 </div>
               </div>
-              {frameStrip}
+              {frameSideB}
             </div>
+            {frameRowsMobile}
 
             {trackerStatus === 'ready' && (
               <label className="flex items-center gap-3 text-sm font-bold text-gray-700 bg-white rounded-2xl border border-gray-100 p-4 shadow-2xs">
@@ -696,7 +710,8 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
         {/* תמונה: התאמה ידנית, שמירה ושיתוף */}
         {mode === 'photo' && photo && (
           <div className="space-y-4">
-            <div className="flex gap-3 items-start">
+            <div className="flex gap-2 sm:gap-3 items-start">
+              {frameSideA}
               <div className="flex-1 min-w-0 flex justify-center">
                 <div
                   ref={stageRef}
@@ -752,13 +767,14 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
                   )}
                   {!selected && (
                     <div className="absolute inset-x-0 bottom-3 text-center text-white text-sm font-bold drop-shadow">
-                      ← בחרו מסגרת מהרשימה
+                      בחרו מסגרת מהצדדים
                     </div>
                   )}
                 </div>
               </div>
-              {frameStrip}
+              {frameSideB}
             </div>
+            {frameRowsMobile}
 
             {/* כיוונון */}
             {selected && (
