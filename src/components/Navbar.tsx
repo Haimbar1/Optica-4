@@ -161,7 +161,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 rounded-xl text-[#25D366] bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors flex items-center gap-1.5 text-xs font-bold cursor-pointer"
-              title="וואטסאפ צביקה"
+              title="וואטסאפ החנות"
             >
               <MessageCircle className="w-4 h-4 fill-[#25D366] text-[#25D366]" />
               <span className="hidden xl:inline">וואטסאפ</span>

@@ -72,7 +72,7 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
               מעדיפים ליצור קשר טלפוני או בוואטסאפ?
             </h3>
             <p className="text-gray-600 text-sm max-w-xl mx-auto leading-relaxed">
-              הכי מהיר לקבוע תור ישירות ביומן. לשאלות ובירורים – צביקה בטלפון או ב-WhatsApp. הבדיקה מבוצעת ע"י אופטומטריסט מוסמך במצפה מנחם 86, אמירים.
+              הכי מהיר לקבוע תור ישירות ביומן. לשאלות ובירורים – החנות בטלפון או ב-WhatsApp. הבדיקה מבוצעת ע"י אופטומטריסט מוסמך במצפה מנחם 86, אמירים.
             </p>
           </div>
 
@@ -139,10 +139,10 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
             <div className="bg-[#FBFBFB] rounded-2xl p-5 border border-gray-200 space-y-3 shadow-2xs">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-gray-800 text-white flex items-center justify-center font-bold text-xl shadow-xs">
-                  צ
+                  ח
                 </div>
                 <div>
-                  <h5 className="font-extrabold text-base text-gray-900">צביקה</h5>
+                  <h5 className="font-extrabold text-base text-gray-900">חנות</h5>
                   <p className="text-xs text-gray-600 font-bold">פניות כלליות ועדכוני תור</p>
                 </div>
               </div>

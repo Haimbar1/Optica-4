@@ -1131,7 +1131,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   </div>
                   <div className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                    <span>בכל שאלה בדרך צביקה זמין ללוות אתכם טלפונית: {BUSINESS_INFO.phoneZvika}</span>
+                    <span>בכל שאלה בדרך החנות זמינה ללוות אתכם טלפונית: {BUSINESS_INFO.phoneZvika}</span>
                   </div>
                 </div>
 

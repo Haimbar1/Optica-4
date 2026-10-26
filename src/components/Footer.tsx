@@ -71,7 +71,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) =>
               תורים לבדיקת ראייה: <a href={bookingPageHref()} className="text-[#60A5FA] font-bold hover:underline">קביעה ישר ביומן ←</a>
             </p>
             <p className="text-slate-300">
-              פניות כלליות וביטולים (צביקה): <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#60A5FA] font-bold hover:underline">{BUSINESS_INFO.phoneZvika}</a>
+              פניות כלליות וביטולים (חנות): <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#60A5FA] font-bold hover:underline">{BUSINESS_INFO.phoneZvika}</a>
             </p>
             <p className="text-slate-500 pt-1">הגעה בתיאום מראש בלבד</p>
           </div>

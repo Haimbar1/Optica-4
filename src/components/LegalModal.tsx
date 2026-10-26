@@ -192,7 +192,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               {/* Contact for Privacy Questions */}
               <div className="pt-3 border-t border-slate-200 text-xs sm:text-sm text-slate-600">
                 <p>
-                  לשאלות בנושא פרטיות או לבקשת עדכון/עיון בנתוניכם, ניתן לפנות לצביקה בטלפון{' '}
+                  לשאלות בנושא פרטיות או לבקשת עדכון/עיון בנתוניכם, ניתן לפנות לחנות בטלפון{' '}
                   <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#0047AB] font-bold hover:underline">
                     {BUSINESS_INFO.phoneZvika}
                   </a>{' '}
@@ -229,7 +229,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                 </p>
                 <ul className="list-disc list-inside text-sm text-slate-600 space-y-1 pr-2">
                   <li>תיאום בדיקות ראייה: ישירות ביומן התורים באתר – <a href={bookingPageHref()} className="text-[#0047AB] font-bold">לקביעת תור</a></li>
-                  <li>בירורים ושינוי מועד מול צביקה: <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#0047AB] font-bold">{BUSINESS_INFO.phoneZvika}</a></li>
+                  <li>בירורים ושינוי מועד מול החנות: <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#0047AB] font-bold">{BUSINESS_INFO.phoneZvika}</a></li>
                 </ul>
               </div>
 

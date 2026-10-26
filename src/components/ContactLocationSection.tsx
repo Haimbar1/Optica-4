@@ -105,7 +105,7 @@ export const ContactLocationSection: React.FC = () => {
                   </div>
 
                   <div className="bg-[#FBFBFB] p-3 rounded-xl border border-gray-200 flex items-center justify-between">
-                    <span className="font-extrabold text-gray-700">צביקה (בירורים/ביטולים):</span>
+                    <span className="font-extrabold text-gray-700">חנות (בירורים/ביטולים):</span>
                     <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="font-bold text-gray-900 hover:underline">
                       {BUSINESS_INFO.phoneZvika}
                     </a>
