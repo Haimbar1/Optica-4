@@ -75,30 +75,6 @@
       data-webhook-url="https://n8n.srv1239769.hstgr.cloud/webhook/65325d34-0c9e-4cc3-8b7c-c03c47105b3a"
       async>
     </script>
-
-    <!-- ווידג'ט קולי צף לקביעת תורים - ElevenLabs Conversational AI -->
-    <div id="bot"></div>
-    <script>
-      (function() {
-        const p = new URLSearchParams(location.search);
-        const w = document.createElement('elevenlabs-convai');
-        w.setAttribute('agent-id', 'agent_1701m55s0mmefjra3s8rxw37eq1j');
-        w.setAttribute('text-contents', JSON.stringify({
-          main_label: 'בוט קולי',
-          start_call: 'התחל שיחה',
-          end_call: 'סיום',
-          connecting_status: 'מתחבר...',
-          listening_status: 'מקשיב',
-          speaking_status: 'דברו כדי להפריע'
-        }));
-        w.setAttribute('dynamic-variables', JSON.stringify({
-          customer_name: p.get('name') || 'לקוח יקר',
-          customer_phone: p.get('phone') || ''
-        }));
-        document.getElementById('bot').appendChild(w);
-      })();
-    </script>
-    <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
   </body>
 </html>
 
