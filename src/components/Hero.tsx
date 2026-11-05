@@ -1,7 +1,7 @@
 import React from 'react';
-import { Calendar, Navigation, Phone, ShieldCheck, Glasses, CheckCircle2, HeartHandshake, MapPin, Clock, Camera } from 'lucide-react';
+import { Calendar, Navigation, Glasses, CheckCircle2, MapPin, Clock, Camera, Eye, Sparkles } from 'lucide-react';
 import { BUSINESS_INFO } from '../data/opticsData';
-import logoImg from '../assets/images/logo_optics.svg';
+import campaignAdImg from '../assets/images/campaign_ad_square.jpg';
 
 interface HeroProps {
   onOpenBooking?: () => void;
@@ -29,211 +29,201 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
       document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  const products = [
+    {
+      id: 'hero-product-regular',
+      icon: Glasses,
+      label: 'מסגרת + עדשות רגילות',
+      price: '150',
+      note: 'כולל ציפויים • מגוון מסגרות מכל הסוגים',
+      fine: 'במספרים גבוהים – תוספת סמלית לדיקוק עדשה',
+      accent: 'from-amber-300 to-orange-400',
+      ring: 'hover:border-amber-300/70',
+    },
+    {
+      id: 'hero-product-multifocal',
+      icon: Eye,
+      label: 'עדשות מולטיפוקל',
+      price: '800',
+      note: 'עדשות יפניות • גרמניות ב-1,200 ₪',
+      fine: 'התאמה אישית, ליווי ואחריות על הסתגלות',
+      accent: 'from-lime-300 to-emerald-400',
+      ring: 'hover:border-lime-300/70',
+    },
+  ];
+
   return (
-    <section id="hero" className="relative overflow-hidden bg-[#F8F9FA] text-[#1A1A1A] py-12 lg:py-16 border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-12 gap-10 items-center">
-          {/* Main Hero Text (Left side in RTL) */}
+    <section id="hero" className="relative overflow-hidden text-white">
+      {/* Sunset backdrop, in the colors of the campaign ad */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0b1733] via-[#1f2747] to-[#4a2a1c]" />
+      <div className="absolute -top-40 -left-32 w-[36rem] h-[36rem] rounded-full bg-amber-500/25 blur-3xl" />
+      <div className="absolute top-1/3 -right-40 w-[30rem] h-[30rem] rounded-full bg-lime-500/15 blur-3xl" />
+      <div className="absolute bottom-0 left-1/3 w-[40rem] h-64 rounded-full bg-orange-500/20 blur-3xl" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8 lg:pt-16 lg:pb-12">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          {/* Text + products */}
           <div className="lg:col-span-7 space-y-6 text-right">
             {onOpenCampaign && (
-              <div>
-                <button
-                  id="hero-campaign-banner-btn"
-                  onClick={onOpenCampaign}
-                  className="inline-flex items-center gap-2 bg-[#EDF7E5] border border-[#B7E2A0] text-[#3D861D] px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-2xs hover:bg-[#E3F2D8] transition-colors cursor-pointer group text-right"
-                >
-                  <span className="bg-[#4C9C29] text-white text-[10px] font-black px-2 py-0.5 rounded-full">מבצע פייסבוק</span>
-                  <span>תרמנו לחיילים – עכשיו מגיע לכולם! משקפיים ב-150 ₪ ועדשות מולטיפוקל: יפניות 800 ₪, גרמניות 1,200 ₪</span>
-                  <span className="text-xs font-black underline mr-1 group-hover:translate-x-0.5 transition-transform">לפרטים וקביעת תור ←</span>
-                </button>
-              </div>
+              <button
+                id="hero-campaign-banner-btn"
+                onClick={onOpenCampaign}
+                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/20 text-white px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-bold hover:bg-white/15 transition-colors cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4 text-amber-300" />
+                <span>תרמנו לחיילים – עכשיו מגיע לכולם!</span>
+                <span className="text-amber-300 font-black">לפרטים ←</span>
+              </button>
             )}
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#1A1A1A] font-['Rubik'] leading-none">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight font-['Rubik'] leading-[1.05]">
               רואים צלול,
-              <span className="block text-[#0047AB] mt-2">
+              <span className="block mt-2 bg-gradient-to-l from-amber-200 via-amber-300 to-orange-400 bg-clip-text text-transparent">
                 משלמים הגון.
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-gray-600 font-normal leading-relaxed max-w-2xl">
-              אצלנו אתם לא משלמים על המותג שעל השלט או על השכירות בקניון. אופטיקה חברתית שחוסכת לכם את כל העלויות המיותרות.
-              מסגרות מובחרות ועדשות איכותיות מ-
-              <strong className="text-[#0047AB] font-bold px-1">150 ₪ עד 250 ₪ בלבד</strong>!
+            <p className="text-base sm:text-lg text-white/80 leading-relaxed max-w-2xl">
+              אצלנו לא משלמים על המותג שעל השלט או על השכירות בקניון. אופטיקה חברתית באמירים –
+              בדיקה מקצועית, מסגרות מובחרות ועדשות איכותיות, במחיר שמגיע לכולם.
             </p>
 
-            {/* Price Highlights Cards Grid (From Professional Polish design) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-              <div className="p-5 rounded-2xl border-2 border-gray-100 bg-[#FBFBFB] hover:border-[#0047AB] transition-colors shadow-2xs">
-                <div className="text-3xl font-black text-[#0047AB]">150-250₪</div>
-                <div className="text-sm font-bold text-gray-700">מסגרת + עדשות וציפויים</div>
-                <div className="text-[12px] text-gray-400 mt-1 italic">עבור מספרים נמוכים (במספרים גבוהים, תוספת עלות סמלית עבור דיקוק עדשה)</div>
-              </div>
-              <div className="p-5 rounded-2xl border-2 border-gray-100 bg-[#FBFBFB] hover:border-[#0047AB] transition-colors shadow-2xs">
-                <div className="text-3xl font-black text-[#0047AB]">מולטיפוקל</div>
-                <div className="text-sm font-bold text-gray-700">התאמה מקצועית וליווי</div>
-                <div className="text-[12px] text-gray-400 mt-1 italic">עדשות מתקדמות בהתאמה אישית ואחריות על הסתגלות</div>
-              </div>
+            {/* The two main products */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {products.map((p) => {
+                const Icon = p.icon;
+                return (
+                  <button
+                    key={p.id}
+                    id={p.id}
+                    type="button"
+                    onClick={handleBookingClick}
+                    className={`group relative text-right rounded-3xl p-5 sm:p-6 bg-white/[0.07] backdrop-blur-md border border-white/15 ${p.ring} hover:bg-white/[0.11] hover:-translate-y-1 transition-all duration-300 shadow-xl cursor-pointer overflow-hidden`}
+                  >
+                    <div className={`absolute -top-16 -left-16 w-40 h-40 rounded-full bg-gradient-to-br ${p.accent} opacity-20 blur-2xl group-hover:opacity-35 transition-opacity`} />
+                    <div className="relative flex items-center gap-2.5">
+                      <span className={`w-10 h-10 rounded-xl bg-gradient-to-br ${p.accent} text-slate-900 flex items-center justify-center shadow-md`}>
+                        <Icon className="w-5 h-5" />
+                      </span>
+                      <span className="text-base sm:text-lg font-extrabold leading-tight">{p.label}</span>
+                    </div>
+                    <div className="relative mt-4 flex items-end gap-2">
+                      <span className={`text-6xl sm:text-7xl font-black font-['Rubik'] leading-none bg-gradient-to-b ${p.accent} bg-clip-text text-transparent`}>
+                        {p.price}
+                      </span>
+                      <span className="pb-1.5 leading-tight">
+                        <span className="block text-2xl font-black">₪</span>
+                        <span className="block text-sm font-extrabold text-white/80">בלבד!</span>
+                      </span>
+                    </div>
+                    <div className="relative mt-3 text-sm font-semibold text-white/85">{p.note}</div>
+                    <div className="relative text-xs text-white/55 mt-1">{p.fine}</div>
+                    <div className="relative mt-4 text-sm font-black text-amber-300 group-hover:underline">
+                      קבעו תור ←
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <button
                 onClick={handleBookingClick}
-                className="bg-[#0047AB] hover:bg-[#003580] text-white font-bold text-base px-6 py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                className="bg-gradient-to-l from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-900 font-black text-base px-6 py-3.5 rounded-xl shadow-lg shadow-orange-500/30 transition-all flex items-center gap-2 cursor-pointer"
               >
-                <Calendar className="w-5 h-5 text-white" />
-                <span>קביעת תור לבדיקת ראייה</span>
+                <Calendar className="w-5 h-5" />
+                <span>קביעת תור ביומן עכשיו</span>
               </button>
-
-              <a
-                href={BUSINESS_INFO.wazeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 font-bold text-base px-5 py-3.5 rounded-xl transition-all flex items-center gap-2 shadow-xs cursor-pointer"
-              >
-                <Navigation className="w-5 h-5 text-[#0047AB]" />
-                <span>ניווט ב-Waze</span>
-              </a>
 
               {onOpenTryOn && (
                 <button
                   id="hero-tryon-btn"
                   onClick={onOpenTryOn}
-                  className="bg-[#E8F0FE] hover:bg-blue-100 border border-blue-200 text-[#0047AB] font-bold text-base px-5 py-3.5 rounded-xl transition-all flex items-center gap-2 shadow-xs cursor-pointer"
+                  className="bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold text-base px-5 py-3.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer"
                 >
-                  <Camera className="w-5 h-5" />
+                  <Camera className="w-5 h-5 text-amber-300" />
                   <span>מדידת משקפיים בסלפי</span>
                 </button>
               )}
 
+              <a
+                href={BUSINESS_INFO.wazeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold text-base px-5 py-3.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <Navigation className="w-5 h-5 text-amber-300" />
+                <span>ניווט ב-Waze</span>
+              </a>
+
               <button
                 onClick={handleCatalogClick}
-                className="text-[#0047AB] hover:underline font-bold text-sm px-3 py-2 cursor-pointer"
+                className="text-amber-200 hover:underline font-bold text-sm px-2 py-2 cursor-pointer"
               >
-                לצפייה בקטלוג המסגרות ←
+                לקטלוג המסגרות ←
               </button>
-            </div>
-
-            {/* Feature Bullets */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-gray-200/70">
-              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-700 font-medium">
-                <CheckCircle2 className="w-4 h-4 text-[#0047AB] shrink-0" />
-                <span>אופטומטריסט מוסמך</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-700 font-medium">
-                <CheckCircle2 className="w-4 h-4 text-[#0047AB] shrink-0" />
-                <span>עדשות מולטיפוקל</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-700 font-medium">
-                <CheckCircle2 className="w-4 h-4 text-[#0047AB] shrink-0" />
-                <span>מסגרת + עדשות מ-150₪</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-700 font-medium">
-                <CheckCircle2 className="w-4 h-4 text-[#0047AB] shrink-0" />
-                <span>אחריות וכיוונון מקצועי</span>
-              </div>
             </div>
           </div>
 
-          {/* Right Side: Address & Hours Quick Info Banner + Visual Image Container */}
-          <div className="lg:col-span-5 space-y-4">
-            {/* Address & Quick Info Banner - Moved above image, aligned with headline */}
-            <div className="bg-gradient-to-br from-blue-50 via-white to-amber-50/80 border-2 border-[#0047AB]/30 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#0047AB] text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <MapPin className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-extrabold text-gray-500 uppercase tracking-wider block">
-                      📍 כתובת העסק:
-                    </span>
-                    <span className="text-lg sm:text-xl font-black text-[#0047AB] font-['Rubik'] leading-tight block">
-                      {BUSINESS_INFO.address}
-                    </span>
-                    <span className="text-xs text-gray-600 font-semibold block">
-                      (גליל עליון • חניה צמודה ונוחה במקום)
-                    </span>
-                  </div>
-                </div>
-
-                <div className="self-start sm:self-center shrink-0">
-                  <div className="bg-[#0047AB] text-white px-3.5 py-2 rounded-xl font-black shadow-sm flex items-center gap-2.5">
-                    <Clock className="w-4 h-4 text-amber-300 shrink-0" />
-                    <div className="flex flex-col gap-1 text-xs sm:text-sm">
-                      <div className="flex items-center justify-between gap-3 leading-none">
-                        <span className="text-white font-bold">ד', ה'</span>
-                        <span dir="ltr" className="text-amber-300 font-black tracking-wide">12:00-18:00</span>
-                      </div>
-                      <div className="flex items-center justify-between gap-3 leading-none">
-                        <span className="text-white font-bold">ו'</span>
-                        <span dir="ltr" className="text-amber-300 font-black tracking-wide">10:00-14:00</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-gray-200/80 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-700">
-                <p className="font-medium">
-                  תורים: <button type="button" onClick={onOpenBooking} className="text-[#0047AB] font-extrabold hover:underline cursor-pointer">ישר ביומן</button> | חנות: <a href="tel:055-2502584" className="text-[#0047AB] font-extrabold hover:underline">055-2502584</a>
-                </p>
-                <a
-                  href={BUSINESS_INFO.wazeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[#0047AB] font-black hover:underline"
-                >
-                  <Navigation className="w-3.5 h-3.5" />
-                  <span>נווט בוויז ←</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Glasses Visual Image Container */}
-            <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden border-2 border-white shadow-xl bg-white">
+          {/* The campaign ad */}
+          <div className="lg:col-span-5">
+            <div className="relative mx-auto max-w-md lg:max-w-none">
+              <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-amber-400/40 via-orange-500/20 to-lime-400/30 blur-2xl" />
+              <button
+                type="button"
+                onClick={onOpenCampaign || handleBookingClick}
+                className="relative block w-full rounded-[1.75rem] overflow-hidden ring-1 ring-white/25 shadow-2xl lg:rotate-[1.5deg] hover:rotate-0 hover:scale-[1.01] transition-transform duration-500 cursor-pointer"
+                aria-label="למבצע ולקביעת תור"
+              >
                 <img
-                  src="https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=1000&q=80"
-                  alt="האופטיקה החברתית אמירים"
-                  className="w-full h-72 sm:h-80 object-cover"
+                  src={campaignAdImg}
+                  alt="האופטיקה החברתית אמירים – מסגרת ועדשות רגילות 150 ₪, עדשות מולטיפוקל 800 ₪"
+                  className="w-full aspect-square object-cover"
                 />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent p-5 flex flex-col justify-end">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <img
-                      src={logoImg}
-                      alt="האופטיקה החברתית"
-                      className="w-8 h-8 rounded-lg object-cover border border-white/40 shadow-sm"
-                    />
-                    <div className="bg-[#0047AB] text-white text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full w-max">
-                      מיזם אופטיקה חברתית
-                    </div>
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-black text-white font-['Rubik']">
-                    150 ₪ / 250 ₪
-                  </h3>
-                  <p className="text-gray-200 text-xs sm:text-sm mt-0.5 leading-normal">
-                    מסגרות מכל הסוגים (פלסטיק, מתכת, טיטניום, אולטם) כולל עדשות איכותיות וציפויים!
-                  </p>
-
-                  <div className="mt-3 pt-2.5 border-t border-white/20 flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 text-amber-300 text-xs font-bold">
-                      <HeartHandshake className="w-4 h-4" />
-                      <span>איכות מירבית במחיר הוגן</span>
-                    </div>
-                    <span className="text-xs text-gray-300 font-semibold">אמירים</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating Badge */}
-              <div className="absolute -bottom-3 -right-3 bg-white text-[#0047AB] p-3 rounded-2xl shadow-xl font-extrabold text-center border-2 border-[#E8F0FE] hidden sm:block">
-                <span className="block text-xl font-black text-[#0047AB]">100%</span>
-                <span className="text-[11px] text-gray-600 font-bold">איכות ואמינות</span>
-              </div>
+              </button>
             </div>
+          </div>
+        </div>
+
+        {/* Address, hours, trust strip */}
+        <div className="mt-12 lg:mt-14 grid grid-cols-1 md:grid-cols-3 gap-3">
+          <a
+            href={BUSINESS_INFO.wazeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 rounded-2xl bg-white/[0.07] border border-white/15 px-4 py-3 hover:bg-white/[0.11] transition-colors"
+          >
+            <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center shrink-0">
+              <MapPin className="w-5 h-5" />
+            </span>
+            <span>
+              <span className="block font-black font-['Rubik']">{BUSINESS_INFO.address}</span>
+              <span className="block text-xs text-white/65">גליל עליון • חניה צמודה ונוחה • נווט בוויז ←</span>
+            </span>
+          </a>
+
+          <div className="flex items-center gap-3 rounded-2xl bg-white/[0.07] border border-white/15 px-4 py-3">
+            <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center shrink-0">
+              <Clock className="w-5 h-5" />
+            </span>
+            <span className="text-sm leading-snug">
+              <span className="block"><b>ד', ה'</b> <span dir="ltr" className="text-amber-300 font-black">12:00-18:00</span></span>
+              <span className="block"><b>ו'</b> <span dir="ltr" className="text-amber-300 font-black">10:00-14:00</span></span>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3 rounded-2xl bg-white/[0.07] border border-white/15 px-4 py-3 text-sm">
+            <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-5 h-5" />
+            </span>
+            <span className="leading-snug">
+              <span className="block font-bold">אופטומטריסט מוסמך • אחריות וכיוונון</span>
+              <span className="block text-white/70">
+                חנות: <a href="tel:055-2502584" className="text-amber-300 font-black hover:underline">055-2502584</a>
+              </span>
+            </span>
           </div>
         </div>
       </div>
