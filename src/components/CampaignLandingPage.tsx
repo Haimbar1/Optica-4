@@ -350,6 +350,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   <Clock className="w-4 h-4 text-[#0047AB] shrink-0 mt-0.5" />
                   <div className="text-[11px] leading-tight">
                     <strong className="text-slate-900 block font-bold mb-0.5">ימי פעילות:</strong>
+                    <span className="text-slate-600">יום א': 10:00-15:00</span>
+                    <br />
                     <span className="text-slate-600">ד', ה': 12:00-18:00</span>
                     <br />
                     <span className="text-slate-600">יום ו': 10:00-14:00</span>
@@ -657,7 +659,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                       {/* Optional Notes */}
                       <div>
                         <label className="block text-xs font-bold text-slate-800 mb-1">
-                          הערה / יום מועדף לבדיקה (רביעי, חמישי או שישי)
+                          הערה / יום מועדף לבדיקה (ראשון, רביעי, חמישי או שישי)
                         </label>
                         <input
                           type="text"
@@ -859,7 +861,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               <Clock className="w-4 h-4 text-[#0047AB] shrink-0" />
               <span>
                 <strong>ימי פעילות: </strong>
-                ד', ה' (12:00-18:00) | יום ו' (10:00-14:00)
+                יום א' (10:00-15:00) | ד', ה' (12:00-18:00) | יום ו' (10:00-14:00)
               </span>
             </div>
 
@@ -1181,7 +1183,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               },
               {
                 q: 'באילו ימים ושעות אפשר להגיע לבדיקה?',
-                a: 'שעות הפעילות הן: ימים ד\' ו-ה\' בין 12:00 ל-18:00, ויום ו\' בין 10:00 ל-14:00. ההגעה הינה בתיאום מראש בלבד דרך היומן, הטלפון או השארת פרטים למעלה.',
+                a: 'שעות הפעילות הן: יום א\' בין 10:00 ל-15:00, ימים ד\' ו-ה\' בין 12:00 ל-18:00, ויום ו\' בין 10:00 ל-14:00. ההגעה הינה בתיאום מראש בלבד דרך היומן, הטלפון או השארת פרטים למעלה.',
               },
               {
                 q: 'איך עובדת השארת הפרטים לקביעת תור?',

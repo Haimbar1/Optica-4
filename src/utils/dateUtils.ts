@@ -35,7 +35,7 @@ export interface BookingDayOption {
 }
 
 /**
- * Returns the earliest available clinic day (Wednesday, Thursday, or Friday).
+ * Returns the earliest available clinic day (Sunday, Wednesday, Thursday, or Friday).
  * If today is a clinic day and within working hours, returns today.
  * Otherwise returns the next earliest clinic day.
  */
@@ -45,7 +45,7 @@ export function getFirstAvailableBookingDate(): string {
 }
 
 /**
- * Returns the upcoming 3 clinic days (Wednesday, Thursday, Friday) with human-friendly labels.
+ * Returns the upcoming 4 clinic days (Sunday, Wednesday, Thursday, Friday) with human-friendly labels.
  */
 export function getUpcomingBookingDays(): BookingDayOption[] {
   const now = new Date();
@@ -53,11 +53,13 @@ export function getUpcomingBookingDays(): BookingDayOption[] {
   const currentHour = now.getHours();
 
   // Clinic schedule:
+  // Sunday (0): 10:00 - 15:00
   // Wednesday (3): 12:00 - 18:00
   // Thursday (4): 12:00 - 18:00
   // Friday (5): 10:00 - 14:00
 
   const clinicDays = [
+    { dayIndex: 0, name: 'יום ראשון', short: 'ראשון', hours: '10:00 - 15:00', startHour: 'החל מ-10:00', endHour: 14 },
     { dayIndex: 3, name: 'יום רביעי', short: 'רביעי', hours: '12:00 - 18:00', startHour: 'החל מ-12:00', endHour: 17 },
     { dayIndex: 4, name: 'יום חמישי', short: 'חמישי', hours: '12:00 - 18:00', startHour: 'החל מ-12:00', endHour: 17 },
     { dayIndex: 5, name: 'יום שישי', short: 'שישי', hours: '10:00 - 14:00', startHour: 'החל מ-10:00', endHour: 13 },

@@ -225,7 +225,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                   <h4>2. תיאום תורים והגעה</h4>
                 </div>
                 <p className="text-slate-600 text-sm sm:text-base">
-                  בדיקות הראייה וההגעה לחנות מתקיימות בימים ד' ו-ה' (12:00-18:00) וביום ו' (10:00-14:00) <strong>בתיאום מראש בלבד</strong> כדי להבטיח יחס אישי והימנעות מעומסים.
+                  בדיקות הראייה וההגעה לחנות מתקיימות ביום א' (10:00-15:00), בימים ד' ו-ה' (12:00-18:00) וביום ו' (10:00-14:00) <strong>בתיאום מראש בלבד</strong> כדי להבטיח יחס אישי והימנעות מעומסים.
                 </p>
                 <ul className="list-disc list-inside text-sm text-slate-600 space-y-1 pr-2">
                   <li>תיאום בדיקות ראייה: ישירות ביומן התורים באתר – <a href={bookingPageHref()} className="text-[#0047AB] font-bold">לקביעת תור</a></li>
