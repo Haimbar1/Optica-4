@@ -209,6 +209,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
               <Clock className="w-5 h-5" />
             </span>
             <span className="text-sm leading-snug">
+              <span className="block"><b>א'</b> <span dir="ltr" className="text-amber-300 font-black">10:00-15:00</span></span>
               <span className="block"><b>ד', ה'</b> <span dir="ltr" className="text-amber-300 font-black">12:00-18:00</span></span>
               <span className="block"><b>ו'</b> <span dir="ltr" className="text-amber-300 font-black">10:00-14:00</span></span>
             </span>

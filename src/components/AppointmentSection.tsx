@@ -38,6 +38,8 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
                   <div className="flex flex-col gap-1 text-right">
                     <span className="text-[11px] text-amber-200 font-bold block leading-none">שעות פעילות:</span>
                     <div className="grid grid-cols-[max-content_auto] items-center gap-x-2.5 gap-y-0.5 leading-tight">
+                      <span className="text-white">א':</span>
+                      <span dir="ltr" className="text-amber-300 font-black text-left">10:00-15:00</span>
                       <span className="text-white">ד', ה':</span>
                       <span dir="ltr" className="text-amber-300 font-black text-left">12:00-18:00</span>
                       <span className="text-white">ו':</span>

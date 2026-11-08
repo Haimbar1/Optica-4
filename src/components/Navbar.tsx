@@ -51,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
             <span className="inline-flex items-center gap-1 bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full font-black text-xs sm:text-sm shadow-xs whitespace-nowrap">
               <Clock className="w-3.5 h-3.5 text-slate-950 shrink-0" />
               <span>
-                שעות: <span className="whitespace-nowrap">ד', ה' <span dir="ltr">12:00-18:00</span></span> | <span className="whitespace-nowrap">ו' <span dir="ltr">10:00-14:00</span></span>
+                שעות: <span className="whitespace-nowrap">א' <span dir="ltr">10:00-15:00</span></span> | <span className="whitespace-nowrap">ד', ה' <span dir="ltr">12:00-18:00</span></span> | <span className="whitespace-nowrap">ו' <span dir="ltr">10:00-14:00</span></span>
               </span>
             </span>
           </div>

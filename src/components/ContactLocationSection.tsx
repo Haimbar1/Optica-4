@@ -67,6 +67,8 @@ export const ContactLocationSection: React.FC = () => {
                   <div className="flex flex-col gap-1 text-right">
                     <span className="text-[11px] font-bold text-gray-500 uppercase">שעות פעילות:</span>
                     <div className="grid grid-cols-[max-content_auto] items-center gap-x-3 gap-y-1">
+                      <span className="font-bold text-gray-800">א':</span>
+                      <span dir="ltr" className="font-black text-[#0047AB] text-left">10:00-15:00</span>
                       <span className="font-bold text-gray-800">ד', ה':</span>
                       <span dir="ltr" className="font-black text-[#0047AB] text-left">12:00-18:00</span>
                       <span className="font-bold text-gray-800">ו':</span>
@@ -213,6 +215,8 @@ export const ContactLocationSection: React.FC = () => {
               <div className="space-y-1.5">
                 <span className="text-xs font-bold text-gray-600 block">שעות פעילות וקבלת קהל בחנות (בתיאום מראש):</span>
                 <div className="grid grid-cols-[max-content_auto] items-center gap-x-3 gap-y-1.5 text-base sm:text-lg font-black text-[#0047AB] font-['Rubik']">
+                  <span>א':</span>
+                  <span dir="ltr" className="text-blue-900 bg-white/90 px-2.5 py-0.5 rounded-lg border border-blue-100 shadow-2xs text-left w-fit">10:00-15:00</span>
                   <span>ד', ה':</span>
                   <span dir="ltr" className="text-blue-900 bg-white/90 px-2.5 py-0.5 rounded-lg border border-blue-100 shadow-2xs text-left w-fit">12:00-18:00</span>
                   <span>ו':</span>

@@ -7,6 +7,7 @@ export const BUSINESS_INFO = {
   wazeUrl: 'https://waze.com/ul?ll=32.936389,35.454517&navigate=yes',
   calComUrl: 'https://cal.com/haoptika-hatova/30min',
   workingHours: [
+    { days: "יום א'", hours: "10:00-15:00" },
     { days: "ימים ד', ה'", hours: "12:00-18:00" },
     { days: "יום ו'", hours: "10:00-14:00" },
   ],

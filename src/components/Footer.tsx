@@ -45,6 +45,8 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) =>
               <div className="flex flex-col gap-1 text-xs">
                 <span className="text-[10px] text-slate-400 font-bold uppercase">שעות פעילות:</span>
                 <div className="grid grid-cols-[max-content_auto] items-center gap-x-2.5 gap-y-0.5 leading-tight">
+                  <span className="text-slate-200 font-bold">א':</span>
+                  <span dir="ltr" className="text-amber-300 font-black text-left">10:00-15:00</span>
                   <span className="text-slate-200 font-bold">ד', ה':</span>
                   <span dir="ltr" className="text-amber-300 font-black text-left">12:00-18:00</span>
                   <span className="text-slate-200 font-bold">ו':</span>
