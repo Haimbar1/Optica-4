@@ -1,6 +1,7 @@
 import React, { useState } from 'react'; 
 import { Eye, Phone, MapPin, Menu, X, Calendar, MessageCircle, Navigation, Glasses, Clock } from 'lucide-react';
-import { BUSINESS_INFO } from '../data/opticsData';
+import { BRANCHES, ALL_BRANCH_NAMES, whatsappLink, displayPhone, branchWhatsapp } from '../data/branches';
+import { useBranch, hoursInline } from '../branchContext';
 import logoImg from '../assets/images/logo_optics.svg';
 
 interface NavbarProps {
@@ -9,13 +10,21 @@ interface NavbarProps {
   onOpenBooking: () => void;
   onOpenCampaign?: () => void;
   onOpenTryOn?: () => void;
+  onOpenHome?: () => void;
+  /** Home page: scroll to the branches; a branch's page: back to the home page */
+  onOpenBranches?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenBooking, onOpenCampaign, onOpenTryOn }) => {
+export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenBooking, onOpenCampaign, onOpenTryOn, onOpenHome, onOpenBranches }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const branch = useBranch();
+  const hours = branch ? hoursInline(branch) : '';
+  const waLink = whatsappLink(branch);
+  const waPhone = displayPhone(branchWhatsapp(branch));
 
   const navItems = [
-    { id: 'booking', label: 'בדיקת ראייה ותיאום תור' },
+    { id: 'booking', label: branch ? `תיאום תור ${branch.inName}` : 'בדיקת ראייה ותיאום תור' },
+    { id: 'branches', label: branch ? 'כל הסניפים' : `הסניפים שלנו (${BRANCHES.length})` },
     { id: 'about', label: 'אופטיקה חברתית' },
     { id: 'faq', label: 'שאלות ותשובות ' },
     { id: 'contact', label: 'צור קשר והוראות הגעה' }, 
@@ -29,6 +38,11 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
       onOpenBooking();
       return;
     }
+    if (id === 'branches' && onOpenBranches) {
+      onOpenBranches();
+      return;
+    }
+
     const elem = document.getElementById(id);
     if (elem) {
       elem.scrollIntoView({ behavior: 'smooth' });
@@ -42,30 +56,43 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1 bg-[#E8F0FE] text-[#0047AB] text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">
-              מיזם אופטיקה חברתי באמירים
+              {branch ? `סניף ${branch.name}` : 'מיזם אופטיקה חברתי'}
             </span>
-            <span className="inline-flex items-center gap-1 bg-white/10 px-2.5 py-0.5 rounded-full font-bold text-amber-200 text-xs sm:text-sm">
-              <MapPin className="w-3.5 h-3.5 text-amber-300" />
-              <span>מצפה מנחם 86, אמירים</span>
-            </span>
-            <span className="inline-flex items-center gap-1 bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full font-black text-xs sm:text-sm shadow-xs whitespace-nowrap">
-              <Clock className="w-3.5 h-3.5 text-slate-950 shrink-0" />
-              <span>
-                שעות: <span className="whitespace-nowrap">א' <span dir="ltr">10:00-15:00</span></span> | <span className="whitespace-nowrap">ד', ה' <span dir="ltr">12:00-18:00</span></span> | <span className="whitespace-nowrap">ו' <span dir="ltr">10:00-14:00</span></span>
+            {(!branch || branch.address) && (
+              <span className="inline-flex items-center gap-1 bg-white/10 px-2.5 py-0.5 rounded-full font-bold text-amber-200 text-xs sm:text-sm">
+                <MapPin className="w-3.5 h-3.5 text-amber-300" />
+                <span>{branch ? branch.address : `${BRANCHES.length} סניפים: ${ALL_BRANCH_NAMES}`}</span>
               </span>
-            </span>
+            )}
+            {hours && (
+              <span className="inline-flex items-center gap-1 bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full font-black text-xs sm:text-sm shadow-xs">
+                <Clock className="w-3.5 h-3.5 text-slate-950 shrink-0" />
+                <span>שעות: {hours}</span>
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-4 text-xs">
-            <a
-              href={BUSINESS_INFO.wazeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 hover:text-blue-100 transition-colors font-bold bg-white/10 px-2.5 py-0.5 rounded-lg"
-            >
-              <Navigation className="w-3.5 h-3.5 text-amber-300" />
-              <span>ניווט ב-Waze</span>
-            </a>
+            {branch?.wazeUrl ? (
+              <a
+                href={branch.wazeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 hover:text-blue-100 transition-colors font-bold bg-white/10 px-2.5 py-0.5 rounded-lg"
+              >
+                <Navigation className="w-3.5 h-3.5 text-amber-300" />
+                <span>ניווט ב-Waze</span>
+              </a>
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleNavClick('branches')}
+                className="flex items-center gap-1 hover:text-blue-100 transition-colors font-bold bg-white/10 px-2.5 py-0.5 rounded-lg cursor-pointer"
+              >
+                <MapPin className="w-3.5 h-3.5 text-amber-300" />
+                <span>{branch ? 'כל הסניפים' : 'בחירת סניף'}</span>
+              </button>
+            )}
             <span className="text-white/30">|</span>
             <button
               type="button"
@@ -84,7 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
         <div className="flex items-center justify-between h-20">
           {/* Logo & Brand */}
           <div
-            onClick={() => handleNavClick('hero')}
+            onClick={() => (branch && onOpenHome ? onOpenHome() : handleNavClick('hero'))}
             className="flex items-center gap-3 cursor-pointer group"
           >
             <img
@@ -99,7 +126,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
                 </span>
               </div>
               <span className="text-[11px] font-bold text-gray-500 tracking-wide block">
-                מצפה מנחם 86, אמירים
+                {branch ? `סניף ${branch.name}` : ALL_BRANCH_NAMES}
               </span>
             </div>
           </div>
@@ -157,7 +184,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
           {/* CTA Action Buttons */}
           <div className="hidden sm:flex items-center gap-2.5">
             <a
-              href={BUSINESS_INFO.whatsappDirectZvika}
+              href={waLink}
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 rounded-xl text-[#25D366] bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors flex items-center gap-1.5 text-xs font-bold cursor-pointer"
@@ -289,23 +316,25 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
 
           <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
             <a
-              href="https://wa.me/972545404183?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%A4%D7%A8%D7%98%D7%99%D7%9D%20%D7%A2%D7%9C%20%D7%94%D7%90%D7%95%D7%A4%D7%98%D7%99%D7%A7%D7%94%20%D7%94%D7%98%D7%95%D7%91%D7%94%20%D7%91%D7%90%D7%9E%D7%99%D7%A8%D7%99%D7%9D"
+              href={whatsappLink(branch, `שלום, אשמח לקבל פרטים על האופטיקה החברתית${branch ? ` ${branch.inName}` : ''}`)}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white py-2.5 rounded-xl font-bold text-center flex items-center justify-center gap-2 text-sm cursor-pointer shadow-xs"
             >
               <MessageCircle className="w-4 h-4 fill-white" />
-              <span>לחץ למעבר לוואטסאפ (054-540-4183) 📱</span>
+              <span>לחץ למעבר לוואטסאפ ({waPhone}) 📱</span>
             </a>
-            <a
-              href={BUSINESS_INFO.wazeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full bg-slate-100 text-slate-800 py-2.5 rounded-xl font-bold text-center flex items-center justify-center gap-2 border border-slate-200 text-sm cursor-pointer"
-            >
-              <Navigation className="w-4 h-4 text-[#0047AB]" />
-              <span>ניווט ב-Waze לחנות (מצפה מנחם 86, אמירים)</span>
-            </a>
+            {branch?.wazeUrl && (
+              <a
+                href={branch.wazeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-slate-100 text-slate-800 py-2.5 rounded-xl font-bold text-center flex items-center justify-center gap-2 border border-slate-200 text-sm cursor-pointer"
+              >
+                <Navigation className="w-4 h-4 text-[#0047AB]" />
+                <span>ניווט ב-Waze לחנות ({branch.address})</span>
+              </a>
+            )}
           </div>
         </div>
       )}

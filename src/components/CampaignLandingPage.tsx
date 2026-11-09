@@ -36,23 +36,39 @@ import {
   formatIsraeliPhone,
 } from '../utils/phoneValidation';
 import { getCalUrlParams, withCalUrlParams } from '../utils/calParams';
+import { BRANCHES, BranchSlug, dayName, whatsappLink, branchPhone, displayPhone, branchWhatsapp } from '../data/branches';
+import { useBranchOrDefault, hoursInline, HoursGrid } from '../branchContext';
 import campaignAdHeroImg from '../assets/images/campaign_ad_hero.jpg';
 import logoImg from '../assets/images/logo_optics.svg';
 
 interface CampaignLandingPageProps {
   onBackToMain?: () => void;
+  /** The visitor picked another branch above the calendar */
+  onSwitchBranch?: (slug: BranchSlug) => void;
   onOpenPrivacy?: () => void;
   onOpenTerms?: () => void;
 }
 
 export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   onBackToMain,
+  onSwitchBranch,
   onOpenPrivacy,
   onOpenTerms,
 }) => {
-  const upcomingDays = useMemo<BookingDayOption[]>(() => getUpcomingBookingDays(), []);
-  const [selectedDate, setSelectedDate] = useState<string>(() => getFirstAvailableBookingDate());
-  const [bookingMode, setBookingMode] = useState<'calendar' | 'callback'>('calendar');
+  // The branch whose calendar this is (the open branch; a link with no branch = אמירים, as the ads always were)
+  const branch = useBranchOrDefault();
+  const hasCalendar = !!branch.calLink;
+  const waLink = whatsappLink(branch);
+  const waPhone = displayPhone(branchWhatsapp(branch));
+  const branchHours = hoursInline(branch);
+  const upcomingDays = useMemo<BookingDayOption[]>(() => getUpcomingBookingDays(branch.hours), [branch]);
+  const [selectedDate, setSelectedDate] = useState<string>(() => getFirstAvailableBookingDate(branch.hours));
+  const [bookingMode, setBookingMode] = useState<'calendar' | 'callback'>(hasCalendar ? 'calendar' : 'callback');
+  // Another branch picked: its own days, and its calendar (or the callback form when it has none yet)
+  useEffect(() => {
+    setSelectedDate(getFirstAvailableBookingDate(branch.hours));
+    setBookingMode(branch.calLink ? 'calendar' : 'callback');
+  }, [branch.slug]);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
@@ -72,11 +88,11 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const calUrl = withCalUrlParams(`https://cal.com/haoptika-hatova/30min?date=${selectedDate}&layout=month_view`);
+  const calUrl = hasCalendar ? withCalUrlParams(`https://cal.com/${branch.calLink}?date=${selectedDate}&layout=month_view`) : '';
 
   // Official Cal.com inline embed: lets us hide the event-type details panel (left column)
   useEffect(() => {
-    if (bookingMode !== 'calendar') return;
+    if (bookingMode !== 'calendar' || !branch.calLink) return;
     const w = window as any;
     if (!w.Cal) {
       (function (C: any, A: string, L: string) {
@@ -112,14 +128,14 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
     setIframeLoaded(false);
     w.Cal('inline', {
       elementOrSelector: '#cal-inline-embed',
-      calLink: 'haoptika-hatova/30min',
+      calLink: branch.calLink,
       layout: 'month_view',
       config: { ...getCalUrlParams(), layout: 'month_view', date: selectedDate },
     });
     w.Cal('ui', { hideEventTypeDetails: true, layout: 'month_view' });
     const t = setTimeout(() => setIframeLoaded(true), 2500);
     return () => clearTimeout(t);
-  }, [bookingMode, selectedDate]);
+  }, [bookingMode, selectedDate, branch.calLink]);
 
   const scrollToBooking = () => {
     const el = document.getElementById('booking-above-fold-card');
@@ -133,7 +149,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
     if (fab) {
       (fab as HTMLElement).click();
     } else {
-      window.open(BUSINESS_INFO.whatsappDirect, '_blank');
+      window.open(waLink, '_blank');
     }
   };
 
@@ -173,7 +189,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
     const customerName = leadName.trim() || 'לקוח מדף נחיתה';
     const customerPhone = formatIsraeliPhone(leadPhone.trim());
     const couponCode = leadCoupon.trim();
-    const customerMessage = `מבצע: ${interestLabel}${leadNotes.trim() ? ` | הערה: ${leadNotes.trim()}` : ''}${couponCode ? ` | קוד קופון: ${couponCode}` : ''}`;
+    const customerMessage = `סניף: ${branch.name} | מבצע: ${interestLabel}${leadNotes.trim() ? ` | הערה: ${leadNotes.trim()}` : ''}${couponCode ? ` | קוד קופון: ${couponCode}` : ''}`;
 
     const leadPayload = {
       name: customerName,
@@ -181,6 +197,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
       source: utmSource,
       campaign: utmCampaign,
       message: customerMessage,
+      // The server sends it to this branch's business in the CRM
+      branch: branch.slug,
       // The CRM links the lead to the customer who owns this code (חבר מביא חבר)
       ...(couponCode ? { couponCode } : {}),
     };
@@ -332,17 +350,19 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   <MapPin className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                   <div className="text-[11px] leading-tight">
                     <strong className="text-slate-900 block font-bold mb-0.5">מיקום הקליניקה:</strong>
-                    <span className="text-slate-600">מצפה מנחם 86, אמירים</span>
-                    <span className="text-slate-500 block text-[10px]">(15 דק' מכרמיאל, 20 דק' מצפת)</span>
-                    <a
-                      href="https://waze.com/ul?q=מצפה%20מנחם%2086%20אמירים"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[#0047AB] font-bold hover:underline mt-1"
-                    >
-                      <Navigation className="w-3 h-3" />
-                      <span>ניווט ב-Waze</span>
-                    </a>
+                    <span className="text-slate-600">{branch.address || `סניף ${branch.name}`}</span>
+                    <span className="text-slate-500 block text-[10px]">({branch.distanceNote})</span>
+                    {branch.wazeUrl && (
+                      <a
+                        href={branch.wazeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[#0047AB] font-bold hover:underline mt-1"
+                      >
+                        <Navigation className="w-3 h-3" />
+                        <span>ניווט ב-Waze</span>
+                      </a>
+                    )}
                   </div>
                 </div>
 
@@ -350,11 +370,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   <Clock className="w-4 h-4 text-[#0047AB] shrink-0 mt-0.5" />
                   <div className="text-[11px] leading-tight">
                     <strong className="text-slate-900 block font-bold mb-0.5">ימי פעילות:</strong>
-                    <span className="text-slate-600">יום א': 10:00-15:00</span>
-                    <br />
-                    <span className="text-slate-600">ד', ה': 12:00-18:00</span>
-                    <br />
-                    <span className="text-slate-600">יום ו': 10:00-14:00</span>
+                    <HoursGrid branch={branch} dayClass="text-slate-600" hoursClass="text-slate-600 text-left" />
                   </div>
                 </div>
               </div>
@@ -390,6 +406,32 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   </div>
                 </div>
 
+                {/* Which branch: each has its own calendar */}
+                <div id="booking-branch-picker" className="mb-2 sm:mb-2.5">
+                  <span className="block text-[11px] sm:text-xs font-bold text-blue-100 mb-1">📍 באיזה סניף לקבוע?</span>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {BRANCHES.map((b) => {
+                      const active = b.slug === branch.slug;
+                      return (
+                        <button
+                          key={b.slug}
+                          type="button"
+                          id={`booking-branch-${b.slug}`}
+                          onClick={() => onSwitchBranch && onSwitchBranch(b.slug)}
+                          aria-pressed={active}
+                          className={`py-1.5 px-2 rounded-lg text-xs sm:text-sm font-black transition-all cursor-pointer ${
+                            active
+                              ? 'bg-amber-400 text-slate-950 shadow-md ring-2 ring-amber-200'
+                              : 'bg-white/15 border border-white/40 text-white hover:bg-white/25'
+                          }`}
+                        >
+                          {b.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {/* Mode Selector Tabs: Calendar is DEFAULT */}
                 <div className="grid grid-cols-2 gap-2 bg-slate-950/40 p-1 sm:p-1.5 rounded-xl border border-white/10">
                   <button
@@ -421,7 +463,21 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               </div>
 
               {/* TAB 1 (DEFAULT): Embedded Interactive Cal.com Calendar */}
-              {bookingMode === 'calendar' && (
+              {bookingMode === 'calendar' && !hasCalendar && (
+                <div className="p-6 sm:p-8 bg-white text-center space-y-3">
+                  <p className="font-black text-slate-900 text-lg font-['Rubik']">היומן של סניף {branch.name} ייפתח לקביעה באתר בקרוב</p>
+                  <p className="text-sm text-slate-600">בינתיים השאירו שם וטלפון ונחזור אליכם לתיאום תור {branch.inName}.</p>
+                  <button
+                    type="button"
+                    onClick={() => setBookingMode('callback')}
+                    className="bg-[#62B83E] hover:bg-[#4C9C29] text-white font-black text-sm px-6 py-3 rounded-xl cursor-pointer"
+                  >
+                    השאירו פרטים ונחזור אליכם ←
+                  </button>
+                </div>
+              )}
+
+              {bookingMode === 'calendar' && hasCalendar && (
                 <div className="p-2.5 sm:p-4 bg-white space-y-2.5">
                   {/* Day Picker Pills: Select Clinic Days Starting from Earliest Open Hour */}
                   <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
@@ -502,16 +558,20 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <a
-                        href={BUSINESS_INFO.wazeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 font-bold"
-                      >
-                        <Navigation className="w-3.5 h-3.5 fill-current" />
-                        <span>ניווט ב-Waze</span>
-                      </a>
-                      <span className="text-slate-300">|</span>
+                      {branch.wazeUrl && (
+                        <>
+                          <a
+                            href={branch.wazeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 font-bold"
+                          >
+                            <Navigation className="w-3.5 h-3.5 fill-current" />
+                            <span>ניווט ב-Waze</span>
+                          </a>
+                          <span className="text-slate-300">|</span>
+                        </>
+                      )}
                       <span className="inline-flex items-center gap-1 text-slate-700 font-bold">
                         <Calendar className="w-3.5 h-3.5 text-emerald-600" />
                         <span>את התור קובעים ישר ביומן</span>
@@ -533,19 +593,17 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                         הפנייה התקבלה בהצלחה!
                       </h3>
                       <p className="text-sm text-emerald-900 leading-relaxed max-w-md mx-auto">
-                        תודה {leadName || ''}! נחזור אליך בהקדם לטלפון <strong>{leadPhone}</strong> כדי לתאם עבורך את השעה הנוחה ביותר לבדיקה והתאמת משקפיים באמירים.
+                        תודה {leadName || ''}! נחזור אליך בהקדם לטלפון <strong>{leadPhone}</strong> כדי לתאם עבורך את השעה הנוחה ביותר לבדיקה והתאמת משקפיים {branch.inName}.
                       </p>
                       <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
                         <a
-                          href={`https://wa.me/972545404183?text=${encodeURIComponent(
-                            `שלום, השארתי פרטים עבור ${leadInterest === 'multifocal' ? 'מולטיפוקל' : 'משקפיים ב-150 ₪'}. שמי ${leadName}.`
-                          )}`}
+                          href={whatsappLink(branch, `שלום, השארתי פרטים לסניף ${branch.name} עבור ${leadInterest === 'multifocal' ? 'מולטיפוקל' : 'משקפיים ב-150 ₪'}. שמי ${leadName}.`)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-xs transition-colors"
                         >
                           <MessageCircle className="w-4 h-4 fill-white" />
-                          <span>לחץ למעבר לוואטסאפ (054-540-4183) 📱</span>
+                          <span>לחץ למעבר לוואטסאפ ({waPhone}) 📱</span>
                         </a>
                         <button
                           onClick={() => {
@@ -659,7 +717,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                       {/* Optional Notes */}
                       <div>
                         <label className="block text-xs font-bold text-slate-800 mb-1">
-                          הערה / יום מועדף לבדיקה (ראשון, רביעי, חמישי או שישי)
+                          הערה / יום מועדף לבדיקה{branch.hours.length ? ` (${branch.hours.map((h) => dayName(h.day).replace(/^יום /, '')).join(', ')})` : ''}
                         </label>
                         <input
                           type="text"
@@ -853,7 +911,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               <MapPin className="w-4 h-4 text-red-500 shrink-0" />
               <span>
                 <strong>מיקום: </strong>
-                מצפה מנחם 86, אמירים (15 דק' מכרמיאל, 20 דק' מצפת • חניה חופשית מול הדלת)
+                {branch.address ? `${branch.address} (${branch.distanceNote} • חניה חופשית)` : `סניף ${branch.name} (${branch.distanceNote})`}
               </span>
             </div>
 
@@ -861,7 +919,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               <Clock className="w-4 h-4 text-[#0047AB] shrink-0" />
               <span>
                 <strong>ימי פעילות: </strong>
-                יום א' (10:00-15:00) | ד', ה' (12:00-18:00) | יום ו' (10:00-14:00)
+                {branchHours || 'בתיאום מראש'}
               </span>
             </div>
 
@@ -909,7 +967,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               שקיפות חברתית מלאה
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 font-['Rubik']">
-              שני מסלולי המבצע המשתלמים שלנו באמירים
+              שני מסלולי המבצע המשתלמים שלנו {branch.inName}
             </h2>
             <p className="text-slate-600 text-sm sm:text-base">
               איך אנחנו מוכרים במחירים כאלה? פשוט מאוד: אופטיקה חברתית ללא שכירות מנופחת בקניונים וללא פערי תיווך של רשתות.
@@ -1057,7 +1115,9 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
 
       {/* ========================================================================= */}
       {/* SECTION: Location & Waze Navigation */}
+      {/* (אמירים: the detailed arrival guide; another branch: its address, hours and contacts) */}
       {/* ========================================================================= */}
+      {branch.slug === 'amirim' ? (
       <section className="py-12 bg-slate-50 border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="bg-gradient-to-br from-slate-900 via-[#0A2540] to-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
@@ -1115,7 +1175,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold px-4 py-3.5 rounded-2xl transition-colors text-sm shadow-md"
                   >
                     <MessageCircle className="w-4 h-4 fill-white" />
-                    <span>לחץ למעבר לוואטסאפ (054-540-4183) 📱</span>
+                    <span>לחץ למעבר לוואטסאפ ({waPhone}) 📱</span>
                   </a>
                 </div>
               </div>
@@ -1156,6 +1216,56 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
           </div>
         </div>
       </section>
+      ) : (
+      <section className="py-12 bg-slate-50 border-b border-slate-200">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="bg-gradient-to-br from-slate-900 via-[#0A2540] to-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-2xl space-y-4 text-right">
+            <h3 className="text-2xl sm:text-3xl font-black font-['Rubik']">איך מגיעים לסניף {branch.name}?</h3>
+            <p className="font-extrabold text-lg flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-red-400 shrink-0" />
+              <span>{branch.address || `הכתובת המדויקת של סניף ${branch.name} תישלח אליכם עם אישור התור`}</span>
+            </p>
+            <p className="text-slate-300 text-sm">
+              {branch.distanceNote}. מגיעים אלינו מ{branch.nearby.slice(0, 6).join(', ')} ועוד. יום לפני הבדיקה נשלח תזכורת עם הוראות הגעה.
+            </p>
+            <div className="flex items-start gap-2 text-sm">
+              <Clock className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" />
+              <HoursGrid branch={branch} dayClass="font-bold text-white" hoursClass="text-amber-300 font-black text-left" />
+            </div>
+            <div className="pt-2 flex flex-wrap items-center gap-3">
+              {branch.wazeUrl && (
+                <a
+                  href={branch.wazeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-6 py-3.5 rounded-2xl shadow-lg text-sm sm:text-base"
+                >
+                  <Navigation className="w-5 h-5 fill-current" />
+                  <span>לחצו לניווט ישיר ב-Waze</span>
+                </a>
+              )}
+              <button
+                type="button"
+                onClick={scrollToBooking}
+                className="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white font-bold px-4 py-3.5 rounded-2xl text-sm cursor-pointer"
+              >
+                <Calendar className="w-4 h-4 text-emerald-300" />
+                <span>לקביעת תור {branch.inName}</span>
+              </button>
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold px-4 py-3.5 rounded-2xl text-sm shadow-md"
+              >
+                <MessageCircle className="w-4 h-4 fill-white" />
+                <span>וואטסאפ ({waPhone})</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+      )}
 
       {/* ========================================================================= */}
       {/* SECTION: FAQ Accordion (Updated with Multifocal details) */}
@@ -1183,7 +1293,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               },
               {
                 q: 'באילו ימים ושעות אפשר להגיע לבדיקה?',
-                a: 'שעות הפעילות הן: יום א\' בין 10:00 ל-15:00, ימים ד\' ו-ה\' בין 12:00 ל-18:00, ויום ו\' בין 10:00 ל-14:00. ההגעה הינה בתיאום מראש בלבד דרך היומן, הטלפון או השארת פרטים למעלה.',
+                a: `${branchHours ? `שעות הפעילות בסניף ${branch.name}: ${branchHours}.` : `שעות הפעילות בסניף ${branch.name} יפורסמו בקרוב.`} ההגעה הינה בתיאום מראש בלבד דרך היומן, הטלפון או השארת פרטים למעלה.`,
               },
               {
                 q: 'איך עובדת השארת הפרטים לקביעת תור?',
@@ -1261,8 +1371,8 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
             <div className="flex items-center gap-2">
               <img src={logoImg} alt="האופטיקה החברתית" className="w-8 h-8 rounded-lg object-contain" />
               <div>
-                <span className="font-bold text-white block">האופטיקה החברתית - אמירים</span>
-                <span className="text-[11px] text-slate-500">מצפה מנחם 86, אמירים • 15 ק"מ מכרמיאל</span>
+                <span className="font-bold text-white block">האופטיקה החברתית - {branch.name}</span>
+                <span className="text-[11px] text-slate-500">{branch.address || branch.areaNote} • {branch.distanceNote}</span>
               </div>
             </div>
 
@@ -1286,9 +1396,11 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               >
                 תנאי שימוש
               </a>
-              <a href={BUSINESS_INFO.wazeUrl} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400">
-                ניווט ב-Waze
-              </a>
+              {branch.wazeUrl && (
+                <a href={branch.wazeUrl} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400">
+                  ניווט ב-Waze
+                </a>
+              )}
             </div>
           </div>
 

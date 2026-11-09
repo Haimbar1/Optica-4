@@ -1,3 +1,5 @@
+import { BranchHours, DEFAULT_BRANCH, dayName } from '../data/branches';
+
 /**
  * Calculates the next upcoming Wednesday in YYYY-MM-DD format.
  * If today is Wednesday and before 18:00, it returns today.
@@ -39,31 +41,30 @@ export interface BookingDayOption {
  * If today is a clinic day and within working hours, returns today.
  * Otherwise returns the next earliest clinic day.
  */
-export function getFirstAvailableBookingDate(): string {
-  const options = getUpcomingBookingDays();
-  return options.length > 0 ? options[0].date : getNextWednesdayDate();
+export function getFirstAvailableBookingDate(hours: BranchHours[] = DEFAULT_BRANCH.hours): string {
+  const options = getUpcomingBookingDays(hours);
+  if (options.length > 0) return options[0].date;
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 /**
  * Returns the upcoming 4 clinic days (Sunday, Wednesday, Thursday, Friday) with human-friendly labels.
  */
-export function getUpcomingBookingDays(): BookingDayOption[] {
+export function getUpcomingBookingDays(hours: BranchHours[] = DEFAULT_BRANCH.hours): BookingDayOption[] {
   const now = new Date();
   const currentDay = now.getDay(); // 0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat
   const currentHour = now.getHours();
 
-  // Clinic schedule:
-  // Sunday (0): 10:00 - 15:00
-  // Wednesday (3): 12:00 - 18:00
-  // Thursday (4): 12:00 - 18:00
-  // Friday (5): 10:00 - 14:00
-
-  const clinicDays = [
-    { dayIndex: 0, name: 'יום ראשון', short: 'ראשון', hours: '10:00 - 15:00', startHour: 'החל מ-10:00', endHour: 14 },
-    { dayIndex: 3, name: 'יום רביעי', short: 'רביעי', hours: '12:00 - 18:00', startHour: 'החל מ-12:00', endHour: 17 },
-    { dayIndex: 4, name: 'יום חמישי', short: 'חמישי', hours: '12:00 - 18:00', startHour: 'החל מ-12:00', endHour: 17 },
-    { dayIndex: 5, name: 'יום שישי', short: 'שישי', hours: '10:00 - 14:00', startHour: 'החל מ-10:00', endHour: 13 },
-  ];
+  // The branch's clinic days (data/branches.ts); a day counts until an hour before it closes
+  const clinicDays = hours.map((h) => ({
+    dayIndex: h.day,
+    name: dayName(h.day),
+    short: dayName(h.day).replace(/^יום /, ''),
+    hours: `${h.from} - ${h.to}`,
+    startHour: `החל מ-${h.from}`,
+    endHour: Number(h.to.split(':')[0]) - 1,
+  }));
 
   const results: BookingDayOption[] = [];
 

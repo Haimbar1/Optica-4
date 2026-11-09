@@ -2,7 +2,16 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import { GoogleGenAI } from '@google/genai';
-import { framesRouter, siteSecret } from './portal.js';
+import { framesRouter, siteSecret, branchSecret } from './portal.js';
+
+// Leads from a branch's page go to that branch's own business in the CRM (each branch is its own
+// business there: its calendar, number, bot). Its CRM API key: the Vercel variable named here, or
+// that branch's portal business (portalTenantId — fill it in once the branch is in the portal).
+// No key yet = the lead still goes to the main business, marked with the branch, so none is lost.
+const BRANCH_LEADS: Record<string, { name: string; env: string; portalTenantId: number | null }> = {
+  'pardes-hanna': { name: 'פרדס חנה-כרכור', env: 'SMARTESEK_TENANT_KEY_PARDES_HANNA', portalTenantId: null },
+  shlomi: { name: 'שלומי', env: 'SMARTESEK_TENANT_KEY_SHLOMI', portalTenantId: null },
+};
 // 'vite' is only needed for local dev middleware; imported dynamically below
 // so it never gets bundled into the Vercel serverless function.
 
@@ -323,6 +332,7 @@ app.post('/api/bot/web', async (req, res) => {
 פרטי העסק:
 - שם: האופטיקה החברתית באמירים
 - כתובת: מצפה מנחם 86, אמירים
+- סניפים חדשים נוספים: פרדס חנה-כרכור ושלומי – אותם מחירים ואותה בדיקה; לכל סניף יומן תורים משלו באתר (בוחרים את הסניף מעל היומן), ועמוד משלו: /pardes-hanna, /shlomi.
 - תיאום תורים לבדיקת ראייה: ישירות ביומן התורים באתר (כפתור "יומן תורים דיגיטלי") – אין מתאמת תורים טלפונית.
 - וואטסאפ לפניות ישירות / בירורים: 054-540-4183 (972545404183)
 - מחירי מסגרות ראייה איכותיות כולל עדשות וציפויים: 150 ₪ / 250 ₪ בלבד למרשם רגיל.
@@ -434,21 +444,31 @@ async function exportLeadToSmartEsek(lead: {
   campaign?: string;
   message?: string;
   couponCode?: string; // חבר מביא חבר — the CRM links the lead to the code's owner
+  branch?: string; // 'pardes-hanna' / 'shlomi' — the branch whose page the lead came from
 }) {
   // מפתח ה-API של העסק ב-CRM (X-Tenant-Key) – רק הוא מזהה את העסק ב-/api/leads.
-  // Vercel קודם, ואם אין שם – מ"מזהים וחיבורים" בפורטל (אתר).
-  const tenantKey = await siteSecret('SMARTESEK_TENANT_KEY');
+  // Vercel קודם, ואם אין שם – מ"מזהים וחיבורים" בפורטל (אתר). סניף – המפתח של העסק שלו.
+  const branchInfo = lead.branch ? BRANCH_LEADS[lead.branch] : undefined;
+  const branchKey = branchInfo
+    ? await branchSecret('SMARTESEK_TENANT_KEY', branchInfo.env, branchInfo.portalTenantId)
+    : '';
+  if (branchInfo && !branchKey) {
+    console.warn(`⚠️ אין מפתח CRM לסניף ${branchInfo.name} (${branchInfo.env}) — הליד נשלח לעסק הראשי עם שם הסניף.`);
+  }
+  const tenantKey = branchKey || (await siteSecret('SMARTESEK_TENANT_KEY'));
+  // Sent to the main business instead of the branch's: say so on the lead itself
+  const misrouted = branchInfo && !branchKey ? `⚠️ ליד לסניף ${branchInfo.name} | ` : '';
   const crmUrl = 'https://crm.smartesek.com/api/leads';
 
   const payload = {
     name: lead.name || 'פנייה מאתר האינטרנט',
     phone: lead.phone || '',
-    source: lead.source || 'אתר',
+    source: branchInfo ? `${lead.source || 'אתר'} - ${branchInfo.name}` : lead.source || 'אתר',
     campaign: lead.campaign || '',
-    message: lead.message || '',
+    message: misrouted + (lead.message || ''),
     // The CRM's /api/leads saves a lead's opening note from `noteText` (it has no `message`
     // field), so the customer's own text is sent under that name too — otherwise it was dropped.
-    noteText: lead.message || '',
+    noteText: misrouted + (lead.message || ''),
     authorName: 'אתר',
     ...(typeof lead.couponCode === 'string' && lead.couponCode.trim() ? { couponCode: lead.couponCode.trim().slice(0, 20) } : {}),
   };
@@ -542,7 +562,7 @@ function isValidIsraeliPhone(phoneInput: string): boolean {
 
 // Endpoint to export lead from frontend form
 app.post('/api/crm/lead', async (req, res) => {
-  const { name, phone, source, campaign, message, couponCode } = req.body;
+  const { name, phone, source, campaign, message, couponCode, branch } = req.body;
   if (!phone) {
     return res.status(400).json({ success: false, error: 'מספר טלפון הוא שדה חובה' });
   }
@@ -551,7 +571,10 @@ app.post('/api/crm/lead', async (req, res) => {
     return res.status(400).json({ success: false, error: 'מספר טלפון אינו תקין בישראל (לדוגמה: 050-1234567 או 04-1234567)' });
   }
 
-  const result = await exportLeadToSmartEsek({ name, phone, source, campaign, message, couponCode });
+  const result = await exportLeadToSmartEsek({
+    name, phone, source, campaign, message, couponCode,
+    branch: typeof branch === 'string' && BRANCH_LEADS[branch] ? branch : undefined,
+  });
   return res.json(result);
 });
 
@@ -638,6 +661,7 @@ app.post('/api/ai-chat', async (req, res) => {
 פרטי העסק החשובים:
 - שם העסק: האופטיקה החברתית
 - כתובת: מצפה מנחם 86, אמירים
+- סניפים חדשים נוספים: פרדס חנה-כרכור ושלומי – אותם מחירים ואותה בדיקה; לכל סניף יומן תורים משלו באתר (בוחרים את הסניף מעל היומן), ועמוד משלו: /pardes-hanna, /shlomi.
 - Waze: https://waze.com/ul?ll=32.936389,35.454517&navigate=yes
 - חנות: 055-250-2584 (מענה כללי / ביטולים)
 - תיאום תורים לבדיקת ראייה: ישירות ביומן התורים באתר (אין מתאמת תורים טלפונית).
@@ -719,7 +743,8 @@ async function startServer() {
   } else {
     const distPath = path.join(process.cwd(), 'dist');
     const publicPath = path.join(process.cwd(), 'public');
-    app.use(express.static(distPath));
+    // extensions: /pardes-hanna serves dist/pardes-hanna.html (its own head), like Vercel's cleanUrls
+    app.use(express.static(distPath, { extensions: ['html'] }));
     app.use(express.static(publicPath));
     app.get('*', (req, res, next) => {
       // If path contains file extension, let express try or return 404

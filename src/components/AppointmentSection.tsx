@@ -1,5 +1,6 @@
 import React from 'react';
-import { BUSINESS_INFO } from '../data/opticsData';
+import { whatsappLink, branchPhone, displayPhone, branchWhatsapp } from '../data/branches';
+import { useBranchOrDefault, HoursGrid } from '../branchContext';
 import { Calendar, Clock, Phone, HeartHandshake, MessageCircle } from 'lucide-react';
 
 interface AppointmentSectionProps {
@@ -8,6 +9,10 @@ interface AppointmentSectionProps {
 
 // The booking button leads to the page with the embedded calendar (keeping the URL's parameters)
 export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBooking }) => {
+  const branch = useBranchOrDefault();
+  const waLink = whatsappLink(branch);
+  const waPhone = displayPhone(branchWhatsapp(branch));
+  const phone = branchPhone(branch);
   return (
     <section id="booking" className="py-16 bg-white border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
@@ -31,20 +36,13 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
               {/* Working Hours & Address Display */}
               <div className="pt-2 flex flex-wrap items-center gap-2.5 text-xs sm:text-sm">
                 <span className="bg-amber-400 text-gray-950 font-black px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-xs">
-                  <span>📍 כתובת: {BUSINESS_INFO.address}</span>
+                  <span>📍 {branch.address ? `כתובת: ${branch.address}` : `סניף ${branch.name}`}</span>
                 </span>
                 <span className="bg-white/15 px-3.5 py-2 rounded-xl text-white font-extrabold text-xs sm:text-sm flex items-start gap-2.5 border border-white/10 shadow-xs">
                   <Clock className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" />
                   <div className="flex flex-col gap-1 text-right">
                     <span className="text-[11px] text-amber-200 font-bold block leading-none">שעות פעילות:</span>
-                    <div className="grid grid-cols-[max-content_auto] items-center gap-x-2.5 gap-y-0.5 leading-tight">
-                      <span className="text-white">א':</span>
-                      <span dir="ltr" className="text-amber-300 font-black text-left">10:00-15:00</span>
-                      <span className="text-white">ד', ה':</span>
-                      <span dir="ltr" className="text-amber-300 font-black text-left">12:00-18:00</span>
-                      <span className="text-white">ו':</span>
-                      <span dir="ltr" className="text-amber-300 font-black text-left">10:00-14:00</span>
-                    </div>
+                    <HoursGrid branch={branch} dayClass="text-white" hoursClass="text-amber-300 font-black text-left" />
                   </div>
                 </span>
               </div>
@@ -56,7 +54,7 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
                 onClick={onOpenBooking}
                 className="w-full bg-white hover:bg-gray-100 text-[#0047AB] font-black text-sm sm:text-base py-4 px-5 rounded-2xl shadow-md transition-all text-center flex items-center justify-center gap-2 group cursor-pointer"
               >
-                <span>קביעת תור לבדיקת ראייה באופטיקה החברתית אמירים</span>
+                <span>קביעת תור לבדיקת ראייה באופטיקה החברתית {branch.name}</span>
                 <Calendar className="w-5 h-5 group-hover:scale-110 transition-transform shrink-0" />
               </button>
             </div>
@@ -74,7 +72,7 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
               מעדיפים ליצור קשר טלפוני או בוואטסאפ?
             </h3>
             <p className="text-gray-600 text-sm max-w-xl mx-auto leading-relaxed">
-              הכי מהיר לקבוע תור ישירות ביומן. לשאלות ובירורים – החנות בטלפון או ב-WhatsApp. הבדיקה מבוצעת ע"י אופטומטריסט מוסמך במצפה מנחם 86, אמירים.
+              הכי מהיר לקבוע תור ישירות ביומן. לשאלות ובירורים – החנות בטלפון או ב-WhatsApp. הבדיקה מבוצעת ע"י אופטומטריסט מוסמך {branch.address ? `ב${branch.address}` : branch.inName}.
             </p>
           </div>
 
@@ -93,8 +91,8 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
                 </p>
                 <p className="text-xs font-bold text-gray-800">
                   אם קרה משהו בלתי צפוי, אנא הודיעו לנו מראש בוואטסאפ:
-                  <a href={BUSINESS_INFO.whatsappDirectZvika} target="_blank" rel="noopener noreferrer" className="underline font-black mr-1 text-[#0047AB]">
-                    054-540-4183 (לחץ למעבר לוואטסאפ)
+                  <a href={waLink} target="_blank" rel="noopener noreferrer" className="underline font-black mr-1 text-[#0047AB]">
+                    {waPhone} (לחץ למעבר לוואטסאפ)
                   </a>
                 </p>
               </div>
@@ -126,13 +124,13 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
                 </button>
 
                 <a
-                  href={BUSINESS_INFO.whatsappDirect}
+                  href={waLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1DA851] text-white p-2.5 rounded-xl font-bold transition-colors cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>לחץ למעבר לוואטסאפ (054-540-4183)</span>
+                  <span>לחץ למעבר לוואטסאפ ({waPhone})</span>
                 </a>
               </div>
             </div>
@@ -151,21 +149,21 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
 
               <div className="pt-2 flex flex-col gap-2 text-xs">
                 <a
-                  href={`tel:${BUSINESS_INFO.phoneZvika}`}
+                  href={`tel:${phone}`}
                   className="flex items-center gap-2 bg-white hover:bg-gray-100 p-2.5 rounded-xl border border-gray-200 font-bold text-gray-800 transition-colors cursor-pointer"
                 >
                   <Phone className="w-4 h-4 text-gray-600" />
-                  <span>{BUSINESS_INFO.phoneZvika}</span>
+                  <span dir="ltr">{phone}</span>
                 </a>
 
                 <a
-                  href={BUSINESS_INFO.whatsappDirectZvika}
+                  href={waLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1DA851] text-white p-2.5 rounded-xl font-bold transition-colors cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>לחץ למעבר לוואטסאפ (054-540-4183)</span>
+                  <span>לחץ למעבר לוואטסאפ ({waPhone})</span>
                 </a>
               </div>
             </div>
