@@ -84,7 +84,7 @@ export const BRANCHES: Branch[] = [
     areaNote: 'מרכז "שדות", כרכור – פרדס חנה-כרכור',
     distanceNote: 'ליד בנימינה, חדרה וזכרון יעקב',
     wazeUrl: `https://waze.com/ul?q=${encodeURIComponent('נחלה 6 כרכור')}&navigate=yes`,
-    calLink: '',
+    calLink: 'haoptika-hatova/pardes-hana-30min',
     hours: [
       { day: 2, from: '14:00', to: '20:00' },
       { day: 4, from: '14:00', to: '20:00' },
@@ -106,7 +106,7 @@ export const BRANCHES: Branch[] = [
     areaNote: 'מרכז מסחרי שלומי סנטר, הגליל המערבי',
     distanceNote: 'ליד נהריה, מעלות ומצובה',
     wazeUrl: 'https://www.waze.com/he/live-map/directions/%D7%9E%D7%A8%D7%9B%D7%96-%D7%9E%D7%A1%D7%97%D7%A8%D7%99-%D7%A9%D7%9C%D7%95%D7%9E%D7%99-%D7%A1%D7%A0%D7%98%D7%A8?to=place.w.23003467.230362348.289278',
-    calLink: '',
+    calLink: 'haoptika-hatova/shlomi-30min',
     hours: [],
     phone: '',
     whatsapp: '',

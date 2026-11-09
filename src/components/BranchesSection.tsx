@@ -71,7 +71,7 @@ export const BranchesSection: React.FC<BranchesSectionProps> = ({ onOpenBranch, 
                     className="w-full bg-[#0047AB] hover:bg-[#003580] text-white font-black text-sm py-3 rounded-xl shadow-xs flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Calendar className="w-4 h-4" />
-                    <span>{b.comingSoon ? `עדכנו אותי בפתיחה ${b.inName}` : `קביעת תור ${b.inName}`}</span>
+                    <span>{b.comingSoon && !b.calLink ? `עדכנו אותי בפתיחה ${b.inName}` : `קביעת תור ${b.inName}`}</span>
                   </button>
                   <div className="flex gap-2">
                     <a
