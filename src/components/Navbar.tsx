@@ -23,11 +23,12 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
   const waPhone = displayPhone(branchWhatsapp(branch));
 
   const navItems = [
-    { id: 'booking', label: branch ? `תיאום תור ${branch.inName}` : 'בדיקת ראייה ותיאום תור' },
-    { id: 'branches', label: branch ? 'כל הסניפים' : `הסניפים שלנו (${BRANCHES.length})` },
+    { id: 'booking', label: 'תיאום תור' },
+    { id: 'branches', label: branch ? 'כל הסניפים' : 'הסניפים שלנו' },
     { id: 'about', label: 'אופטיקה חברתית' },
-    { id: 'faq', label: 'שאלות ותשובות ' },
-    { id: 'contact', label: 'צור קשר והוראות הגעה' }, 
+    { id: 'faq', label: 'שאלות ותשובות' },
+    // The address / arrival section is on a branch's page (the home page lists the branches instead)
+    ...(branch ? [{ id: 'contact', label: 'הוראות הגעה' }] : []),
   ];
 
   const handleNavClick = (id: string) => {
@@ -112,7 +113,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
           {/* Logo & Brand */}
           <div
             onClick={() => (branch && onOpenHome ? onOpenHome() : handleNavClick('hero'))}
-            className="flex items-center gap-3 cursor-pointer group"
+            className="flex items-center gap-3 cursor-pointer group shrink-0"
           >
             <img
               src={logoImg}
@@ -121,18 +122,18 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
             />
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-black text-2xl tracking-tight text-[#0047AB] font-['Rubik']">
+                <span className="font-black text-xl lg:text-2xl tracking-tight text-[#0047AB] font-['Rubik'] whitespace-nowrap">
                   האופטיקה החברתית
                 </span>
               </div>
-              <span className="text-[11px] font-bold text-gray-500 tracking-wide block">
-                {branch ? `סניף ${branch.name}` : ALL_BRANCH_NAMES}
+              <span className="text-[11px] font-bold text-gray-500 tracking-wide block whitespace-nowrap">
+                {branch ? `סניף ${branch.name}` : `${BRANCHES.length} סניפים`}
               </span>
             </div>
           </div>
 
           {/* Navigation Links - Visible in Top Header */}
-          <nav className="hidden md:flex items-center gap-1.5">
+          <nav className="hidden xl:flex items-center gap-1.5 min-w-0">
             {navItems.map((item) => {
               const isBooking = item.id === 'booking';
               const isActive = activeTab === item.id;
@@ -165,7 +166,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
                 onClick={onOpenCampaign}
                 className="px-3.5 py-1.5 rounded-xl text-xs xl:text-sm font-black bg-gradient-to-r from-[#62B83E] to-[#4C9C29] text-white hover:opacity-95 shadow-xs flex items-center gap-1.5 cursor-pointer animate-pulse whitespace-nowrap"
               >
-                <span>🔥 מבצעי קמפיין (150 ₪ / מולטיפוקל)</span>
+                <span>🔥 מבצע 150 ₪</span>
               </button>
             )}
 
@@ -196,7 +197,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex xl:hidden items-center gap-2">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-xl text-gray-700 hover:bg-gray-100 focus:outline-none cursor-pointer"
@@ -209,7 +210,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
       </div>
 
       {/* Top Mobile Scrollable Menu Bar (Always visible at top on mobile) */}
-      <div className="md:hidden bg-slate-50 border-t border-b border-gray-200 px-3 py-2 overflow-x-auto no-scrollbar scroll-smooth">
+      <div className="xl:hidden bg-slate-50 border-t border-b border-gray-200 px-3 py-2 overflow-x-auto no-scrollbar scroll-smooth">
         <div className="flex items-center gap-1.5 min-w-max">
           {navItems.map((item) => {
             const isBooking = item.id === 'booking';
@@ -259,7 +260,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-2 animate-in slide-in-from-top-2">
+        <div className="xl:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-2 animate-in slide-in-from-top-2">
           <div className="grid gap-1 py-2">
             {onOpenCampaign && (
               <button
