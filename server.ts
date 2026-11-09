@@ -9,8 +9,8 @@ import { framesRouter, siteSecret, branchSecret } from './portal.js';
 // that branch's portal business (portalTenantId — fill it in once the branch is in the portal).
 // No key yet = the lead still goes to the main business, marked with the branch, so none is lost.
 const BRANCH_LEADS: Record<string, { name: string; env: string; portalTenantId: number | null }> = {
-  'pardes-hanna': { name: 'פרדס חנה-כרכור', env: 'SMARTESEK_TENANT_KEY_PARDES_HANNA', portalTenantId: null },
-  shlomi: { name: 'שלומי', env: 'SMARTESEK_TENANT_KEY_SHLOMI', portalTenantId: null },
+  'pardes-hanna': { name: 'פרדס חנה-כרכור', env: 'SMARTESEK_TENANT_KEY_PARDES_HANNA', portalTenantId: 5 },
+  shlomi: { name: 'שלומי', env: 'SMARTESEK_TENANT_KEY_SHLOMI', portalTenantId: 6 },
 };
 // 'vite' is only needed for local dev middleware; imported dynamically below
 // so it never gets bundled into the Vercel serverless function.
@@ -332,7 +332,9 @@ app.post('/api/bot/web', async (req, res) => {
 פרטי העסק:
 - שם: האופטיקה החברתית באמירים
 - כתובת: מצפה מנחם 86, אמירים
-- סניפים חדשים נוספים: פרדס חנה-כרכור ושלומי – אותם מחירים ואותה בדיקה; לכל סניף יומן תורים משלו באתר (בוחרים את הסניף מעל היומן), ועמוד משלו: /pardes-hanna, /shlomi.
+- סניף פרדס חנה-כרכור (חדש): נחלה 6, מרכז "שדות" כרכור. שעות: ג' 14:00-20:00, ה' 14:00-20:00, ו' 09:00-14:00. טלפון 053-2796290, וואטסאפ 050-305-4731. עמוד: /pardes-hanna
+- סניף שלומי: נפתח בקרוב (עמוד: /shlomi) – אפשר להשאיר פרטים ונעדכן בפתיחה.
+- אותם מחירים ואותה בדיקה בכל הסניפים; בוחרים את הסניף מעל יומן התורים באתר.
 - תיאום תורים לבדיקת ראייה: ישירות ביומן התורים באתר (כפתור "יומן תורים דיגיטלי") – אין מתאמת תורים טלפונית.
 - וואטסאפ לפניות ישירות / בירורים: 054-540-4183 (972545404183)
 - מחירי מסגרות ראייה איכותיות כולל עדשות וציפויים: 150 ₪ / 250 ₪ בלבד למרשם רגיל.
@@ -661,7 +663,9 @@ app.post('/api/ai-chat', async (req, res) => {
 פרטי העסק החשובים:
 - שם העסק: האופטיקה החברתית
 - כתובת: מצפה מנחם 86, אמירים
-- סניפים חדשים נוספים: פרדס חנה-כרכור ושלומי – אותם מחירים ואותה בדיקה; לכל סניף יומן תורים משלו באתר (בוחרים את הסניף מעל היומן), ועמוד משלו: /pardes-hanna, /shlomi.
+- סניף פרדס חנה-כרכור (חדש): נחלה 6, מרכז "שדות" כרכור. שעות: ג' 14:00-20:00, ה' 14:00-20:00, ו' 09:00-14:00. טלפון 053-2796290, וואטסאפ 050-305-4731. עמוד: /pardes-hanna
+- סניף שלומי: נפתח בקרוב (עמוד: /shlomi) – אפשר להשאיר פרטים ונעדכן בפתיחה.
+- אותם מחירים ואותה בדיקה בכל הסניפים; בוחרים את הסניף מעל יומן התורים באתר.
 - Waze: https://waze.com/ul?ll=32.936389,35.454517&navigate=yes
 - חנות: 055-250-2584 (מענה כללי / ביטולים)
 - תיאום תורים לבדיקת ראייה: ישירות ביומן התורים באתר (אין מתאמת תורים טלפונית).

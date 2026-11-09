@@ -465,8 +465,14 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               {/* TAB 1 (DEFAULT): Embedded Interactive Cal.com Calendar */}
               {bookingMode === 'calendar' && !hasCalendar && (
                 <div className="p-6 sm:p-8 bg-white text-center space-y-3">
-                  <p className="font-black text-slate-900 text-lg font-['Rubik']">היומן של סניף {branch.name} ייפתח לקביעה באתר בקרוב</p>
-                  <p className="text-sm text-slate-600">בינתיים השאירו שם וטלפון ונחזור אליכם לתיאום תור {branch.inName}.</p>
+                  <p className="font-black text-slate-900 text-lg font-['Rubik']">
+                    {branch.comingSoon ? `סניף ${branch.name} נפתח בקרוב` : `היומן של סניף ${branch.name} ייפתח לקביעה באתר בקרוב`}
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    {branch.comingSoon
+                      ? `השאירו שם וטלפון ונעדכן אתכם ראשונים כשאפשר לקבוע תור ${branch.inName}.`
+                      : `בינתיים השאירו שם וטלפון ונחזור אליכם לתיאום תור ${branch.inName}.`}
+                  </p>
                   <button
                     type="button"
                     onClick={() => setBookingMode('callback')}

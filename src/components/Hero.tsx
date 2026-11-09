@@ -249,7 +249,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
                 </span>
                 <span>
                   <span className="block font-black font-['Rubik']">סניף {b.name}</span>
-                  <span className="block text-xs text-white/65">{b.address || b.distanceNote} • לפרטים ותורים ←</span>
+                  <span className="block text-xs text-white/65">{b.comingSoon ? `נפתח בקרוב • ${b.distanceNote}` : `${b.address || b.distanceNote} • לפרטים ותורים ←`}</span>
                 </span>
               </a>
             ))}

@@ -20,7 +20,9 @@ export const BranchLocationSection: React.FC<BranchLocationSectionProps> = ({ br
             האופטיקה החברתית {branch.inName}
           </h2>
           <p className="text-gray-600 text-base sm:text-lg">
-            בדיקת ראייה חינם, משקפי ראייה מלאים ב-150 ₪ ועדשות מולטיפוקל — עכשיו גם {branch.inName}.
+            {branch.comingSoon
+              ? `הסניף ${branch.inName} נפתח בקרוב — בדיקת ראייה חינם, משקפי ראייה מלאים ב-150 ₪ ועדשות מולטיפוקל. השאירו פרטים ונעדכן אתכם בפתיחה.`
+              : `בדיקת ראייה חינם, משקפי ראייה מלאים ב-150 ₪ ועדשות מולטיפוקל — עכשיו גם ${branch.inName}.`}
           </p>
         </div>
 
@@ -53,7 +55,7 @@ export const BranchLocationSection: React.FC<BranchLocationSectionProps> = ({ br
                 className="w-full bg-[#0047AB] hover:bg-[#003580] text-white font-extrabold text-base py-4 rounded-2xl shadow-md flex items-center justify-center gap-2.5 cursor-pointer"
               >
                 <Calendar className="w-5 h-5" />
-                <span>קביעת תור {branch.inName}</span>
+                <span>{branch.comingSoon ? 'עדכנו אותי כשהסניף נפתח' : `קביעת תור ${branch.inName}`}</span>
               </button>
               {branch.wazeUrl && (
                 <a

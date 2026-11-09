@@ -44,6 +44,8 @@ export interface Branch {
   region: string;
   seoTitle: string;
   seoDescription: string;
+  /** Not open yet: shown as "נפתח בקרוב", and booking = leave details to hear when it opens */
+  comingSoon?: boolean;
 }
 
 export const SITE_URL = 'https://optica-4.vercel.app';
@@ -78,19 +80,23 @@ export const BRANCHES: Branch[] = [
     slug: 'pardes-hanna',
     name: 'פרדס חנה-כרכור',
     inName: 'בפרדס חנה-כרכור',
-    address: '',
-    areaNote: 'פרדס חנה-כרכור',
+    address: 'נחלה 6, מרכז "שדות", כרכור',
+    areaNote: 'מרכז "שדות", כרכור – פרדס חנה-כרכור',
     distanceNote: 'ליד בנימינה, חדרה וזכרון יעקב',
-    wazeUrl: '',
+    wazeUrl: `https://waze.com/ul?q=${encodeURIComponent('נחלה 6 כרכור')}&navigate=yes`,
     calLink: '',
-    hours: [],
-    phone: '',
-    whatsapp: '',
+    hours: [
+      { day: 2, from: '14:00', to: '20:00' },
+      { day: 4, from: '14:00', to: '20:00' },
+      { day: 5, from: '09:00', to: '14:00' },
+    ],
+    phone: '053-279-6290',
+    whatsapp: '972503054731',
     nearby: ['פרדס חנה', 'כרכור', 'בנימינה', 'גבעת עדה', 'עין שמר', 'חדרה', 'אור עקיבא', 'קיסריה', 'זכרון יעקב', 'תלמי אלעזר', 'כפר גליקסון'],
     region: 'השרון הצפוני',
     seoTitle: 'האופטיקה החברתית פרדס חנה-כרכור | בדיקת ראייה ומשקפיים ב-150 ₪',
     seoDescription:
-      'סניף חדש של האופטיקה החברתית בפרדס חנה-כרכור: בדיקת ראייה חינם ע"י אופטומטריסט מוסמך, משקפי ראייה מלאים ב-150 ₪ ועדשות מולטיפוקל מ-800 ₪. ליד בנימינה, חדרה וזכרון יעקב. קביעת תור ביומן.',
+      'סניף חדש של האופטיקה החברתית בנחלה 6, מרכז "שדות" כרכור: בדיקת ראייה חינם ע"י אופטומטריסט מוסמך, משקפי ראייה מלאים ב-150 ₪ ועדשות מולטיפוקל מ-800 ₪. ליד בנימינה, חדרה וזכרון יעקב. קביעת תור ביומן.',
   },
   {
     slug: 'shlomi',
@@ -106,9 +112,10 @@ export const BRANCHES: Branch[] = [
     whatsapp: '',
     nearby: ['שלומי', 'נהריה', 'מעלות-תרשיחא', 'מצובה', 'בצת', 'חניתה', 'אילון', 'גורן', 'כפר ורדים', 'מטה אשר'],
     region: 'הגליל המערבי',
-    seoTitle: 'האופטיקה החברתית שלומי | בדיקת ראייה ומשקפיים ב-150 ₪ ליד נהריה',
+    comingSoon: true,
+    seoTitle: 'האופטיקה החברתית שלומי – נפתח בקרוב | בדיקת ראייה ומשקפיים ב-150 ₪ ליד נהריה',
     seoDescription:
-      'סניף חדש של האופטיקה החברתית בשלומי: בדיקת ראייה חינם ע"י אופטומטריסט מוסמך, משקפי ראייה מלאים ב-150 ₪ ועדשות מולטיפוקל מ-800 ₪. ליד נהריה ומעלות. קביעת תור ביומן.',
+      'סניף חדש של האופטיקה החברתית נפתח בקרוב בשלומי: בדיקת ראייה חינם ע"י אופטומטריסט מוסמך, משקפי ראייה מלאים ב-150 ₪ ועדשות מולטיפוקל מ-800 ₪. ליד נהריה ומעלות. קביעת תור ביומן.',
   },
 ];
 
@@ -144,8 +151,8 @@ export function hoursRows(b: Branch): { days: string; hours: string }[] {
     .sort((a, c) => a.day - c.day)
     .forEach((h) => {
       const hours = `${h.from}-${h.to}`;
-      const last = rows[rows.length - 1];
-      if (last && last.hours === hours && last.days[last.days.length - 1] === h.day - 1) last.days.push(h.day);
+      const same = rows.find((r) => r.hours === hours);
+      if (same) same.days.push(h.day);
       else rows.push({ days: [h.day], hours });
     });
   return rows.map((r) => ({

@@ -40,9 +40,9 @@ export const BranchesSection: React.FC<BranchesSectionProps> = ({ onOpenBranch, 
                 className="relative bg-[#FBFBFB] border-2 border-gray-200 hover:border-[#0047AB]/50 rounded-3xl p-5 sm:p-6 flex flex-col gap-4 shadow-2xs transition-colors"
               >
                 {isNew && (
-                  <span className="absolute top-4 left-4 inline-flex items-center gap-1 bg-[#62B83E] text-white text-[11px] font-black px-2.5 py-0.5 rounded-full">
+                  <span className={`absolute top-4 left-4 inline-flex items-center gap-1 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full ${b.comingSoon ? 'bg-amber-500' : 'bg-[#62B83E]'}`}>
                     <Sparkles className="w-3 h-3" />
-                    סניף חדש
+                    {b.comingSoon ? 'נפתח בקרוב' : 'סניף חדש'}
                   </span>
                 )}
                 <div>
@@ -71,7 +71,7 @@ export const BranchesSection: React.FC<BranchesSectionProps> = ({ onOpenBranch, 
                     className="w-full bg-[#0047AB] hover:bg-[#003580] text-white font-black text-sm py-3 rounded-xl shadow-xs flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Calendar className="w-4 h-4" />
-                    <span>קביעת תור {b.inName}</span>
+                    <span>{b.comingSoon ? `עדכנו אותי בפתיחה ${b.inName}` : `קביעת תור ${b.inName}`}</span>
                   </button>
                   <div className="flex gap-2">
                     <a
