@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, Navigation, Glasses, CheckCircle2, MapPin, Clock, Camera, Eye, Sparkles } from 'lucide-react';
-import { BUSINESS_INFO } from '../data/opticsData';
+import { BRANCHES, ALL_BRANCH_NAMES, branchPath, branchPhone } from '../data/branches';
+import { useBranch, HoursGrid } from '../branchContext';
 import campaignAdImg from '../assets/images/campaign_ad_square.jpg';
 
 interface HeroProps {
@@ -12,6 +13,8 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavigateToCatalog, onOpenCampaign, onOpenTryOn }) => {
+  const branch = useBranch();
+  const where = branch ? branch.inName : `ב${ALL_BRANCH_NAMES}`;
   const handleBookingClick = () => {
     if (onOpenBooking) {
       onOpenBooking();
@@ -82,10 +85,13 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
               <span className="block mt-2 bg-gradient-to-l from-amber-200 via-amber-300 to-orange-400 bg-clip-text text-transparent">
                 משלמים הגון.
               </span>
+              <span className="block mt-4 text-xl sm:text-2xl lg:text-3xl font-extrabold text-white/90 leading-snug">
+                בדיקת ראייה ומשקפיים {where}
+              </span>
             </h1>
 
             <p className="text-base sm:text-lg text-white/80 leading-relaxed max-w-2xl">
-              אצלנו לא משלמים על המותג שעל השלט או על השכירות בקניון. אופטיקה חברתית באמירים –
+              אצלנו לא משלמים על המותג שעל השלט או על השכירות בקניון. אופטיקה חברתית {where} –
               בדיקה מקצועית, מסגרות מובחרות ועדשות איכותיות, במחיר שמגיע לכולם.
             </p>
 
@@ -148,15 +154,17 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
                 </button>
               )}
 
-              <a
-                href={BUSINESS_INFO.wazeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold text-base px-5 py-3.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer"
-              >
-                <Navigation className="w-5 h-5 text-amber-300" />
-                <span>ניווט ב-Waze</span>
-              </a>
+              {branch?.wazeUrl && (
+                <a
+                  href={branch.wazeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold text-base px-5 py-3.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <Navigation className="w-5 h-5 text-amber-300" />
+                  <span>ניווט ב-Waze</span>
+                </a>
+              )}
 
               <button
                 onClick={handleCatalogClick}
@@ -179,7 +187,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
               >
                 <img
                   src={campaignAdImg}
-                  alt="האופטיקה החברתית אמירים – מסגרת ועדשות רגילות 150 ₪, עדשות מולטיפוקל 800 ₪"
+                  alt={`האופטיקה החברתית ${branch ? branch.name : ''} – מסגרת ועדשות רגילות 150 ₪, עדשות מולטיפוקל 800 ₪`}
                   className="w-full aspect-square object-cover"
                 />
               </button>
@@ -187,46 +195,66 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
           </div>
         </div>
 
-        {/* Address, hours, trust strip */}
-        <div className="mt-12 lg:mt-14 grid grid-cols-1 md:grid-cols-3 gap-3">
-          <a
-            href={BUSINESS_INFO.wazeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 rounded-2xl bg-white/[0.07] border border-white/15 px-4 py-3 hover:bg-white/[0.11] transition-colors"
-          >
-            <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center shrink-0">
-              <MapPin className="w-5 h-5" />
-            </span>
-            <span>
-              <span className="block font-black font-['Rubik']">{BUSINESS_INFO.address}</span>
-              <span className="block text-xs text-white/65">גליל עליון • חניה צמודה ונוחה • נווט בוויז ←</span>
-            </span>
-          </a>
-
-          <div className="flex items-center gap-3 rounded-2xl bg-white/[0.07] border border-white/15 px-4 py-3">
-            <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center shrink-0">
-              <Clock className="w-5 h-5" />
-            </span>
-            <span className="text-sm leading-snug">
-              <span className="block"><b>א'</b> <span dir="ltr" className="text-amber-300 font-black">10:00-15:00</span></span>
-              <span className="block"><b>ד', ה'</b> <span dir="ltr" className="text-amber-300 font-black">12:00-18:00</span></span>
-              <span className="block"><b>ו'</b> <span dir="ltr" className="text-amber-300 font-black">10:00-14:00</span></span>
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3 rounded-2xl bg-white/[0.07] border border-white/15 px-4 py-3 text-sm">
-            <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center shrink-0">
-              <CheckCircle2 className="w-5 h-5" />
-            </span>
-            <span className="leading-snug">
-              <span className="block font-bold">אופטומטריסט מוסמך • אחריות וכיוונון</span>
-              <span className="block text-white/70">
-                חנות: <a href="tel:055-2502584" className="text-amber-300 font-black hover:underline">055-2502584</a>
+        {/* Address, hours, trust strip — one branch's, or the three branches on the home page */}
+        {branch ? (
+          <div className="mt-12 lg:mt-14 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <a
+              href={branch.wazeUrl || '#contact'}
+              target={branch.wazeUrl ? '_blank' : undefined}
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 rounded-2xl bg-white/[0.07] border border-white/15 px-4 py-3 hover:bg-white/[0.11] transition-colors"
+            >
+              <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center shrink-0">
+                <MapPin className="w-5 h-5" />
               </span>
-            </span>
+              <span>
+                <span className="block font-black font-['Rubik']">{branch.address || `סניף ${branch.name}`}</span>
+                <span className="block text-xs text-white/65">
+                  {branch.wazeUrl ? `${branch.region} • חניה נוחה • נווט בוויז ←` : `${branch.distanceNote} • הכתובת תישלח עם אישור התור`}
+                </span>
+              </span>
+            </a>
+
+            <div className="flex items-center gap-3 rounded-2xl bg-white/[0.07] border border-white/15 px-4 py-3">
+              <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center shrink-0">
+                <Clock className="w-5 h-5" />
+              </span>
+              <span className="text-sm leading-snug">
+                <HoursGrid branch={branch} dayClass="font-bold" hoursClass="text-amber-300 font-black text-left" />
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3 rounded-2xl bg-white/[0.07] border border-white/15 px-4 py-3 text-sm">
+              <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-5 h-5" />
+              </span>
+              <span className="leading-snug">
+                <span className="block font-bold">אופטומטריסט מוסמך • אחריות וכיוונון</span>
+                <span className="block text-white/70">
+                  חנות: <a href={`tel:${branchPhone(branch)}`} dir="ltr" className="text-amber-300 font-black hover:underline">{branchPhone(branch)}</a>
+                </span>
+              </span>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="mt-12 lg:mt-14 grid grid-cols-1 md:grid-cols-3 gap-3">
+            {BRANCHES.map((b) => (
+              <a
+                key={b.slug}
+                href={branchPath(b)}
+                className="flex items-center gap-3 rounded-2xl bg-white/[0.07] border border-white/15 px-4 py-3 hover:bg-white/[0.11] transition-colors"
+              >
+                <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center shrink-0">
+                  <MapPin className="w-5 h-5" />
+                </span>
+                <span>
+                  <span className="block font-black font-['Rubik']">סניף {b.name}</span>
+                  <span className="block text-xs text-white/65">{b.comingSoon ? `נפתח בקרוב • ${b.distanceNote}` : `${b.address || b.distanceNote} • לפרטים ותורים ←`}</span>
+                </span>
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

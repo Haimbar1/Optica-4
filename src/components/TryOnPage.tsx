@@ -455,7 +455,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
       ctx.fillStyle = 'rgba(0,0,0,0.45)';
       ctx.fillRect(0, H - fontSize * 2, W, fontSize * 2);
       ctx.fillStyle = '#fff';
-      ctx.fillText(`${selected.name} · ${selected.price} ₪ · האופטיקה החברתית, אמירים`, W / 2, H - fontSize * 0.7);
+      ctx.fillText(`${selected.name} · ${selected.price} ₪ · האופטיקה החברתית`, W / 2, H - fontSize * 0.7);
 
       const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, 'image/jpeg', 0.92));
       if (!blob) return;
@@ -887,7 +887,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
             </div>
 
             <p className="text-center text-xs text-gray-400">
-              ההדמיה להמחשה בלבד – המסגרות האמיתיות מחכות לכם בחנות במצפה מנחם 86, אמירים
+              ההדמיה להמחשה בלבד – המסגרות האמיתיות מחכות לכם בסניפים שלנו באמירים, בפרדס חנה-כרכור ובשלומי
             </p>
           </div>
         )}

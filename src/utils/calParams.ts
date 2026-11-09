@@ -1,3 +1,5 @@
+import { branchBySlug } from '../data/branches';
+
 // URL parameters (utm_campaign, utm_source, ...) passed on to Cal.com so they reach the booking webhook.
 // Cal.com fills a booking question whose identifier matches a parameter's name - the questions are
 // hidden ones defined on the event type (utm_campaign, utm_source, utm_medium, utm_content, utm_term, fbclid ...).
@@ -14,12 +16,14 @@ export function getCalUrlParams(): Record<string, string> {
 }
 
 // Link to the site's booking page (the embedded Cal.com calendar), keeping the visit's other parameters.
+// On a branch's page (/pardes-hanna …) it's that branch's calendar.
 export function bookingPageHref(): string {
   if (typeof window === 'undefined') return '/?page=campaign';
   const params = new URLSearchParams(window.location.search);
+  const branch = branchBySlug(window.location.pathname.split('/').filter(Boolean)[0]);
   ['page', 'p', 'tryon', 'frame'].forEach((k) => params.delete(k));
   const qs = params.toString();
-  return `/?page=campaign${qs ? `&${qs}` : ''}`;
+  return `/${branch ? branch.slug : ''}?page=campaign${qs ? `&${qs}` : ''}`;
 }
 
 export function withCalUrlParams(url: string): string {

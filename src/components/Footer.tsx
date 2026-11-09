@@ -1,5 +1,6 @@
 import React from 'react';
-import { BUSINESS_INFO } from '../data/opticsData';
+import { BRANCHES, BranchSlug, branchPath, branchPhone, ALL_BRANCH_NAMES } from '../data/branches';
+import { useBranch, HoursGrid } from '../branchContext';
 import { bookingPageHref } from '../utils/calParams';
 import { Glasses, MapPin, Phone, Navigation, HeartHandshake, Clock, ShieldCheck, Lock, FileText } from 'lucide-react';
 import logoImg from '../assets/images/logo_optics.svg';
@@ -7,9 +8,12 @@ import logoImg from '../assets/images/logo_optics.svg';
 interface FooterProps {
   onOpenPrivacy?: () => void;
   onOpenTerms?: () => void;
+  onOpenBranch?: (slug: BranchSlug) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms, onOpenBranch }) => {
+  const branch = useBranch();
+  const phone = branchPhone(branch);
   return (
     <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -27,44 +31,57 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) =>
               </span>
             </div>
             <p className="text-slate-400 leading-relaxed">
-              מיזם אופטיקה חברתית במושב אמירים. בדיקות ראייה מקיפות, עדשות מולטיפוקל ומשקפיים מובחרים במחירים הוגנים ושפויים (150 - 250 ₪).
+              מיזם אופטיקה חברתית ב{ALL_BRANCH_NAMES}. בדיקות ראייה מקיפות, עדשות מולטיפוקל ומשקפיים מובחרים במחירים הוגנים ושפויים (150 - 250 ₪).
             </p>
           </div>
 
-          {/* Business Address & Hours */}
-          <div className="space-y-2.5 bg-slate-800/60 border border-slate-700/80 p-3.5 rounded-2xl">
-            <h4 className="font-bold text-white text-sm flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-amber-400" />
-              <span>כתובת ושעות פעילות</span>
-            </h4>
-            <p className="text-white font-extrabold text-sm">{BUSINESS_INFO.address}</p>
-            <p className="text-slate-400 text-xs">מושב אמירים, גליל עליון (חניה במקום)</p>
-            
-            <div className="pt-1 text-amber-300 font-black text-xs flex items-start gap-2 bg-slate-900/80 p-2.5 rounded-xl border border-slate-700/60">
-              <Clock className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
-              <div className="flex flex-col gap-1 text-xs">
-                <span className="text-[10px] text-slate-400 font-bold uppercase">שעות פעילות:</span>
-                <div className="grid grid-cols-[max-content_auto] items-center gap-x-2.5 gap-y-0.5 leading-tight">
-                  <span className="text-slate-200 font-bold">א':</span>
-                  <span dir="ltr" className="text-amber-300 font-black text-left">10:00-15:00</span>
-                  <span className="text-slate-200 font-bold">ד', ה':</span>
-                  <span dir="ltr" className="text-amber-300 font-black text-left">12:00-18:00</span>
-                  <span className="text-slate-200 font-bold">ו':</span>
-                  <span dir="ltr" className="text-amber-300 font-black text-left">10:00-14:00</span>
+          {/* Business Address & Hours — the open branch's, or the list of branches */}
+          {branch ? (
+            <div className="space-y-2.5 bg-slate-800/60 border border-slate-700/80 p-3.5 rounded-2xl">
+              <h4 className="font-bold text-white text-sm flex items-center gap-1.5">
+                <MapPin className="w-4 h-4 text-amber-400" />
+                <span>סניף {branch.name} – כתובת ושעות</span>
+              </h4>
+              <p className="text-white font-extrabold text-sm">{branch.address || branch.name}</p>
+              <p className="text-slate-400 text-xs">{branch.address ? branch.areaNote : 'הכתובת המדויקת תישלח עם אישור התור'}</p>
+              <div className="pt-1 text-amber-300 font-black text-xs flex items-start gap-2 bg-slate-900/80 p-2.5 rounded-xl border border-slate-700/60">
+                <Clock className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+                <div className="flex flex-col gap-1 text-xs">
+                  <span className="text-[10px] text-slate-400 font-bold uppercase">שעות פעילות:</span>
+                  <HoursGrid branch={branch} dayClass="text-slate-200 font-bold" hoursClass="text-amber-300 font-black text-left" />
                 </div>
               </div>
+              {branch.wazeUrl && (
+                <a
+                  href={branch.wazeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-amber-300 hover:text-amber-200 hover:underline font-extrabold pt-1 text-xs"
+                >
+                  <Navigation className="w-3.5 h-3.5" />
+                  <span>פתח ניווט ב-Waze (וויז) ←</span>
+                </a>
+              )}
             </div>
-
-            <a
-              href={BUSINESS_INFO.wazeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-amber-300 hover:text-amber-200 hover:underline font-extrabold pt-1 text-xs"
-            >
-              <Navigation className="w-3.5 h-3.5" />
-              <span>פתח ניווט ב-Waze (וויז) ←</span>
-            </a>
-          </div>
+          ) : (
+            <div className="space-y-2 bg-slate-800/60 border border-slate-700/80 p-3.5 rounded-2xl">
+              <h4 className="font-bold text-white text-sm flex items-center gap-1.5">
+                <MapPin className="w-4 h-4 text-amber-400" />
+                <span>הסניפים שלנו</span>
+              </h4>
+              {BRANCHES.map((b) => (
+                <a
+                  key={b.slug}
+                  href={branchPath(b)}
+                  onClick={(e) => { if (onOpenBranch) { e.preventDefault(); onOpenBranch(b.slug); } }}
+                  className="block bg-slate-900/80 p-2.5 rounded-xl border border-slate-700/60 hover:border-amber-400/60"
+                >
+                  <span className="block text-white font-extrabold text-sm">סניף {b.name}</span>
+                  <span className="block text-slate-400 text-[11px]">{b.address || b.distanceNote}</span>
+                </a>
+              ))}
+            </div>
+          )}
 
           {/* Phones */}
           <div className="space-y-2">
@@ -73,7 +90,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) =>
               תורים לבדיקת ראייה: <a href={bookingPageHref()} className="text-[#60A5FA] font-bold hover:underline">קביעה ישר ביומן ←</a>
             </p>
             <p className="text-slate-300">
-              פניות כלליות וביטולים (חנות): <a href={`tel:${BUSINESS_INFO.phoneZvika}`} className="text-[#60A5FA] font-bold hover:underline">{BUSINESS_INFO.phoneZvika}</a>
+              פניות כלליות וביטולים (חנות): <a href={`tel:${phone}`} dir="ltr" className="text-[#60A5FA] font-bold hover:underline">{phone}</a>
             </p>
             <p className="text-slate-500 pt-1">הגעה בתיאום מראש בלבד</p>
           </div>
@@ -104,7 +121,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms }) =>
         </div>
 
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-slate-500 gap-4">
-          <p>© {new Date().getFullYear()} האופטיקה החברתית - מצפה מנחם 86, אמירים. כל הזכויות שמורות.</p>
+          <p>© {new Date().getFullYear()} האופטיקה החברתית – {ALL_BRANCH_NAMES}. כל הזכויות שמורות.</p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
             <a href="#catalog" className="hover:text-slate-300 transition-colors">קטלוג משקפיים</a>
             <a href="#booking" className="hover:text-slate-300 transition-colors">בדיקת ראייה</a>

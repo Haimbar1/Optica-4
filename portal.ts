@@ -59,7 +59,8 @@ framesRouter.get('/:id/image', async (req, res) => {
 // sensitive there and can't be copied back) and the vault only where Vercel has none. ----
 
 const CACHE_MS = 5 * 60 * 1000;
-let vaultCache: { at: number; secrets: Record<string, string> } | null = null;
+// Per portal business: the main site is business 1, a branch (פרדס חנה, שלומי) reads its own
+const vaultCache = new Map<number, { at: number; secrets: Record<string, string> }>();
 
 const b64url = (s: string | Buffer) => Buffer.from(s).toString('base64url');
 
@@ -72,12 +73,13 @@ function signToken(payload: Record<string, unknown>, secret: string): string {
   return `${head}.${body}.${sig}`;
 }
 
-async function vaultSecrets(): Promise<Record<string, string>> {
-  if (vaultCache && Date.now() - vaultCache.at < CACHE_MS) return vaultCache.secrets;
+async function vaultSecrets(tenantId: number = TENANT_ID): Promise<Record<string, string>> {
+  const cached = vaultCache.get(tenantId);
+  if (cached && Date.now() - cached.at < CACHE_MS) return cached.secrets;
   const sharedSecret = process.env.SSO_SHARED_SECRET;
   if (!sharedSecret) return {};
   try {
-    const token = signToken({ typ: 'secrets', tenantId: TENANT_ID, module: 'site' }, sharedSecret);
+    const token = signToken({ typ: 'secrets', tenantId, module: 'site' }, sharedSecret);
     const r = await fetch(`${PORTAL_URL}/api/sso/secrets`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -87,16 +89,24 @@ async function vaultSecrets(): Promise<Record<string, string>> {
     if (!r.ok) throw new Error(`portal ${r.status}`);
     const data: any = await r.json();
     const secrets = data?.secrets && typeof data.secrets === 'object' ? data.secrets : {};
-    vaultCache = { at: Date.now(), secrets };
+    vaultCache.set(tenantId, { at: Date.now(), secrets });
     return secrets;
   } catch (err: any) {
     console.warn('[secrets] reading the portal vault failed:', err?.message);
     // keep using the last good copy rather than dropping a working integration
-    return vaultCache?.secrets || {};
+    return vaultCache.get(tenantId)?.secrets || {};
   }
 }
 
 // One key. '' = not set anywhere.
 export async function siteSecret(key: string): Promise<string> {
   return process.env[key] || (await vaultSecrets())[key] || '';
+}
+
+// A branch's own key: its Vercel variable (e.g. SMARTESEK_TENANT_KEY_PARDES_HANNA), else the vault of
+// its own portal business ("מזהים וחיבורים" of that branch). Never the main business's key.
+export async function branchSecret(key: string, envName: string, portalTenantId: number | null): Promise<string> {
+  if (process.env[envName]) return process.env[envName] as string;
+  if (!portalTenantId) return '';
+  return (await vaultSecrets(portalTenantId))[key] || '';
 }

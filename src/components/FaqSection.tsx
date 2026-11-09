@@ -1,19 +1,48 @@
 import React, { useState, useMemo } from 'react';
 import { FAQ_ITEMS } from '../data/opticsData';
 import { HelpCircle, ChevronDown, ChevronUp, Search, MessageCircle, Navigation, ExternalLink } from 'lucide-react';
-import { BUSINESS_INFO } from '../data/opticsData';
+import { FAQItem } from '../types';
+import { Branch, BRANCHES, whatsappLink, displayPhone, branchWhatsapp } from '../data/branches';
+import { useBranch } from '../branchContext';
+
+// The FAQ with the answers that depend on the branch (where we are, whom to tell about a cancellation)
+function faqFor(branch: Branch | null): FAQItem[] {
+  return FAQ_ITEMS.map((item) => {
+    if (item.showWazeButton) {
+      if (branch?.slug === 'amirim') return item;
+      if (branch) {
+        return {
+          ...item,
+          answer: `סניף ${branch.name} נמצא ${branch.address ? `ב${branch.address}` : branch.inName} (${branch.distanceNote}). יום לפני הבדיקה נשלח אליך תזכורת עם הוראות הגעה מפורטות. מומלץ להביא משקפי ראייה קודמים אם יש.`,
+          showWazeButton: !!branch.wazeUrl,
+        };
+      }
+      return {
+        ...item,
+        question: 'איפה הסניפים שלכם ואיך מגיעים?',
+        answer: `יש לנו ${BRANCHES.length} סניפים: ${BRANCHES.map((b) => `${b.name}${b.address ? ` (${b.address})` : ''}`).join(', ')}. בוחרים סניף בראש הדף, ויום לפני הבדיקה נשלח אליך תזכורת עם הוראות הגעה מפורטות.`,
+        showWazeButton: false,
+      };
+    }
+    let answer = item.answer.replace('חלל עסקי באמירים בעלות נמוכה', 'חללים עסקיים בעלות נמוכה, הרחק מהקניונים');
+    if (branch && branch.whatsapp && branch.slug !== 'amirim') answer = answer.replace('054-540-4183', displayPhone(branchWhatsapp(branch)));
+    return { ...item, answer };
+  });
+}
 
 export const FaqSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const branch = useBranch();
+  const items = useMemo(() => faqFor(branch), [branch]);
 
   const filteredFaqs = useMemo(() => {
-    if (!searchQuery.trim()) return FAQ_ITEMS;
+    if (!searchQuery.trim()) return items;
     const q = searchQuery.toLowerCase();
-    return FAQ_ITEMS.filter(
+    return items.filter(
       (item) => item.question.toLowerCase().includes(q) || item.answer.toLowerCase().includes(q)
     );
-  }, [searchQuery]);
+  }, [searchQuery, items]);
 
   return (
     <section id="faq" className="py-16 bg-white border-t border-gray-100">
@@ -76,7 +105,7 @@ export const FaqSection: React.FC = () => {
                       {item.showWazeButton && (
                         <div className="pt-1">
                           <a
-                            href={BUSINESS_INFO.wazeUrl}
+                            href={branch?.wazeUrl}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#0047AB] hover:bg-[#003580] text-white font-bold rounded-xl shadow-xs transition-colors text-xs sm:text-sm"
@@ -102,7 +131,7 @@ export const FaqSection: React.FC = () => {
             <p className="text-xs text-gray-700 mt-0.5">החנות זמינה לשאלות נוספות בוואטסאפ ובטלפון</p>
           </div>
           <a
-            href={BUSINESS_INFO.whatsappDirectZvika}
+            href={whatsappLink(branch)}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-[#25D366] hover:bg-[#1DA851] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-colors flex items-center gap-1.5 shrink-0"
