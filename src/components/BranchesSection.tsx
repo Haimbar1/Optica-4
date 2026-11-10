@@ -53,10 +53,7 @@ export const BranchesSection: React.FC<BranchesSectionProps> = ({ onOpenBranch, 
                 <div className="space-y-2.5 text-sm text-gray-700 flex-1">
                   <div className="flex items-start gap-2">
                     <MapPin className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-                    <span>
-                      <span className="block font-extrabold text-gray-900">{b.address || 'הכתובת המדויקת תפורסם בקרוב'}</span>
-                      <span className="block text-xs text-gray-500">{b.distanceNote}</span>
-                    </span>
+                    <span className="block font-extrabold text-gray-900">{b.address || 'הכתובת המדויקת תפורסם בקרוב'}</span>
                   </div>
                   <div className="flex items-start gap-2 text-xs">
                     <Clock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />

@@ -101,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
               className="flex items-center gap-1 hover:text-blue-100 transition-colors font-bold cursor-pointer"
             >
               <Calendar className="w-3.5 h-3.5 text-emerald-300" />
-              <span>קביעת תור ישר ביומן</span>
+              <span>תיאום תור</span>
             </button>
           </div>
         </div>
@@ -118,18 +118,11 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
             <img
               src={logoImg}
               alt="האופטיקה החברתית"
-              className="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:scale-105 transition-transform border border-emerald-200"
+              className="w-16 h-16 shrink-0 rounded-xl object-cover shadow-sm group-hover:scale-105 transition-transform border border-emerald-200"
             />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-black text-xl lg:text-2xl tracking-tight text-[#0047AB] font-['Rubik'] whitespace-nowrap">
-                  האופטיקה החברתית
-                </span>
-              </div>
-              <span className="text-[11px] font-bold text-gray-500 tracking-wide block whitespace-nowrap">
-                {branch ? `סניף ${branch.name}` : `${BRANCHES.length} סניפים`}
-              </span>
-            </div>
+            <span className="self-center font-black text-xl lg:text-2xl leading-none tracking-tight text-[#0047AB] font-['Rubik'] whitespace-nowrap">
+              האופטיקה החברתית
+            </span>
           </div>
 
           {/* Navigation Links - Visible in Top Header */}
