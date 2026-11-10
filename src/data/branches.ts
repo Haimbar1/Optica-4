@@ -89,7 +89,7 @@ export const BRANCHES: Branch[] = [
     calLink: '',
     comingSoon: true,
     hours: [
-      { day: 2, from: '14:00', to: '20:00' },
+      { day: 2, from: '15:00', to: '20:00' },
       { day: 4, from: '14:00', to: '20:00' },
       { day: 5, from: '09:00', to: '14:00' },
     ],
