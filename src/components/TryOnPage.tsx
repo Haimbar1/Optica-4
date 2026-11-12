@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { TRY_ON_FRAMES, TryOnFrame } from '../data/tryOnFrames';
 import { fetchFrames } from '../utils/framesApi';
+import { GenderFilter, matchesGender } from '../data/frameGender';
 import {
   loadFaceLandmarker, poseFromLandmarks, hingePoints, FacePose, PoseFilter, Point,
 } from '../utils/faceTracker';
@@ -91,13 +92,19 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
   const [saving, setSaving] = useState(false);
   const [isMobile, setIsMobile] = useState(() => window.matchMedia(MOBILE_QUERY).matches);
   const [stageHeight, setStageHeight] = useState(0);
-  const [tileHeight, setTileHeight] = useState(0);
+  const [genderFilter, setGenderFilter] = useState<GenderFilter>(() => {
+    try {
+      const saved = localStorage.getItem('tryon-gender');
+      return saved === 'women' || saved === 'men' ? saved : 'all';
+    } catch {
+      return 'all';
+    }
+  });
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const liveStageRef = useRef<HTMLDivElement>(null);
   const imageWrapRef = useRef<HTMLDivElement>(null);
-  const mobileSideRef = useRef<HTMLElement>(null);
   const liveGlassesRef = useRef<HTMLImageElement>(null);
   const templeLeftRef = useRef<SVGLineElement>(null);
   const templeRightRef = useRef<SVGLineElement>(null);
@@ -486,13 +493,20 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
   );
 
   // המסגרות מחולקות לשני צדי התמונה, ובמסך רחב בכמה עמודות לכל צד – כך שרוב הזמן אין צורך לגלול.
-  // במובייל אין מקום משני הצדדים: לצד התמונה נכנסות רק המסגרות שנכנסות בגובה שלה, והשאר בשורות מתחתיה
+  // במובייל התמונה באמצע ועמודת מסגרות בכל צד, שנגללת בתוך עצמה בגובה התמונה – בלי לגלול את הדף
   const FRAME_ROWS = 6;
-  const FRAME_GAP = 8;
-  const sideCount = Math.ceil(frames.length / 2);
+  const shownFrames = frames.filter((f) => matchesGender(f, genderFilter));
+  const sideCount = Math.ceil(shownFrames.length / 2);
   const sideCols = Math.min(3, Math.max(1, Math.ceil(sideCount / FRAME_ROWS)));
-  const mobileSideCount =
-    stageHeight && tileHeight ? Math.max(1, Math.floor((stageHeight + FRAME_GAP) / (tileHeight + FRAME_GAP))) : 4;
+
+  const changeGender = (value: GenderFilter) => {
+    setGenderFilter(value);
+    try {
+      localStorage.setItem('tryon-gender', value);
+    } catch {
+      // בלי אחסון – הבחירה פשוט לא נזכרת
+    }
+  };
 
   useEffect(() => {
     const mq = window.matchMedia(MOBILE_QUERY);
@@ -503,13 +517,9 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
 
   useEffect(() => {
     if (!isMobile) return;
-    const measure = () => {
-      setStageHeight(imageWrapRef.current?.offsetHeight ?? 0);
-      const tile = mobileSideRef.current?.firstElementChild as HTMLElement | null;
-      if (tile) setTileHeight(tile.offsetHeight);
-    };
+    const measure = () => setStageHeight(imageWrapRef.current?.offsetHeight ?? 0);
     const ro = new ResizeObserver(measure);
-    [imageWrapRef.current, mobileSideRef.current].forEach((el) => el && ro.observe(el));
+    if (imageWrapRef.current) ro.observe(imageWrapRef.current);
     measure();
     return () => ro.disconnect();
   }, [isMobile, mode, photo]);
@@ -532,21 +542,54 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
       </button>
     );
   };
-  const renderFrameSide = (list: TryOnFrame[], ref?: React.Ref<HTMLElement>) => (
+  const renderFrameSide = (list: TryOnFrame[]) => (
     <aside
-      ref={ref}
-      style={{ '--cols': sideCols } as React.CSSProperties}
-      className="grid w-[64px] sm:w-28 lg:w-auto shrink-0 sm:max-h-[68vh] sm:overflow-y-auto no-scrollbar grid-cols-1 lg:[grid-template-columns:repeat(var(--cols),7rem)] gap-2 content-start"
+      style={
+        {
+          '--cols': sideCols,
+          ...(isMobile && stageHeight ? { maxHeight: stageHeight } : {}),
+        } as React.CSSProperties
+      }
+      className="grid w-[64px] sm:w-28 lg:w-auto shrink-0 overflow-y-auto overscroll-contain sm:max-h-[68vh] no-scrollbar grid-cols-1 lg:[grid-template-columns:repeat(var(--cols),7rem)] gap-2 content-start"
     >
       {list.map(renderFrameButton)}
     </aside>
   );
-  const frameSideA = isMobile ? null : renderFrameSide(frames.slice(0, sideCount));
-  const frameSideB = isMobile
-    ? renderFrameSide(frames.slice(0, mobileSideCount), mobileSideRef)
-    : renderFrameSide(frames.slice(sideCount));
-  const frameRowsMobile = isMobile && frames.length > mobileSideCount && (
-    <div className="grid grid-cols-5 gap-2">{frames.slice(mobileSideCount).map(renderFrameButton)}</div>
+  // במובייל: לסירוגין בין הצדדים, כך שהמסגרות הראשונות נראות משני הצדדים בלי גלילה
+  const frameSideA = renderFrameSide(
+    isMobile ? shownFrames.filter((_, i) => i % 2 === 0) : shownFrames.slice(0, sideCount),
+  );
+  const frameSideB = renderFrameSide(
+    isMobile ? shownFrames.filter((_, i) => i % 2 === 1) : shownFrames.slice(sideCount),
+  );
+
+  const GENDER_OPTIONS: { value: GenderFilter; label: string }[] = [
+    { value: 'all', label: 'הכל' },
+    { value: 'women', label: 'נשים' },
+    { value: 'men', label: 'גברים' },
+  ];
+  const genderTabs = (
+    <div className="flex justify-center">
+      <div role="tablist" aria-label="סינון מסגרות" className="inline-flex bg-white border border-gray-200 rounded-full p-1 shadow-2xs">
+        {GENDER_OPTIONS.map(({ value, label }) => {
+          const active = genderFilter === value;
+          const count = frames.filter((f) => matchesGender(f, value)).length;
+          return (
+            <button
+              key={value}
+              role="tab"
+              aria-selected={active}
+              onClick={() => changeGender(value)}
+              className={`px-4 py-1.5 rounded-full text-sm font-bold transition-colors cursor-pointer ${
+                active ? 'bg-[#0047AB] text-white' : 'text-gray-700 hover:text-[#0047AB]'
+              }`}
+            >
+              {label} <span className={`text-xs ${active ? 'text-blue-100' : 'text-gray-400'}`}>({count})</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 
   const liveHint =
@@ -637,7 +680,8 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
 
         {/* מדידה חיה */}
         {mode === 'live' && (
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
+            {genderTabs}
             <div className="flex gap-2 sm:gap-3 items-start">
               {frameSideA}
               <div className="flex-1 min-w-0 flex justify-center" ref={imageWrapRef}>
@@ -700,7 +744,6 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
               </div>
               {frameSideB}
             </div>
-            {frameRowsMobile}
 
             {trackerStatus === 'ready' && (
               <label className="flex items-center gap-3 text-sm font-bold text-gray-700 bg-white rounded-2xl border border-gray-100 p-4 shadow-2xs">
@@ -742,7 +785,8 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
 
         {/* תמונה: התאמה ידנית, שמירה ושיתוף */}
         {mode === 'photo' && photo && (
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
+            {genderTabs}
             <div className="flex gap-2 sm:gap-3 items-start">
               {frameSideA}
               <div className="flex-1 min-w-0 flex justify-center" ref={imageWrapRef}>
@@ -807,7 +851,6 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
               </div>
               {frameSideB}
             </div>
-            {frameRowsMobile}
 
             {/* כיוונון */}
             {selected && (
