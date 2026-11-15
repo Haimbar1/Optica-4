@@ -1,5 +1,5 @@
 import React from 'react';
-import { BRANCHES, BranchSlug, branchPath, branchPhone, ALL_BRANCH_NAMES } from '../data/branches';
+import { BRANCHES, BranchSlug, branchPath, branchPhone, ALL_BRANCH_NAMES, DEFAULT_BRANCH, telHref, whatsappLink, displayPhone, branchWhatsapp } from '../data/branches';
 import { useBranch, HoursGrid } from '../branchContext';
 import { bookingPageHref } from '../utils/calParams';
 import { Glasses, MapPin, Phone, Navigation, HeartHandshake, Clock, ShieldCheck, Lock, FileText } from 'lucide-react';
@@ -31,6 +31,8 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms, onOpenBranch }) => {
   const branch = useBranch();
   const phone = branchPhone(branch);
+  // The home page has no branch: its phones are the main branch's (Amirim)
+  const contact = branch || DEFAULT_BRANCH;
   return (
     <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -125,8 +127,21 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms, onOp
             <p className="text-slate-300">
               תורים לבדיקת ראייה: <a href={bookingPageHref()} className="text-[#60A5FA] font-bold hover:underline">קביעה ישר ביומן ←</a>
             </p>
+            {contact.botPhone && (
+              <p className="text-slate-300">
+                קביעה או שינוי תור (נועה – מענה אוטומטי): <a href={telHref(contact.botPhone)} dir="ltr" className="text-[#60A5FA] font-bold hover:underline">{contact.botPhone}</a>
+              </p>
+            )}
+            {contact.bookingContact && (
+              <p className="text-slate-300">
+                קביעת תור ({contact.bookingContact.name}): <a href={telHref(contact.bookingContact.phone)} dir="ltr" className="text-[#60A5FA] font-bold hover:underline">{contact.bookingContact.phone}</a>
+              </p>
+            )}
             <p className="text-slate-300">
               פניות כלליות וביטולים (חנות): <a href={`tel:${phone}`} dir="ltr" className="text-[#60A5FA] font-bold hover:underline">{phone}</a>
+            </p>
+            <p className="text-slate-300">
+              וואטסאפ: <a href={whatsappLink(branch)} target="_blank" rel="noopener noreferrer" dir="ltr" className="text-[#4ADE80] font-bold hover:underline">{displayPhone(branchWhatsapp(branch))}</a>
             </p>
             <p className="text-slate-500 pt-1">הגעה בתיאום מראש בלבד</p>
           </div>

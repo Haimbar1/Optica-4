@@ -1,5 +1,5 @@
 import React from 'react';
-import { whatsappLink, branchPhone, displayPhone, branchWhatsapp } from '../data/branches';
+import { whatsappLink, branchPhone, displayPhone, branchWhatsapp, telHref } from '../data/branches';
 import { useBranchOrDefault, HoursGrid } from '../branchContext';
 import { Calendar, Clock, Phone, HeartHandshake, MessageCircle } from 'lucide-react';
 
@@ -122,6 +122,26 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
                   <Calendar className="w-4 h-4" />
                   <span>לקביעת תור ישר ביומן</span>
                 </button>
+
+                {branch.botPhone && (
+                  <a
+                    href={telHref(branch.botPhone)}
+                    className="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 p-2.5 rounded-xl border border-gray-200 font-bold text-gray-800 transition-colors cursor-pointer"
+                  >
+                    <Phone className="w-4 h-4 text-[#0047AB]" />
+                    <span>נועה – קביעה או שינוי תור בטלפון (<span dir="ltr">{branch.botPhone}</span>)</span>
+                  </a>
+                )}
+
+                {branch.bookingContact && (
+                  <a
+                    href={telHref(branch.bookingContact.phone)}
+                    className="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 p-2.5 rounded-xl border border-gray-200 font-bold text-gray-800 transition-colors cursor-pointer"
+                  >
+                    <Phone className="w-4 h-4 text-[#0047AB]" />
+                    <span>קביעת תור עם {branch.bookingContact.name} (<span dir="ltr">{branch.bookingContact.phone}</span>)</span>
+                  </a>
+                )}
 
                 <a
                   href={waLink}
