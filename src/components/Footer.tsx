@@ -138,7 +138,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenTerms, onOp
               </p>
             )}
             <p className="text-slate-300">
-              פניות כלליות וביטולים (חנות): <a href={`tel:${phone}`} dir="ltr" className="text-[#60A5FA] font-bold hover:underline">{phone}</a>
+              פניות כלליות וביטולים (חנות{branch?.phoneContact ? ` – ${branch.phoneContact}` : ''}): <a href={`tel:${phone}`} dir="ltr" className="text-[#60A5FA] font-bold hover:underline">{phone}</a>
             </p>
             <p className="text-slate-300">
               וואטסאפ: <a href={whatsappLink(branch)} target="_blank" rel="noopener noreferrer" dir="ltr" className="text-[#4ADE80] font-bold hover:underline">{displayPhone(branchWhatsapp(branch))}</a>

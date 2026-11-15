@@ -36,6 +36,8 @@ export interface Branch {
   hours: BranchHours[];
   /** The store's phone, "055-250-2584" */
   phone: string;
+  /** Who answers the store phone: "סמדר" — shown next to it */
+  phoneContact?: string;
   /** WhatsApp, international digits "9725…" */
   whatsapp: string;
   /** Phone answered by the booking bot (Noa) — books or changes appointments. Empty = none */
@@ -100,6 +102,7 @@ export const BRANCHES: Branch[] = [
       { day: 5, from: '09:00', to: '14:00' },
     ],
     phone: '053-279-6290',
+    phoneContact: 'סמדר',
     whatsapp: '972503054731',
     nearby: ['פרדס חנה', 'כרכור', 'בנימינה', 'גבעת עדה', 'עין שמר', 'חדרה', 'אור עקיבא', 'קיסריה', 'זכרון יעקב', 'תלמי אלעזר', 'כפר גליקסון'],
     region: 'השרון הצפוני',

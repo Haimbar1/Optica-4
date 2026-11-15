@@ -174,6 +174,7 @@ export const AppointmentSection: React.FC<AppointmentSectionProps> = ({ onOpenBo
                 >
                   <Phone className="w-4 h-4 text-gray-600" />
                   <span dir="ltr">{phone}</span>
+                  {branch.phoneContact && <span className="text-gray-500">({branch.phoneContact})</span>}
                 </a>
 
                 <a
