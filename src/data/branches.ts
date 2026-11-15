@@ -36,8 +36,14 @@ export interface Branch {
   hours: BranchHours[];
   /** The store's phone, "055-250-2584" */
   phone: string;
+  /** Who answers the store phone: "סמדר" — shown next to it */
+  phoneContact?: string;
   /** WhatsApp, international digits "9725…" */
   whatsapp: string;
+  /** Phone answered by the booking bot (Noa) — books or changes appointments. Empty = none */
+  botPhone?: string;
+  /** A person who books appointments by phone */
+  bookingContact?: { name: string; phone: string };
   /** Towns the branch serves — written on its page so a search from them finds it */
   nearby: string[];
   /** Region for Google: "גליל עליון" */
@@ -70,6 +76,8 @@ export const BRANCHES: Branch[] = [
     ],
     phone: '055-250-2584',
     whatsapp: '972545404183',
+    botPhone: '04-376-3118',
+    bookingContact: { name: 'חנה', phone: '054-913-1704' },
     nearby: ['כרמיאל', 'צפת', 'ראש פינה', 'חצור הגלילית', 'מירון', 'ספסופה', 'כפר שמאי', 'פקיעין', 'מגדל תפן', 'מרום הגליל'],
     region: 'גליל עליון',
     seoTitle: 'האופטיקה החברתית אמירים | בדיקת ראייה ומשקפיים ב-150 ₪ ליד כרמיאל וצפת',
@@ -94,6 +102,7 @@ export const BRANCHES: Branch[] = [
       { day: 5, from: '09:00', to: '14:00' },
     ],
     phone: '053-279-6290',
+    phoneContact: 'סמדר',
     whatsapp: '972503054731',
     nearby: ['פרדס חנה', 'כרכור', 'בנימינה', 'גבעת עדה', 'עין שמר', 'חדרה', 'אור עקיבא', 'קיסריה', 'זכרון יעקב', 'תלמי אלעזר', 'כפר גליקסון'],
     region: 'השרון הצפוני',
@@ -168,6 +177,9 @@ export function hoursRows(b: Branch): { days: string; hours: string }[] {
 
 export const branchWhatsapp = (b: Branch | null) => (b && b.whatsapp) || MAIN_WHATSAPP;
 export const branchPhone = (b: Branch | null) => (b && b.phone) || MAIN_PHONE;
+
+/** "tel:0549131704" */
+export const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, '')}`;
 
 /** wa.me link; a branch without its own number gets a first line naming the branch. */
 export function whatsappLink(b: Branch | null, text?: string): string {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapPin, Navigation, Phone, Clock, MessageCircle, Calendar, ExternalLink } from 'lucide-react';
-import { Branch, mapEmbedUrl, whatsappLink, branchPhone, displayPhone, branchWhatsapp } from '../data/branches';
+import { Branch, mapEmbedUrl, whatsappLink, branchPhone, displayPhone, branchWhatsapp, telHref } from '../data/branches';
 import { HoursGrid } from '../branchContext';
 
 interface BranchLocationSectionProps {
@@ -76,6 +76,7 @@ export const BranchLocationSection: React.FC<BranchLocationSectionProps> = ({ br
                 >
                   <Phone className="w-4 h-4 text-gray-600" />
                   <span dir="ltr">{branchPhone(branch)}</span>
+                  {branch.phoneContact && <span className="text-gray-500">({branch.phoneContact})</span>}
                 </a>
                 <a
                   href={whatsappLink(branch)}
@@ -87,6 +88,28 @@ export const BranchLocationSection: React.FC<BranchLocationSectionProps> = ({ br
                   <span>וואטסאפ <span dir="ltr">{displayPhone(branchWhatsapp(branch))}</span></span>
                 </a>
               </div>
+              {(branch.botPhone || branch.bookingContact) && (
+                <div className="grid grid-cols-2 gap-2.5 text-xs">
+                  {branch.botPhone && (
+                    <a
+                      href={telHref(branch.botPhone)}
+                      className="bg-[#FBFBFB] hover:bg-gray-100 p-3 rounded-xl border border-gray-200 font-bold text-gray-800 flex flex-col items-center justify-center gap-0.5 text-center"
+                    >
+                      <span className="flex items-center gap-1.5"><Phone className="w-4 h-4 text-[#0047AB]" /><span dir="ltr">{branch.botPhone}</span></span>
+                      <span className="text-[10px] text-gray-500">נועה – קביעה/שינוי תור</span>
+                    </a>
+                  )}
+                  {branch.bookingContact && (
+                    <a
+                      href={telHref(branch.bookingContact.phone)}
+                      className="bg-[#FBFBFB] hover:bg-gray-100 p-3 rounded-xl border border-gray-200 font-bold text-gray-800 flex flex-col items-center justify-center gap-0.5 text-center"
+                    >
+                      <span className="flex items-center gap-1.5"><Phone className="w-4 h-4 text-[#0047AB]" /><span dir="ltr">{branch.bookingContact.phone}</span></span>
+                      <span className="text-[10px] text-gray-500">קביעת תור – {branch.bookingContact.name}</span>
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

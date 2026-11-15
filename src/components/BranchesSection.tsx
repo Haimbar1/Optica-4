@@ -2,6 +2,7 @@ import React from 'react';
 import { MapPin, Calendar, Navigation, ArrowLeft, Clock, Sparkles } from 'lucide-react';
 import { BRANCHES, Branch, BranchSlug, branchPath, ALL_BRANCH_NAMES } from '../data/branches';
 import { HoursGrid } from '../branchContext';
+import { BranchContacts } from './BranchContacts';
 
 interface BranchesSectionProps {
   onOpenBranch: (slug: BranchSlug) => void;
@@ -59,6 +60,7 @@ export const BranchesSection: React.FC<BranchesSectionProps> = ({ onOpenBranch, 
                     <Clock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                     <HoursGrid branch={b} dayClass="font-bold text-gray-800" hoursClass="font-black text-[#0047AB] text-left" />
                   </div>
+                  <BranchContacts branch={b} className="pt-1" />
                 </div>
 
                 <div className="flex flex-col gap-2">

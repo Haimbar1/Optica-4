@@ -36,6 +36,7 @@ import {
   formatIsraeliPhone,
 } from '../utils/phoneValidation';
 import { getCalUrlParams, withCalUrlParams } from '../utils/calParams';
+import { BranchContacts } from './BranchContacts';
 import { BRANCHES, BranchSlug, dayName, whatsappLink, branchPhone, displayPhone, branchWhatsapp } from '../data/branches';
 import { useBranchOrDefault, hoursInline, HoursGrid } from '../branchContext';
 import campaignAdHeroImg from '../assets/images/campaign_ad_hero.jpg';
@@ -430,6 +431,11 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                       );
                     })}
                   </div>
+                </div>
+
+                {/* The chosen branch's phones / WhatsApp — for those who'd rather call */}
+                <div className="mb-2 sm:mb-2.5">
+                  <BranchContacts branch={branch} tone="dark" columns={4} />
                 </div>
 
                 {/* Mode Selector Tabs: Calendar is DEFAULT */}
