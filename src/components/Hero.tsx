@@ -2,6 +2,7 @@ import React from 'react';
 import { Calendar, Navigation, Glasses, CheckCircle2, MapPin, Clock, Camera, Eye, Sparkles } from 'lucide-react';
 import { BRANCHES, ALL_BRANCH_NAMES, branchPath, branchPhone } from '../data/branches';
 import { useBranch, HoursGrid } from '../branchContext';
+import { BranchContacts } from './BranchContacts';
 import campaignAdImg from '../assets/images/campaign_ad_square.jpg';
 
 interface HeroProps {
@@ -236,13 +237,15 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
               </span>
             </div>
           </div>
-        ) : (
+        ) : null}
+        {branch && <BranchContacts branch={branch} tone="dark" columns={4} className="mt-3" />}
+        {!branch && (
           <div className="mt-12 lg:mt-14 grid grid-cols-1 md:grid-cols-3 gap-3">
             {BRANCHES.map((b) => (
+              <div key={b.slug} className="rounded-2xl bg-white/[0.07] border border-white/15 p-2 space-y-2">
               <a
-                key={b.slug}
                 href={branchPath(b)}
-                className="flex items-center gap-3 rounded-2xl bg-white/[0.07] border border-white/15 px-4 py-3 hover:bg-white/[0.11] transition-colors"
+                className="flex items-center gap-3 rounded-xl px-2 py-1.5 hover:bg-white/[0.08] transition-colors"
               >
                 <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center shrink-0">
                   <MapPin className="w-5 h-5" />
@@ -252,6 +255,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
                   <span className="block text-xs text-white/65">{b.comingSoon ? 'נפתח בקרוב • לפרטים ←' : `${b.address || b.distanceNote} • לפרטים ותורים ←`}</span>
                 </span>
               </a>
+              <BranchContacts branch={b} tone="dark" />
+              </div>
             ))}
           </div>
         )}
