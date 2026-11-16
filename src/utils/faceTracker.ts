@@ -23,8 +23,9 @@ export const DEFAULT_FRAME_ASPECT = 320 / 120;
 
 // רוחב תמונת המשקפיים ביחס לרוחב הפנים בגובה הרקות
 const FACE_TO_FRAME_WIDTH = 1.0;
-// כמה להרחיק את נקודת האוזן מקצה הפנים החוצה, ביחס לרוחב הפנים
-const EAR_OUTSET = 0.07;
+// כמה להרחיק את נקודת האוזן מקצה הפנים החוצה, ביחס לרוחב הפנים.
+// שלילי = מעט פנימה, כך שבמבט חזיתי הידית נצמדת לראש ולא בולטת החוצה
+const EAR_OUTSET = -0.03;
 
 let landmarkerPromise: Promise<FaceLandmarker> | null = null;
 
