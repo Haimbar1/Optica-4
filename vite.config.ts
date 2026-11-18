@@ -3,10 +3,10 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import fs from 'fs';
 import {defineConfig, Plugin} from 'vite';
-import {BRANCHES, Branch, SITE_URL, BRAND_NAME, ALL_BRANCH_NAMES, branchJsonLd} from './src/data/branches';
+import {BRANCHES, Branch, SITE_URL, BRAND_NAME, ALL_BRANCH_NAMES, MULTI_BRANCH, branchJsonLd} from './src/data/branches';
 
 const HOME_TITLE = `${BRAND_NAME} | בדיקת ראייה ומשקפיים ב-150 ₪ – ${ALL_BRANCH_NAMES}`;
-const HOME_DESCRIPTION = `מיזם אופטיקה חברתית: בדיקת ראייה חינם, משקפי ראייה מלאים ב-150 ₪ ועדשות מולטיפוקל מ-800 ₪. סניפים ב${ALL_BRANCH_NAMES}. קביעת תור ביומן.`;
+const HOME_DESCRIPTION = `מיזם אופטיקה חברתית: בדיקת ראייה חינם, משקפי ראייה מלאים ב-150 ₪ ועדשות מולטיפוקל מ-800 ₪. ${MULTI_BRANCH ? 'סניפים' : 'סניף'} ב${ALL_BRANCH_NAMES}. קביעת תור ביומן.`;
 
 const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
@@ -39,7 +39,7 @@ function branchPages(): Plugin {
     },
     transformIndexHtml(html) {
       return withHead(html, HOME_TITLE, HOME_DESCRIPTION, `${SITE_URL}/`, BRANCHES.map(branchJsonLd),
-        `${BRAND_NAME} · סניפים ב${ALL_BRANCH_NAMES} · 055-250-2584`);
+        `${BRAND_NAME} · ${MULTI_BRANCH ? 'סניפים' : 'סניף'} ב${ALL_BRANCH_NAMES} · 055-250-2584`);
     },
     writeBundle() {
       const home = fs.readFileSync(path.join(outDir, 'index.html'), 'utf8').replace(/\s*<script type="application\/ld\+json" id="branch-jsonld">[\s\S]*?<\/script>/, '');

@@ -18,6 +18,7 @@ import {
   Branch,
   BranchSlug,
   BRANCHES,
+  MULTI_BRANCH,
   branchBySlug,
   branchJsonLd,
   SITE_URL,
@@ -49,7 +50,7 @@ function detectBranch(): Branch | null {
 }
 
 const HOME_TITLE = `${BRAND_NAME} | בדיקת ראייה ומשקפיים ב-150 ₪ – ${ALL_BRANCH_NAMES}`;
-const HOME_DESCRIPTION = `מיזם אופטיקה חברתית: בדיקת ראייה חינם, משקפי ראייה מלאים ב-150 ₪ ועדשות מולטיפוקל מ-800 ₪. סניפים ב${ALL_BRANCH_NAMES}. קביעת תור ביומן.`;
+const HOME_DESCRIPTION = `מיזם אופטיקה חברתית: בדיקת ראייה חינם, משקפי ראייה מלאים ב-150 ₪ ועדשות מולטיפוקל מ-800 ₪. ${MULTI_BRANCH ? 'סניפים' : 'סניף'} ב${ALL_BRANCH_NAMES}. קביעת תור ביומן.`;
 
 function setMeta(selector: string, attr: string, value: string) {
   const el = document.head.querySelector(selector);
@@ -259,7 +260,7 @@ export default function App() {
         <FaqSection />
         {branch && branch.slug === 'amirim' && <ContactLocationSection />}
         {branch && branch.slug !== 'amirim' && <BranchLocationSection branch={branch} onOpenBooking={openBooking} />}
-        {branch && (
+        {branch && MULTI_BRANCH && (
           <BranchesSection onOpenBranch={openBranch} onBook={bookBranch} current={branch} title="הסניפים הנוספים שלנו" />
         )}
       </main>

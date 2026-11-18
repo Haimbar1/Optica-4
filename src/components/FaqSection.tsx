@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { FAQ_ITEMS } from '../data/opticsData';
 import { HelpCircle, ChevronDown, ChevronUp, Search, MessageCircle, Navigation, ExternalLink } from 'lucide-react';
 import { FAQItem } from '../types';
-import { Branch, BRANCHES, whatsappLink, displayPhone, branchWhatsapp } from '../data/branches';
+import { Branch, BRANCHES, MULTI_BRANCH, whatsappLink, displayPhone, branchWhatsapp } from '../data/branches';
 import { useBranch } from '../branchContext';
 
 // The FAQ with the answers that depend on the branch (where we are, whom to tell about a cancellation)
@@ -20,7 +20,9 @@ function faqFor(branch: Branch | null): FAQItem[] {
       return {
         ...item,
         question: 'איפה הסניפים שלכם ואיך מגיעים?',
-        answer: `יש לנו ${BRANCHES.length} סניפים: ${BRANCHES.map((b) => `${b.name}${b.address ? ` (${b.address})` : ''}`).join(', ')}. בוחרים סניף בראש הדף, ויום לפני הבדיקה נשלח אליך תזכורת עם הוראות הגעה מפורטות.`,
+        answer: !MULTI_BRANCH
+          ? `הסניף שלנו ב${BRANCHES[0].address} (${BRANCHES[0].distanceNote}). יום לפני הבדיקה נשלח אליך תזכורת עם הוראות הגעה מפורטות.`
+          : `יש לנו ${BRANCHES.length} סניפים: ${BRANCHES.map((b) => `${b.name}${b.address ? ` (${b.address})` : ''}`).join(', ')}. בוחרים סניף בראש הדף, ויום לפני הבדיקה נשלח אליך תזכורת עם הוראות הגעה מפורטות.`,
         showWazeButton: false,
       };
     }

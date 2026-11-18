@@ -240,7 +240,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onOpenContact, onNavi
         ) : null}
         {branch && <BranchContacts branch={branch} tone="dark" columns={4} className="mt-3" />}
         {!branch && (
-          <div className="mt-12 lg:mt-14 grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className={`mt-12 lg:mt-14 grid grid-cols-1 ${BRANCHES.length > 1 ? "md:grid-cols-3" : "max-w-md"} gap-3`}>
             {BRANCHES.map((b) => (
               <div key={b.slug} className="rounded-2xl bg-white/[0.07] border border-white/15 p-2 space-y-2">
               <a

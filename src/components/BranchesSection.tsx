@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapPin, Calendar, Navigation, ArrowLeft, Clock, Sparkles } from 'lucide-react';
-import { BRANCHES, Branch, BranchSlug, branchPath, ALL_BRANCH_NAMES } from '../data/branches';
+import { BRANCHES, Branch, BranchSlug, branchPath, BRANCHES_SUMMARY, MULTI_BRANCH } from '../data/branches';
 import { HoursGrid } from '../branchContext';
 import { BranchContacts } from './BranchContacts';
 
@@ -15,20 +15,23 @@ interface BranchesSectionProps {
 // "Which branch?" — the three branches as cards: page, booking calendar, navigation.
 export const BranchesSection: React.FC<BranchesSectionProps> = ({ onOpenBranch, onBook, current, title }) => {
   const list = current ? BRANCHES.filter((b) => b.slug !== current.slug) : BRANCHES;
+  if (!list.length) return null;
   return (
     <section id="branches" className="py-14 bg-white border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center max-w-3xl mx-auto space-y-2">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E8F0FE] text-[#0047AB] text-xs font-bold">
             <MapPin className="w-4 h-4" />
-            <span>{BRANCHES.length} סניפים: {ALL_BRANCH_NAMES}</span>
+            <span>{BRANCHES_SUMMARY}</span>
           </span>
           <h2 className="text-3xl sm:text-4xl font-black text-gray-900 font-['Rubik'] tracking-tight">
-            {title || 'באיזה סניף נוח לכם?'}
+            {title || (MULTI_BRANCH ? 'באיזה סניף נוח לכם?' : 'איפה אנחנו נמצאים')}
           </h2>
-          <p className="text-gray-600 text-sm sm:text-base">
-            אותם מחירים, אותה בדיקה ואותו שירות בכל הסניפים — לכל סניף יומן תורים משלו.
-          </p>
+          {MULTI_BRANCH && (
+            <p className="text-gray-600 text-sm sm:text-base">
+              אותם מחירים, אותה בדיקה ואותו שירות בכל הסניפים — לכל סניף יומן תורים משלו.
+            </p>
+          )}
         </div>
 
         <div className={`grid gap-5 ${list.length === 3 ? 'md:grid-cols-3' : 'md:grid-cols-2 max-w-4xl mx-auto'}`}>

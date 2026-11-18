@@ -1,6 +1,6 @@
 import React, { useState } from 'react'; 
 import { Eye, Phone, MapPin, Menu, X, Calendar, MessageCircle, Navigation, Glasses, Clock } from 'lucide-react';
-import { BRANCHES, ALL_BRANCH_NAMES, whatsappLink, displayPhone, branchWhatsapp } from '../data/branches';
+import { BRANCHES_SUMMARY, MULTI_BRANCH, whatsappLink, displayPhone, branchWhatsapp } from '../data/branches';
 import { useBranch, hoursInline } from '../branchContext';
 import logoImg from '../assets/images/logo_optics.svg';
 
@@ -24,7 +24,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
 
   const navItems = [
     { id: 'booking', label: 'תיאום תור' },
-    { id: 'branches', label: branch ? 'כל הסניפים' : 'הסניפים שלנו' },
+    { id: 'branches', label: branch ? 'כל הסניפים' : MULTI_BRANCH ? 'הסניפים שלנו' : 'איך מגיעים' },
     { id: 'about', label: 'אופטיקה חברתית' },
     { id: 'faq', label: 'שאלות ותשובות' },
     // The address / arrival section is on a branch's page (the home page lists the branches instead)
@@ -62,7 +62,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
             {(!branch || branch.address) && (
               <span className="inline-flex items-center gap-1 bg-white/10 px-2.5 py-0.5 rounded-full font-bold text-amber-200 text-xs sm:text-sm">
                 <MapPin className="w-3.5 h-3.5 text-amber-300" />
-                <span>{branch ? branch.address : `${BRANCHES.length} סניפים: ${ALL_BRANCH_NAMES}`}</span>
+                <span>{branch ? branch.address : BRANCHES_SUMMARY}</span>
               </span>
             )}
             {hours && (
@@ -91,7 +91,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenB
                 className="flex items-center gap-1 hover:text-blue-100 transition-colors font-bold bg-white/10 px-2.5 py-0.5 rounded-lg cursor-pointer"
               >
                 <MapPin className="w-3.5 h-3.5 text-amber-300" />
-                <span>{branch ? 'כל הסניפים' : 'בחירת סניף'}</span>
+                <span>{branch ? 'כל הסניפים' : MULTI_BRANCH ? 'בחירת סניף' : 'איך מגיעים'}</span>
               </button>
             )}
             <span className="text-white/30">|</span>

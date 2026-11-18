@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { TRY_ON_FRAMES, TryOnFrame } from '../data/tryOnFrames';
 import { fetchFrames } from '../utils/framesApi';
+import { BRANCHES, MULTI_BRANCH, ALL_BRANCH_NAMES } from '../data/branches';
 import { GenderFilter, matchesGender } from '../data/frameGender';
 import {
   loadFaceLandmarker, poseFromLandmarks, hingePoints, FacePose, PoseFilter, Point,
@@ -930,7 +931,7 @@ export const TryOnPage: React.FC<TryOnPageProps> = ({ onBackToMain, onBookAppoin
             </div>
 
             <p className="text-center text-xs text-gray-400">
-              ההדמיה להמחשה בלבד – המסגרות האמיתיות מחכות לכם בסניפים שלנו באמירים, בפרדס חנה-כרכור ובשלומי
+              ההדמיה להמחשה בלבד – המסגרות האמיתיות מחכות לכם {MULTI_BRANCH ? `בסניפים שלנו ב${ALL_BRANCH_NAMES}` : `בסניף שלנו ${BRANCHES[0].inName}`}
             </p>
           </div>
         )}
