@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { X, Calendar } from 'lucide-react';
+import { useBranch } from '../branchContext';
+import { webBotFor, branchWhatsapp, WEB_BOT_WEBHOOK } from '../data/branches';
 
 interface ChatWidgetProps {
   isCampaignPage?: boolean;
@@ -7,39 +9,37 @@ interface ChatWidgetProps {
 
 const CAMPAIGN_WELCOME = `אני רואה שהגעת אלינו, לקבוע תור! 👋\nצריך עזרה?`;
 
-const MAIN_WELCOME = `הגעת לאופטיקה החברתית במושב אמירים.\nאנחנו מאמינים שראייה טובה מתחילה מיחס טוב.\n\nלא צריך להתרוצץ - אצלנו תמצא את כל מה שצריך במקום אחד:\n✅ בדיקת ראייה מתקדמת ומדויקת בחינם.\n✅ מבחר עצום של מסגרות בכל סגנון ותקציב.\n✅ שירות אישי וחם, עם התאמה מושלמת לצרכים שלך.\nאפשרויות:\nתיאום תור \nאיך מגיעים אליכם\nעדשות מולטיפוקל \nמהי אופטיקה חברתית\nסוגי מסגרות ומחירים\nמהם מרשמים רגילים\n\nמתי המשקפיים מוכנים`;
-
 export const ChatWidget: React.FC<ChatWidgetProps> = ({ isCampaignPage = false }) => {
   const [showTeaser, setShowTeaser] = useState(false);
   const [isBotWindowOpen, setIsBotWindowOpen] = useState(false);
+  // Each branch page talks to its own bot (פרדס חנה-כרכור has its own; the rest use the main one)
+  const branch = useBranch();
+  const bot = webBotFor(branch);
 
   // 1. Sync bot widget config and welcome message
   useEffect(() => {
     const targetTitle = isCampaignPage
-      ? 'האופטיקה החברתית - קביעת תור'
-      : 'האופטיקה החברתית אמירים';
-    const targetWelcome = isCampaignPage ? CAMPAIGN_WELCOME : MAIN_WELCOME;
+      ? branch?.webBot
+        ? `${bot.title} - קביעת תור`
+        : 'האופטיקה החברתית - קביעת תור'
+      : bot.title;
+    const targetWelcome = isCampaignPage ? CAMPAIGN_WELCOME : bot.welcomeMessage;
+    const config = {
+      botId: bot.botId,
+      title: targetTitle,
+      welcomeMessage: targetWelcome,
+      whatsappNumber: branchWhatsapp(branch),
+      webhookUrl: WEB_BOT_WEBHOOK,
+    };
 
     // Update global config object
     if (typeof window !== 'undefined') {
-      (window as any).OpticsBotConfig = {
-        botId: 'bot_generic_252',
-        title: targetTitle,
-        welcomeMessage: targetWelcome,
-        whatsappNumber: '972545404183',
-        webhookUrl: 'https://n8n.srv1239769.hstgr.cloud/webhook/65325d34-0c9e-4cc3-8b7c-c03c47105b3a'
-      };
+      (window as any).OpticsBotConfig = config;
     }
 
     const applyUpdate = () => {
       if (typeof (window as any).OpticsBotWidgetUpdate === 'function') {
-        (window as any).OpticsBotWidgetUpdate({
-          botId: 'bot_generic_252',
-          title: targetTitle,
-          welcomeMessage: targetWelcome,
-          whatsappNumber: '972545404183',
-          webhookUrl: 'https://n8n.srv1239769.hstgr.cloud/webhook/65325d34-0c9e-4cc3-8b7c-c03c47105b3a'
-        });
+        (window as any).OpticsBotWidgetUpdate(config);
         return true;
       }
       return false;
@@ -59,7 +59,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ isCampaignPage = false }
         clearTimeout(timer);
       };
     }
-  }, [isCampaignPage]);
+  }, [isCampaignPage, bot, branch]);
 
   // 2. Observer for checking if bot window is currently open (to hide teaser)
   useEffect(() => {
