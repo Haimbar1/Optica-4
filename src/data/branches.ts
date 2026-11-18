@@ -52,6 +52,8 @@ export interface Branch {
   seoDescription: string;
   /** Not open yet: shown as "נפתח בקרוב", and booking = leave details to hear when it opens */
   comingSoon?: boolean;
+  /** Opening day "YYYY-MM-DD": the site's booking days start from it, not from today */
+  opensOn?: string;
 }
 
 export const SITE_URL = 'https://optica-4.vercel.app';
@@ -92,8 +94,10 @@ export const BRANCHES: Branch[] = [
     areaNote: 'מרכז "שדות", כרכור – פרדס חנה-כרכור',
     distanceNote: 'ליד בנימינה, חדרה וזכרון יעקב',
     wazeUrl: `https://waze.com/ul?q=${encodeURIComponent('נחלה 6 כרכור')}&navigate=yes`,
-    // Opens Tuesday 24.11.2026 — the first bookable slot is set in Cal.com's availability.
+    // Opens Tuesday 24.11.2026 — the site offers days from then (opensOn) and the calendar opens on it.
+    // Cal.com's own availability for this event must also start on 24.11 (date overrides there).
     calLink: 'haoptika-hatova/pardes-hana-30min',
+    opensOn: '2026-11-24',
     hours: [
       { day: 2, from: '15:00', to: '20:00' },
       { day: 4, from: '14:00', to: '20:00' },

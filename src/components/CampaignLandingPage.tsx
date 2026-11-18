@@ -62,12 +62,12 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   const waLink = whatsappLink(branch);
   const waPhone = displayPhone(branchWhatsapp(branch));
   const branchHours = hoursInline(branch);
-  const upcomingDays = useMemo<BookingDayOption[]>(() => getUpcomingBookingDays(branch.hours), [branch]);
-  const [selectedDate, setSelectedDate] = useState<string>(() => getFirstAvailableBookingDate(branch.hours));
+  const upcomingDays = useMemo<BookingDayOption[]>(() => getUpcomingBookingDays(branch.hours, branch.opensOn), [branch]);
+  const [selectedDate, setSelectedDate] = useState<string>(() => getFirstAvailableBookingDate(branch.hours, branch.opensOn));
   const [bookingMode, setBookingMode] = useState<'calendar' | 'callback'>(hasCalendar ? 'calendar' : 'callback');
   // Another branch picked: its own days, and its calendar (or the callback form when it has none yet)
   useEffect(() => {
-    setSelectedDate(getFirstAvailableBookingDate(branch.hours));
+    setSelectedDate(getFirstAvailableBookingDate(branch.hours, branch.opensOn));
     setBookingMode(branch.calLink ? 'calendar' : 'callback');
   }, [branch.slug]);
   const [iframeLoaded, setIframeLoaded] = useState(false);

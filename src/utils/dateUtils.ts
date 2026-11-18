@@ -41,8 +41,8 @@ export interface BookingDayOption {
  * If today is a clinic day and within working hours, returns today.
  * Otherwise returns the next earliest clinic day.
  */
-export function getFirstAvailableBookingDate(hours: BranchHours[] = DEFAULT_BRANCH.hours): string {
-  const options = getUpcomingBookingDays(hours);
+export function getFirstAvailableBookingDate(hours: BranchHours[] = DEFAULT_BRANCH.hours, opensOn?: string): string {
+  const options = getUpcomingBookingDays(hours, opensOn);
   if (options.length > 0) return options[0].date;
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -51,8 +51,12 @@ export function getFirstAvailableBookingDate(hours: BranchHours[] = DEFAULT_BRAN
 /**
  * Returns the upcoming 4 clinic days (Sunday, Wednesday, Thursday, Friday) with human-friendly labels.
  */
-export function getUpcomingBookingDays(hours: BranchHours[] = DEFAULT_BRANCH.hours): BookingDayOption[] {
-  const now = new Date();
+export function getUpcomingBookingDays(hours: BranchHours[] = DEFAULT_BRANCH.hours, opensOn?: string): BookingDayOption[] {
+  let now = new Date();
+  // A branch that hasn't opened yet: count its days from the opening date, not from today
+  const opening = opensOn ? new Date(`${opensOn}T00:00:00`) : null;
+  const beforeOpening = !!opening && opening.getTime() > now.getTime();
+  if (beforeOpening && opening) now = opening;
   const currentDay = now.getDay(); // 0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat
   const currentHour = now.getHours();
 
@@ -95,7 +99,7 @@ export function getUpcomingBookingDays(hours: BranchHours[] = DEFAULT_BRANCH.hou
       formattedDate,
       hoursLabel: cDay.hours,
       startHourLabel: cDay.startHour,
-      isToday: isToday && currentHour < cDay.endHour,
+      isToday: !beforeOpening && isToday && currentHour < cDay.endHour,
     });
   }
 
