@@ -54,7 +54,26 @@ export interface Branch {
   comingSoon?: boolean;
   /** Opening day "YYYY-MM-DD": the site's booking days start from it, not from today */
   opensOn?: string;
+  /** The branch's own web chat bot (Smartesek). Left out = the main bot (DEFAULT_WEB_BOT) */
+  webBot?: WebBot;
 }
+
+export interface WebBot {
+  botId: string;
+  title: string;
+  welcomeMessage: string;
+}
+
+/** The main web bot — אמירים, and every page that isn't a branch with a bot of its own */
+export const DEFAULT_WEB_BOT: WebBot = {
+  botId: 'bot_generic_252',
+  title: 'האופטיקה החברתית אמירים',
+  welcomeMessage:
+    'הגעת לאופטיקה החברתית במושב אמירים.\nאנחנו מאמינים שראייה טובה מתחילה מיחס טוב.\n\nלא צריך להתרוצץ - אצלנו תמצא את כל מה שצריך במקום אחד:\n✅ בדיקת ראייה מתקדמת ומדויקת בחינם.\n✅ מבחר עצום של מסגרות בכל סגנון ותקציב.\n✅ שירות אישי וחם, עם התאמה מושלמת לצרכים שלך.\nאפשרויות:\nתיאום תור \nאיך מגיעים אליכם\nעדשות מולטיפוקל \nמהי אופטיקה חברתית\nסוגי מסגרות ומחירים\nמהם מרשמים רגילים\n\nמתי המשקפיים מוכנים',
+};
+
+/** The n8n webhook every web bot talks to (it answers by the bot_id it gets) */
+export const WEB_BOT_WEBHOOK = 'https://n8n.srv1239769.hstgr.cloud/webhook/65325d34-0c9e-4cc3-8b7c-c03c47105b3a';
 
 export const SITE_URL = 'https://optica-4.vercel.app';
 export const BRAND_NAME = 'האופטיקה החברתית';
@@ -108,6 +127,12 @@ export const BRANCHES: Branch[] = [
     whatsapp: '972503054731',
     nearby: ['פרדס חנה', 'כרכור', 'בנימינה', 'גבעת עדה', 'עין שמר', 'חדרה', 'אור עקיבא', 'קיסריה', 'זכרון יעקב', 'תלמי אלעזר', 'כפר גליקסון'],
     region: 'השרון הצפוני',
+    webBot: {
+      botId: 'bot_485265',
+      title: 'האופטיקה החברתית פרדס חנה-כרכור',
+      welcomeMessage:
+        'הגעת לאופטיקה החברתית בפרדס חנה-כרכור (נחלה 6, מרכז "שדות", כרכור).\nאנחנו מאמינים שראייה טובה מתחילה מיחס טוב.\n\nלא צריך להתרוצץ - אצלנו תמצא את כל מה שצריך במקום אחד:\n✅ בדיקת ראייה מתקדמת ומדויקת בחינם.\n✅ מבחר עצום של מסגרות בכל סגנון ותקציב.\n✅ שירות אישי וחם, עם התאמה מושלמת לצרכים שלך.\nאפשרויות:\nתיאום תור \nאיך מגיעים אליכם\nעדשות מולטיפוקל \nמהי אופטיקה חברתית\nסוגי מסגרות ומחירים\nמהם מרשמים רגילים\n\nמתי המשקפיים מוכנים',
+    },
     seoTitle: 'האופטיקה החברתית פרדס חנה-כרכור | בדיקת ראייה ומשקפיים ב-150 ₪',
     seoDescription:
       'סניף חדש של האופטיקה החברתית בנחלה 6, מרכז "שדות" כרכור: בדיקת ראייה חינם ע"י אופטומטריסט מוסמך, משקפי ראייה מלאים ב-150 ₪ ועדשות מולטיפוקל מ-800 ₪. ליד בנימינה, חדרה וזכרון יעקב. קביעת תור ביומן.',
@@ -176,6 +201,9 @@ export function hoursRows(b: Branch): { days: string; hours: string }[] {
     hours: r.hours,
   }));
 }
+
+/** The web bot for a page: the branch's own, else the main one */
+export const webBotFor = (b: Branch | null): WebBot => (b && b.webBot) || DEFAULT_WEB_BOT;
 
 export const branchWhatsapp = (b: Branch | null) => (b && b.whatsapp) || MAIN_WHATSAPP;
 export const branchPhone = (b: Branch | null) => (b && b.phone) || MAIN_PHONE;

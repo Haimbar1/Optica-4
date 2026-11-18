@@ -56,7 +56,16 @@
           s.indexOf('campaign') !== -1 || s.indexOf('lp') !== -1 || s.indexOf('150') !== -1 || s.indexOf('page=campaign') !== -1 ||
           h.indexOf('campaign') !== -1 || h.indexOf('lp') !== -1 || h.indexOf('150') !== -1
         );
-        if (isCampaign) {
+        // The Pardes Hanna-Karkur pages have their own bot (keep in step with webBot in src/data/branches.ts)
+        var isPardes = p.indexOf('/pardes-hanna') === 0 || s.indexOf('branch=pardes-hanna') !== -1;
+        if (isPardes) {
+          window.OpticsBotConfig = {
+            botId: 'bot_485265',
+            title: isCampaign ? 'האופטיקה החברתית פרדס חנה-כרכור - קביעת תור' : 'האופטיקה החברתית פרדס חנה-כרכור',
+            welcomeMessage: isCampaign ? 'אני רואה שהגעת אלינו, לקבוע תור! 👋\nצריך עזרה?' : 'הגעת לאופטיקה החברתית בפרדס חנה-כרכור (נחלה 6, מרכז "שדות", כרכור).\nאנחנו מאמינים שראייה טובה מתחילה מיחס טוב.\n\nלא צריך להתרוצץ - אצלנו תמצא את כל מה שצריך במקום אחד:\n✅ בדיקת ראייה מתקדמת ומדויקת בחינם.\n✅ מבחר עצום של מסגרות בכל סגנון ותקציב.\n✅ שירות אישי וחם, עם התאמה מושלמת לצרכים שלך.\nאפשרויות:\nתיאום תור \nאיך מגיעים אליכם\nעדשות מולטיפוקל \nמהי אופטיקה חברתית\nסוגי מסגרות ומחירים\nמהם מרשמים רגילים\n\nמתי המשקפיים מוכנים',
+            whatsappNumber: '972503054731'
+          };
+        } else if (isCampaign) {
           window.OpticsBotConfig = {
             botId: 'bot_generic_252',
             title: 'האופטיקה החברתית - קביעת תור',
