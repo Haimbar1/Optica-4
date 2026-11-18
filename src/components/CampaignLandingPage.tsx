@@ -37,7 +37,7 @@ import {
 } from '../utils/phoneValidation';
 import { getCalUrlParams, withCalUrlParams } from '../utils/calParams';
 import { BranchContacts } from './BranchContacts';
-import { BRANCHES, BranchSlug, dayName, whatsappLink, branchPhone, displayPhone, branchWhatsapp } from '../data/branches';
+import { BRANCHES, MULTI_BRANCH, BranchSlug, dayName, whatsappLink, branchPhone, displayPhone, branchWhatsapp } from '../data/branches';
 import { useBranchOrDefault, hoursInline, HoursGrid } from '../branchContext';
 import campaignAdHeroImg from '../assets/images/campaign_ad_hero.jpg';
 import logoImg from '../assets/images/logo_optics.svg';
@@ -408,6 +408,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                 </div>
 
                 {/* Which branch: each has its own calendar */}
+                {MULTI_BRANCH && (
                 <div id="booking-branch-picker" className="mb-2 sm:mb-2.5">
                   <span className="block text-[11px] sm:text-xs font-bold text-blue-100 mb-1">📍 באיזה סניף לקבוע?</span>
                   <div className="grid grid-cols-3 gap-1.5">
@@ -432,6 +433,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                     })}
                   </div>
                 </div>
+                )}
 
                 {/* The chosen branch's phones / WhatsApp — for those who'd rather call */}
                 <div className="mb-2 sm:mb-2.5">

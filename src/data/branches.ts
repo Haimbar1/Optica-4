@@ -78,7 +78,14 @@ export const WEB_BOT_WEBHOOK = 'https://n8n.srv1239769.hstgr.cloud/webhook/65325
 export const SITE_URL = 'https://optica-4.vercel.app';
 export const BRAND_NAME = 'האופטיקה החברתית';
 
-export const BRANCHES: Branch[] = [
+// ─── Turning a branch off / on ───────────────────────────────────────────────────────────────
+// A branch listed here is taken off the whole site: its page, cards, booking picker, structured
+// data and the AI bot's answers. Its details below stay as they are — to bring it back, just
+// delete its slug from this list (or empty the list) and redeploy.
+export const HIDDEN_BRANCHES: BranchSlug[] = ['pardes-hanna', 'shlomi'];
+
+/** Every branch, shown or hidden. The site reads BRANCHES (only the shown ones). */
+export const ALL_BRANCHES: Branch[] = [
   {
     slug: 'amirim',
     name: 'אמירים',
@@ -160,7 +167,12 @@ export const BRANCHES: Branch[] = [
   },
 ];
 
+export const BRANCHES: Branch[] = ALL_BRANCHES.filter((b) => !HIDDEN_BRANCHES.includes(b.slug));
+
 export const DEFAULT_BRANCH = BRANCHES[0];
+
+/** More than one branch on the site — else branch pickers and "our branches" lists are left out. */
+export const MULTI_BRANCH = BRANCHES.length > 1;
 
 /** The phone / WhatsApp the brand uses when a branch has none of its own yet. */
 export const MAIN_WHATSAPP = '972545404183';
@@ -177,6 +189,9 @@ export const ALL_BRANCH_NAMES = BRANCHES.map((b) => b.name).reduce(
   (acc, n, i, arr) => (i === 0 ? n : i === arr.length - 1 ? `${acc} ו${n}` : `${acc}, ${n}`),
   '',
 );
+
+/** "3 סניפים: אמירים, פרדס חנה-כרכור ושלומי" — or just the address when there is one branch */
+export const BRANCHES_SUMMARY = MULTI_BRANCH ? `${BRANCHES.length} סניפים: ${ALL_BRANCH_NAMES}` : DEFAULT_BRANCH.address;
 
 /** The page of a branch: "/pardes-hanna" */
 export const branchPath = (b: Branch) => `/${b.slug}`;

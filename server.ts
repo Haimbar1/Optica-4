@@ -3,6 +3,20 @@ import path from 'path';
 import fs from 'fs';
 import { GoogleGenAI } from '@google/genai';
 import { framesRouter, siteSecret, branchSecret } from './portal.js';
+import { HIDDEN_BRANCHES, BranchSlug } from './src/data/branches.js';
+
+// The extra branches as the AI bot tells them. A branch in HIDDEN_BRANCHES (src/data/branches.ts)
+// is left out, so the bot doesn't send people to a branch that's off the site.
+const BOT_BRANCH_INFO: Partial<Record<BranchSlug, string>> = {
+  'pardes-hanna':
+    '- סניף פרדס חנה-כרכור (חדש, נפתח ביום שלישי 24.11.2026): נחלה 6, מרכז "שדות" כרכור. שעות: ג\' 15:00-20:00, ה\' 14:00-20:00, ו\' 09:00-14:00. טלפון 053-2796290, וואטסאפ 050-305-4731. היומן פתוח לקביעת תורים מיום הפתיחה. עמוד: /pardes-hanna',
+  shlomi: '- סניף שלומי: נפתח בקרוב, בשלומי סנטר (דרך סנדי אזולאי 107, שלומי). עמוד: /shlomi – אפשר להשאיר פרטים ונעדכן בפתיחה.',
+};
+const shownBotBranches = (Object.keys(BOT_BRANCH_INFO) as BranchSlug[]).filter((slug) => !HIDDEN_BRANCHES.includes(slug));
+const BOT_BRANCH_LINES = shownBotBranches.length
+  ? shownBotBranches.map((slug) => `${BOT_BRANCH_INFO[slug]}\n`).join('') +
+    '- אותם מחירים ואותה בדיקה בכל הסניפים; בוחרים את הסניף מעל יומן התורים באתר.\n'
+  : '';
 
 // Leads from a branch's page go to that branch's own business in the CRM (each branch is its own
 // business there: its calendar, number, bot). Its CRM API key: the Vercel variable named here, or
@@ -332,10 +346,7 @@ app.post('/api/bot/web', async (req, res) => {
 פרטי העסק:
 - שם: האופטיקה החברתית באמירים
 - כתובת: מצפה מנחם 86, אמירים
-- סניף פרדס חנה-כרכור (חדש, נפתח ביום שלישי 24.11.2026): נחלה 6, מרכז "שדות" כרכור. שעות: ג' 15:00-20:00, ה' 14:00-20:00, ו' 09:00-14:00. טלפון 053-2796290, וואטסאפ 050-305-4731. היומן פתוח לקביעת תורים מיום הפתיחה. עמוד: /pardes-hanna
-- סניף שלומי: נפתח בקרוב, בשלומי סנטר (דרך סנדי אזולאי 107, שלומי). עמוד: /shlomi – אפשר להשאיר פרטים ונעדכן בפתיחה.
-- אותם מחירים ואותה בדיקה בכל הסניפים; בוחרים את הסניף מעל יומן התורים באתר.
-- תיאום תורים לבדיקת ראייה: ישירות ביומן התורים באתר (כפתור "יומן תורים דיגיטלי") – אין מתאמת תורים טלפונית.
+${BOT_BRANCH_LINES}- תיאום תורים לבדיקת ראייה: ישירות ביומן התורים באתר (כפתור "יומן תורים דיגיטלי") – אין מתאמת תורים טלפונית.
 - וואטסאפ לפניות ישירות / בירורים: 054-540-4183 (972545404183)
 - מחירי מסגרות ראייה איכותיות כולל עדשות וציפויים: 150 ₪ / 250 ₪ בלבד למרשם רגיל.
 - עדשות מולטיפוקל (מחיר לזוג עדשות בלבד, המסגרת בנפרד): 800 ₪ לעדשות יפניות, 1,200 ₪ לעדשות גרמניות.
@@ -663,10 +674,7 @@ app.post('/api/ai-chat', async (req, res) => {
 פרטי העסק החשובים:
 - שם העסק: האופטיקה החברתית
 - כתובת: מצפה מנחם 86, אמירים
-- סניף פרדס חנה-כרכור (חדש, נפתח ביום שלישי 24.11.2026): נחלה 6, מרכז "שדות" כרכור. שעות: ג' 15:00-20:00, ה' 14:00-20:00, ו' 09:00-14:00. טלפון 053-2796290, וואטסאפ 050-305-4731. היומן פתוח לקביעת תורים מיום הפתיחה. עמוד: /pardes-hanna
-- סניף שלומי: נפתח בקרוב, בשלומי סנטר (דרך סנדי אזולאי 107, שלומי). עמוד: /shlomi – אפשר להשאיר פרטים ונעדכן בפתיחה.
-- אותם מחירים ואותה בדיקה בכל הסניפים; בוחרים את הסניף מעל יומן התורים באתר.
-- Waze: https://waze.com/ul?ll=32.936389,35.454517&navigate=yes
+${BOT_BRANCH_LINES}- Waze: https://waze.com/ul?ll=32.936389,35.454517&navigate=yes
 - חנות: 055-250-2584 (מענה כללי / ביטולים)
 - תיאום תורים לבדיקת ראייה: ישירות ביומן התורים באתר (אין מתאמת תורים טלפונית).
 - וואטסאפ לפניות ישירות / בירורים: 054-540-4183 (972545404183)
