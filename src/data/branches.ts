@@ -92,10 +92,8 @@ export const BRANCHES: Branch[] = [
     areaNote: 'מרכז "שדות", כרכור – פרדס חנה-כרכור',
     distanceNote: 'ליד בנימינה, חדרה וזכרון יעקב',
     wazeUrl: `https://waze.com/ul?q=${encodeURIComponent('נחלה 6 כרכור')}&navigate=yes`,
-    // Online booking is closed until the branch opens. To open it: put back
-    // calLink: 'haoptika-hatova/pardes-hana-30min' and remove comingSoon below.
-    calLink: '',
-    comingSoon: true,
+    // Opens Tuesday 24.11.2026 — the first bookable slot is set in Cal.com's availability.
+    calLink: 'haoptika-hatova/pardes-hana-30min',
     hours: [
       { day: 2, from: '15:00', to: '20:00' },
       { day: 4, from: '14:00', to: '20:00' },
