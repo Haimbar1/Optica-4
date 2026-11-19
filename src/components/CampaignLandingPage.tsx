@@ -37,8 +37,8 @@ import {
 } from '../utils/phoneValidation';
 import { getCalUrlParams, withCalUrlParams } from '../utils/calParams';
 import { BranchContacts } from './BranchContacts';
-import { BRANCHES, MULTI_BRANCH, BranchSlug, dayName, whatsappLink, branchPhone, displayPhone, branchWhatsapp } from '../data/branches';
-import { useBranchOrDefault, hoursInline, HoursGrid } from '../branchContext';
+import { BRANCHES, MULTI_BRANCH, DEFAULT_BRANCH, BranchSlug, dayName, whatsappLink, branchPhone, displayPhone, branchWhatsapp } from '../data/branches';
+import { useBranch, hoursInline, HoursGrid } from '../branchContext';
 import campaignAdHeroImg from '../assets/images/campaign_ad_hero.jpg';
 import logoImg from '../assets/images/logo_optics.svg';
 
@@ -56,8 +56,13 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
   onOpenPrivacy,
   onOpenTerms,
 }) => {
-  // The branch whose calendar this is (the open branch; a link with no branch = אמירים, as the ads always were)
-  const branch = useBranchOrDefault();
+  // The branch whose calendar this is: the one in the link (/pardes-hanna?page=campaign) or the one
+  // the visitor tapped above the calendar. With several branches there is NO default: a link with no
+  // branch shows only the branch picker, and the calendar / callback form open after a branch is chosen,
+  // so nobody books in a branch they never chose. (One branch on the site = it, as the ads always were.)
+  const chosenBranch = useBranch();
+  const mustChooseBranch = MULTI_BRANCH && !chosenBranch;
+  const branch = chosenBranch || DEFAULT_BRANCH;
   const hasCalendar = !!branch.calLink;
   const waLink = whatsappLink(branch);
   const waPhone = displayPhone(branchWhatsapp(branch));
@@ -93,7 +98,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
 
   // Official Cal.com inline embed: lets us hide the event-type details panel (left column)
   useEffect(() => {
-    if (bookingMode !== 'calendar' || !branch.calLink) return;
+    if (mustChooseBranch || bookingMode !== 'calendar' || !branch.calLink) return;
     const w = window as any;
     if (!w.Cal) {
       (function (C: any, A: string, L: string) {
@@ -136,7 +141,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
     w.Cal('ui', { hideEventTypeDetails: true, layout: 'month_view' });
     const t = setTimeout(() => setIframeLoaded(true), 2500);
     return () => clearTimeout(t);
-  }, [bookingMode, selectedDate, branch.calLink]);
+  }, [mustChooseBranch, bookingMode, selectedDate, branch.calLink]);
 
   const scrollToBooking = () => {
     const el = document.getElementById('booking-above-fold-card');
@@ -346,7 +351,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               </div>
 
               {/* Location & Hours Card */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-3 shadow-2xs space-y-2 text-xs text-slate-700">
+              <div className={`${mustChooseBranch ? 'hidden' : ''} bg-white border border-slate-200 rounded-2xl p-3 shadow-2xs space-y-2 text-xs text-slate-700`}>
                 <div className="flex items-start gap-2">
                   <MapPin className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                   <div className="text-[11px] leading-tight">
@@ -407,13 +412,19 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                   </div>
                 </div>
 
-                {/* Which branch: each has its own calendar */}
+                {/* Which branch: each has its own calendar. Nothing is picked for the visitor —
+                    with no branch in the link the visitor must tap one before the calendar opens. */}
                 {MULTI_BRANCH && (
-                <div id="booking-branch-picker" className="mb-2 sm:mb-2.5">
-                  <span className="block text-[11px] sm:text-xs font-bold text-blue-100 mb-1">📍 באיזה סניף לקבוע?</span>
-                  <div className="grid grid-cols-3 gap-1.5">
+                <div
+                  id="booking-branch-picker"
+                  className={`mb-2 sm:mb-2.5 ${mustChooseBranch ? 'bg-amber-400/15 ring-2 ring-amber-300 rounded-xl p-2 sm:p-2.5' : ''}`}
+                >
+                  <span className={`block font-bold mb-1 ${mustChooseBranch ? 'text-sm sm:text-base text-amber-200 font-black' : 'text-[11px] sm:text-xs text-blue-100'}`}>
+                    {mustChooseBranch ? '📍 שלב 1: בחרו באיזה סניף לקבוע את הבדיקה *' : '📍 באיזה סניף לקבוע?'}
+                  </span>
+                  <div className={`grid gap-1.5 ${BRANCHES.length > 2 ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2'}`}>
                     {BRANCHES.map((b) => {
-                      const active = b.slug === branch.slug;
+                      const active = !mustChooseBranch && b.slug === branch.slug;
                       return (
                         <button
                           key={b.slug}
@@ -421,27 +432,38 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                           id={`booking-branch-${b.slug}`}
                           onClick={() => onSwitchBranch && onSwitchBranch(b.slug)}
                           aria-pressed={active}
-                          className={`py-1.5 px-2 rounded-lg text-xs sm:text-sm font-black transition-all cursor-pointer ${
+                          className={`py-1.5 px-2 rounded-lg text-right sm:text-center transition-all cursor-pointer ${
                             active
                               ? 'bg-amber-400 text-slate-950 shadow-md ring-2 ring-amber-200'
                               : 'bg-white/15 border border-white/40 text-white hover:bg-white/25'
                           }`}
                         >
-                          {b.name}
+                          <span className="block text-xs sm:text-sm font-black">{active ? '✓ ' : ''}{b.name}</span>
+                          <span className={`block text-[10px] sm:text-[11px] font-semibold leading-tight ${active ? 'text-slate-800' : 'text-blue-100'}`}>
+                            {b.distanceNote || b.areaNote}
+                          </span>
                         </button>
                       );
                     })}
                   </div>
+                  {!mustChooseBranch && (
+                    <p id="booking-branch-confirm" className="mt-1.5 text-[11px] sm:text-xs font-bold text-amber-100">
+                      ✅ התור נקבע בסניף <span className="text-amber-300 font-black">{branch.name}</span>
+                      {branch.address ? ` – ${branch.address}` : ''}. לא הסניף שלכם? בחרו סניף אחר למעלה.
+                    </p>
+                  )}
                 </div>
                 )}
 
                 {/* The chosen branch's phones / WhatsApp — for those who'd rather call */}
+                {!mustChooseBranch && (
                 <div className="mb-2 sm:mb-2.5">
                   <BranchContacts branch={branch} tone="dark" columns={4} />
                 </div>
+                )}
 
                 {/* Mode Selector Tabs: Calendar is DEFAULT */}
-                <div className="grid grid-cols-2 gap-2 bg-slate-950/40 p-1 sm:p-1.5 rounded-xl border border-white/10">
+                <div className={`${mustChooseBranch ? 'hidden' : 'grid'} grid-cols-2 gap-2 bg-slate-950/40 p-1 sm:p-1.5 rounded-xl border border-white/10`}>
                   <button
                     id="tab-calendar-mode-btn"
                     onClick={() => setBookingMode('calendar')}
@@ -470,8 +492,18 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                 </div>
               </div>
 
+              {/* No branch chosen yet: nothing to book until the visitor picks one above */}
+              {mustChooseBranch && (
+                <div id="booking-choose-branch-first" className="p-6 sm:p-8 bg-white text-center space-y-2">
+                  <p className="font-black text-slate-900 text-lg font-['Rubik']">👆 קודם בוחרים סניף</p>
+                  <p className="text-sm text-slate-600">
+                    לכל סניף יש יומן משלו. בחרו למעלה את הסניף שנוח לכם להגיע אליו – והיומן שלו ייפתח כאן.
+                  </p>
+                </div>
+              )}
+
               {/* TAB 1 (DEFAULT): Embedded Interactive Cal.com Calendar */}
-              {bookingMode === 'calendar' && !hasCalendar && (
+              {!mustChooseBranch && bookingMode === 'calendar' && !hasCalendar && (
                 <div className="p-6 sm:p-8 bg-white text-center space-y-3">
                   <p className="font-black text-slate-900 text-lg font-['Rubik']">
                     {branch.comingSoon ? `סניף ${branch.name} נפתח בקרוב` : `היומן של סניף ${branch.name} ייפתח לקביעה באתר בקרוב`}
@@ -491,7 +523,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
                 </div>
               )}
 
-              {bookingMode === 'calendar' && hasCalendar && (
+              {!mustChooseBranch && bookingMode === 'calendar' && hasCalendar && (
                 <div className="p-2.5 sm:p-4 bg-white space-y-2.5">
                   {/* Day Picker Pills: Select Clinic Days Starting from Earliest Open Hour */}
                   <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
@@ -596,7 +628,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
               )}
 
               {/* TAB 2: Fast Name & Phone Callback Form */}
-              {bookingMode === 'callback' && (
+              {!mustChooseBranch && bookingMode === 'callback' && (
                 <div className="p-4 sm:p-7 bg-white space-y-4">
                   {submitSuccess ? (
                     <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-6 sm:p-8 text-center space-y-3 animate-in fade-in">
@@ -920,7 +952,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
           </div>
 
           {/* Location & Hours Quick Bar */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex flex-wrap items-center justify-between gap-2.5 text-xs text-slate-700">
+          <div className={`${mustChooseBranch ? 'hidden' : 'flex'} bg-white border border-slate-200 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex-wrap items-center justify-between gap-2.5 text-xs text-slate-700`}>
             <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-red-500 shrink-0" />
               <span>
@@ -1131,7 +1163,7 @@ export const CampaignLandingPage: React.FC<CampaignLandingPageProps> = ({
       {/* SECTION: Location & Waze Navigation */}
       {/* (אמירים: the detailed arrival guide; another branch: its address, hours and contacts) */}
       {/* ========================================================================= */}
-      {branch.slug === 'amirim' ? (
+      {mustChooseBranch ? null : branch.slug === 'amirim' ? (
       <section className="py-12 bg-slate-50 border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="bg-gradient-to-br from-slate-900 via-[#0A2540] to-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
