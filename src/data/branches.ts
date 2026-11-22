@@ -82,7 +82,7 @@ export const BRAND_NAME = 'האופטיקה החברתית';
 // A branch listed here is taken off the whole site: its page, cards, booking picker, structured
 // data and the AI bot's answers. Its details below stay as they are — to bring it back, just
 // delete its slug from this list (or empty the list) and redeploy.
-export const HIDDEN_BRANCHES: BranchSlug[] = ['pardes-hanna', 'shlomi'];
+export const HIDDEN_BRANCHES: BranchSlug[] = ['shlomi'];
 
 /** Every branch, shown or hidden. The site reads BRANCHES (only the shown ones). */
 export const ALL_BRANCHES: Branch[] = [
