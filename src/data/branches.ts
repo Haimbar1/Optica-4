@@ -125,9 +125,9 @@ export const ALL_BRANCHES: Branch[] = [
     calLink: 'haoptika-hatova/pardes-hana-30min',
     opensOn: '2026-11-24',
     hours: [
-      { day: 2, from: '15:00', to: '20:00' },
-      { day: 4, from: '14:00', to: '20:00' },
-      { day: 5, from: '09:00', to: '14:00' },
+      { day: 0, from: '15:00', to: '20:00' },
+      { day: 2, from: '14:00', to: '20:00' },
+      { day: 4, from: '12:00', to: '18:00' },
     ],
     phone: '053-279-6290',
     phoneContact: 'סמדר',
