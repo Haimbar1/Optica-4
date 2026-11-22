@@ -126,7 +126,7 @@ export const ALL_BRANCHES: Branch[] = [
     opensOn: '2026-11-24',
     hours: [
       { day: 0, from: '15:00', to: '20:00' },
-      { day: 2, from: '14:00', to: '20:00' },
+      { day: 2, from: '15:00', to: '20:00' },
       { day: 4, from: '12:00', to: '18:00' },
     ],
     phone: '053-279-6290',

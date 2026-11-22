@@ -9,7 +9,7 @@ import { HIDDEN_BRANCHES, BranchSlug } from './src/data/branches.js';
 // is left out, so the bot doesn't send people to a branch that's off the site.
 const BOT_BRANCH_INFO: Partial<Record<BranchSlug, string>> = {
   'pardes-hanna':
-    '- סניף פרדס חנה-כרכור (חדש, נפתח ביום שלישי 24.11.2026): נחלה 6, מרכז "שדות" כרכור. שעות: א\' 15:00-20:00, ג\' 14:00-20:00, ה\' 12:00-18:00 (בשישי סגור). טלפון 053-2796290, וואטסאפ 050-305-4731. היומן פתוח לקביעת תורים מיום הפתיחה. עמוד: /pardes-hanna',
+    '- סניף פרדס חנה-כרכור (חדש, נפתח ביום שלישי 24.11.2026): נחלה 6, מרכז "שדות" כרכור. שעות: א\' 15:00-20:00, ג\' 15:00-20:00, ה\' 12:00-18:00 (בשישי סגור). טלפון 053-2796290, וואטסאפ 050-305-4731. היומן פתוח לקביעת תורים מיום הפתיחה. עמוד: /pardes-hanna',
   shlomi: '- סניף שלומי: נפתח בקרוב, בשלומי סנטר (דרך סנדי אזולאי 107, שלומי). עמוד: /shlomi – אפשר להשאיר פרטים ונעדכן בפתיחה.',
 };
 const shownBotBranches = (Object.keys(BOT_BRANCH_INFO) as BranchSlug[]).filter((slug) => !HIDDEN_BRANCHES.includes(slug));
