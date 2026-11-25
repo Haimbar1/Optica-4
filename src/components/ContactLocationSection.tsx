@@ -71,8 +71,6 @@ export const ContactLocationSection: React.FC = () => {
                       <span dir="ltr" className="font-black text-[#0047AB] text-left">10:00-15:00</span>
                       <span className="font-bold text-gray-800">ד', ה':</span>
                       <span dir="ltr" className="font-black text-[#0047AB] text-left">12:00-18:00</span>
-                      <span className="font-bold text-gray-800">ו':</span>
-                      <span dir="ltr" className="font-black text-[#0047AB] text-left">10:00-14:00</span>
                     </div>
                   </div>
                 </div>
@@ -219,8 +217,6 @@ export const ContactLocationSection: React.FC = () => {
                   <span dir="ltr" className="text-blue-900 bg-white/90 px-2.5 py-0.5 rounded-lg border border-blue-100 shadow-2xs text-left w-fit">10:00-15:00</span>
                   <span>ד', ה':</span>
                   <span dir="ltr" className="text-blue-900 bg-white/90 px-2.5 py-0.5 rounded-lg border border-blue-100 shadow-2xs text-left w-fit">12:00-18:00</span>
-                  <span>ו':</span>
-                  <span dir="ltr" className="text-blue-900 bg-white/90 px-2.5 py-0.5 rounded-lg border border-blue-100 shadow-2xs text-left w-fit">10:00-14:00</span>
                 </div>
               </div>
             </div>
