@@ -100,7 +100,6 @@ export const ALL_BRANCHES: Branch[] = [
       { day: 0, from: '10:00', to: '15:00' },
       { day: 3, from: '12:00', to: '18:00' },
       { day: 4, from: '12:00', to: '18:00' },
-      { day: 5, from: '10:00', to: '14:00' },
     ],
     phone: '055-250-2584',
     whatsapp: '972545404183',
